@@ -15,14 +15,14 @@ print ('Venv done')
 
 out, err = Popen('pip list | grep tensorflow-', shell=True, stdout=PIPE).communicate()
 
-print ('--')
+print ('--not venv--')
 print out
 print err
 print ('--')
 
-os.system('source ./venv/bin/activate')
+Popen(["venv/bin/python","setup_lib.py"])
 '''
-out, err = Popen('. ./venv/bin/activate; env', shell=True, stdout=PIPE).communicate()
+out, err = Popen('source ./venv/bin/activate', shell=True, stdout=PIPE).communicate()
 print ('--')
 print out
 print err
@@ -31,7 +31,7 @@ print ('--')
 
 
 out, err = Popen('pip list | grep tensorflow-', shell=True, stdout=PIPE).communicate()
-print ('--')
+print ('--not venv--')
 print out
 print err
 print ('--')
