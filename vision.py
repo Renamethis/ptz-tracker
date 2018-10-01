@@ -1,5 +1,11 @@
+activate_this_file = "venv/bin/activate_this.py"
+execfile(activate_this_file, dict(__file__=activate_this_file))
 import sys
+import os
 sys.path.append("./models/reserch")
+os.system('pwd')
+os.chdir('models/research/object_detection')
+os.system('pwd')
 import numpy as np
 import math
 import os
@@ -22,8 +28,11 @@ from threading import Thread
 
 #sys.path.append("./models/reserch")
 
-from utils import label_map_util
-from utils import visualization_utils as vis_util
+#from utils import label_map_util
+#from utils import visualization_utils as vis_util
+
+from object_detection.utils import label_map_util
+from object_detection.utils import visualization_utils as vis_util
 
 
 
@@ -125,8 +134,8 @@ print ('sucsess conection.')
 
 
 goal_person = ['person',-1,-1,-1]
-lenght_float = 720.0
-width_float = 600.0
+lenght_float = 1280.0
+width_float = 720.0
 lenght = int(lenght_float)
 width = int(width_float)
 
@@ -135,9 +144,10 @@ fps = FPS().start()
 with detection_graph.as_default():
   with tf.Session(graph=detection_graph) as sess:
     while True:
-      print ('--')
+      print ('----------------------------')
       image_np = cap.read()
       image_np = cv2.resize(image_np, (lenght,width))
+      print ('')
 
 
       cv2.rectangle(image_np,(lenght/3 - 30, width/3 -30),
@@ -148,7 +158,7 @@ with detection_graph.as_default():
         (lenght/3 + 30,2*width/3 + 30),(100,100,100),2)
       cv2.rectangle(image_np,(2*lenght/3 - 30, 2*width/3 -30),
         (2*lenght/3 + 30,2*width/3 + 30),(100,100,100),2)
-
+      print ('')
       
       image_np_expanded = np.expand_dims(image_np, axis=0)
       image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
@@ -156,7 +166,7 @@ with detection_graph.as_default():
       scores = detection_graph.get_tensor_by_name('detection_scores:0')
       classes = detection_graph.get_tensor_by_name('detection_classes:0')
       num_detections = detection_graph.get_tensor_by_name('num_detections:0')
-
+      print ('')
 
       (boxes, scores, classes, num_detections) = sess.run(
           [boxes, scores, classes, num_detections],
@@ -180,7 +190,7 @@ with detection_graph.as_default():
         final_list[i][5] *= width
         if final_list[i][0] == 'person' and goal_person[1] < final_list[i][1]:
           count += 1
-          s[1] = final_list[i][1]
+          goal_person[1] = final_list[i][1]
           goal_person[2] = int(abs(final_list[i][2] - final_list[i][4])/2.0 + final_list[i][4])
           goal_person[3] = int(final_list[i][5])
           break
