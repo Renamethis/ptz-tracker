@@ -2,10 +2,12 @@ activate_this_file = "venv/bin/activate_this.py"
 execfile(activate_this_file, dict(__file__=activate_this_file))
 import sys
 import os
-sys.path.append("./models/reserch")
-os.system('pwd')
-os.chdir('models/research/object_detection')
-os.system('pwd')
+#sys.path.append("./models/reserch")
+#os.system('pwd')
+os.chdir('models/research')
+os.system('export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim')
+os.chdir('object_detection')
+#os.system('pwd')
 import numpy as np
 import math
 import os
@@ -112,8 +114,8 @@ def mov_to_face(ptz, request, x, y, to_x, to_y, speed_kof = 1, timeout=0, lenght
 print ('conection with camera...')
 #
 #cap = VideoStream(src='rtsp://192.168.1.102:554/Streaming/Channels/101').start()
-#cap = VideoStream(src=0).start()
-cap = VideoStream(src='rtsp://192.168.11.42:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1').start()
+cap = VideoStream(src='rtsp://192.168.11.51:554/live/av0').start()
+#cap = VideoStream(src='rtsp://192.168.11.42:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1').start()
 #mycam = ONVIFCamera('192.168.1.102', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
 #mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
 
@@ -146,7 +148,7 @@ with detection_graph.as_default():
     while True:
       print ('----------------------------')
       image_np = cap.read()
-      image_np = cv2.resize(image_np, (lenght,width))
+      #image_np = cv2.resize(image_np, (lenght,width))
       print ('')
 
 
@@ -194,9 +196,11 @@ with detection_graph.as_default():
           goal_person[2] = int(abs(final_list[i][2] - final_list[i][4])/2.0 + final_list[i][4])
           goal_person[3] = int(final_list[i][5])
           break
-      print ("person: ", str(count))
-      print (len(final_list))
-      print (goal_person)
+      os.system('clear')          
+      if count != 0:  
+        print ("person: ", str(count))
+        print (len(final_list))
+        print (goal_person)
 
 
       '''mov_to_face(
