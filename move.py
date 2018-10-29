@@ -10,7 +10,7 @@ import os
 #os.chdir('object_detection')
 
 from onvif import ONVIFCamera
-mycam = ONVIFCamera('192.168.11.245', 2000, 'admin', 'Supervisor', '/home/ibaryshnikov/gitVision/MM.Tracker/venv/wsdl')
+mycam = ONVIFCamera('192.168.11.52', 2000, 'admin', 'Supervisor', '/home/ilya/git/MM.Tracker/venv/wsdl')
 
 
 

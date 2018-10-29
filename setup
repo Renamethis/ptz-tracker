@@ -1,4 +1,4 @@
-echo sudo apt update
-echo sudo apt install python-dev python-pip
-echo sudo pip install -U virtualenv
+sudo apt update
+sudo apt install python-dev python-pip
+sudo pip install -U virtualenv
 python setup.py

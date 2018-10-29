@@ -64,4 +64,4 @@ os.system('pwd')
 os.chdir('..')
 os.system('pwd')
 os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
-
+os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
