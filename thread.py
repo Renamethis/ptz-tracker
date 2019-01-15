@@ -31,35 +31,43 @@ from onvif import ONVIFCamera
 from time import sleep
 from threading import Thread
 
-
-
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
-
-
-
 from time import ctime, sleep
 
-class MyThread(Thread):
-  def __init__(self, func, args, name=''):
-    Thread.__init__(self)
-    self.name = name
-    self.func = func
-    self.args = args
 
-  def getResult(self):
-    return self.res
 
-  def run(self):
-    print 'starting', self.name, 'at:', \
-    ctime()
-    self.res = self.func(*self.args)
-    print self.name, 'finished at:', \
-    ctime()
+
+'''
+class Motion:
+  def __init__(self):
+    self.
+
+  def start(self):
+    t = Thread(target=self.update, name=self.name, args=())
+    t.daemon = True
+    t.start()
+    return self
+
+  def update(self):
+    while True:
+      if self.stopped:
+        return (self.grabbed, self.frame) = self.stream.read()
+
+  def read(self):
+    return self.frame
+
+  def stop(self):
+    self.stopped = True
+'''
+
+
 
 class WebcamVideoStream:
-  def __init__(self, src='rtsp://192.168.11.52:554/live/av0', name="WebcamVideoStream"):
-    #def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
+  def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
+    #def __init__(self, src='rtsp://192.168.11.43:554', name="WebcamVideoStream"):
+    #def __init__(self, src='rtsp://192.168.11.52:554/live/av0', name="WebcamVideoStream"):
+  
     self.stream = cv2.VideoCapture(src)
     (self.grabbed, self.frame) = self.stream.read()
     self.name = name
@@ -86,10 +94,43 @@ class WebcamVideoStream:
 
 
 
+class Motion:
+  def __init__(self):
+    mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
+    media = mycam.create_media_service()
+    profile = media.GetProfiles()[0]
+    ptz = mycam.create_ptz_service()
+    request = ptz.create_type('GetConfigurationOptions')
+    request.ConfigurationToken = profile.PTZConfiguration._token
+    ptz_configuration_options = ptz.GetConfigurationOptions(request)
+    request = ptz.create_type('ContinuousMove')
+    request.ProfileToken = profile._token
+    self.stopped = False
+
+  def start(self):
+    t = Thread(target=self.update, name=self.name, args=())
+    t.daemon = True
+    t.start()
+    return self
+
+  def update(self):
+    while True:
+      if self.stopped:
+        return
+
+  def read(self):
+    return self.d
+
+  def stop(self):
+    self.stopped = True
+
+
 
 
 class Tensor:
-  def __init__(self, lenght = 1920, width = 1080, name="Tensor"):
+  def __init__(self, lenght = 1280, width = 720, name="Tensor"):
+    self.flag = False
+    self.arr = []
     self.name = name
     self.new_image = np.zeros((width, lenght, 3))
     self.old_image = np.zeros((width, lenght, 3))
@@ -117,26 +158,17 @@ class Tensor:
         serialized_graph = fid.read()
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
-
-    #self.image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
     self.boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
     self.scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
     self.classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
     self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
     self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
-
-    #label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-    #categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-    #category_index = label_map_util.create_category_index(categories)
-    category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS)
-    #cap = cv2.VideoCapture("rtsp://192.168.1.2:8080/out.h264")
-
+    self.category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS)
   def start(self):
     t = Thread(target=self.update, name=self.name, args=())
     t.daemon = True
     t.start()
     return self
-
   def update(self):
     with self.detection_graph.as_default():
       with tf.Session(graph=self.detection_graph) as sess:
@@ -147,33 +179,97 @@ class Tensor:
           if not np.array_equal(image,self.old_image):
 
             image_np_expanded = np.expand_dims(image, axis=0)
-            self.boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
-            self.scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
-            self.classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
-            self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
+            boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
+            scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
+            classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
+            num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
             self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
-
             (self.boxes, self.scores, self.classes, self.num_detections) = sess.run(
-                [self.boxes, self.scores, self.classes, self.num_detections],
+                [boxes, scores, classes, num_detections],
                 feed_dict={self.image_tensor: image_np_expanded})
-            print 1
+            '''vis_util.visualize_boxes_and_labels_on_image_array(
+              image,
+              np.squeeze(self.boxes),
+              np.squeeze(self.classes).astype(np.int32),
+              np.squeeze(self.scores),
+              self.category_index,
+              use_normalized_coordinates=True,
+              line_thickness=8)'''
+            #print 1
+            self.flag = True
             self.old_image = image
-
   def setImage(self, image):
     self.new_image = image
-
   def read(self):
-    return self.image
-
+    if self.flag:
+      return self.old_image
+    else:
+      return self.arr
+  def read_boxes(self):
+    if self.flag:
+      return self.boxes
+    else:
+      return self.arr
+  def read_scores(self):
+    if self.flag:
+      return self.scores
+    else:
+      return self.arr
+  def read_classes(self):
+    if self.flag:
+      return self.classes
+    else:
+      return self.arr
   def stop(self):
     self.stopped = True
 
 
 
 
+def mov_to_face(ptz, request, x, y, to_x, to_y, speed_kof = 1, timeout=0, lenght = 700.0, width = 393.0):
+  if x != -1 or y != -1:
+    if (x < to_x +40 and x > to_x -40 and y < to_y +40 and y > to_y -40):
+      request.Velocity.PanTilt._x = 0
+      request.Velocity.PanTilt._y = 0
+      ptz.ContinuousMove(request)
+    else:
+      len_x = -(to_x - x)
+      len_y = (to_y - y)
+      vec_x = len_x/lenght
+      vec_x = int(vec_x*100)/100.0
+      vec_x *= speed_kof
+      vec_y = len_y/width
+      vec_y = int(vec_y*100)/100.0
+      vec_y *= speed_kof
 
 
-#cap = VideoStream(src='rtsp://192.168.11.33:554').start()
+      if vec_x > 1:
+        vec_x = 1
+      if vec_y > 1:
+        vec_y = 1
+      print (str(vec_y), " : ", str(vec_x))
+      request.Velocity.PanTilt._x = vec_x
+      request.Velocity.PanTilt._y = vec_y
+      ptz.ContinuousMove(request)
+
+  else:
+    request.Velocity.PanTilt._x = 0
+    request.Velocity.PanTilt._y = 0
+    ptz.ContinuousMove(request)
+
+
+
+mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
+
+
+media = mycam.create_media_service()
+profile = media.GetProfiles()[0]
+ptz = mycam.create_ptz_service()
+request = ptz.create_type('GetConfigurationOptions')
+request.ConfigurationToken = profile.PTZConfiguration._token
+ptz_configuration_options = ptz.GetConfigurationOptions(request)
+request = ptz.create_type('ContinuousMove')
+request.ProfileToken = profile._token
 
 
 
@@ -183,7 +279,6 @@ lenght = int(lenght_float)
 width = int(width_float)
 first = []
 second = []
-
 #old_image_np = cap.read()
 threads = []
 stream = WebcamVideoStream()
@@ -194,18 +289,12 @@ tensor2.start()
 stream.start()
 
 fps = FPS().start()
-#with detection_graph.as_default():
-#  with tf.Session(graph=detection_graph) as sess:
+persons_num = 0
 i = 0
 while True:
   i = i + 1
-  print ('----------------------------')
-  #new_image_np = cap.read()
-
+  #print ('----------------------------')
   image_np = stream.read()
-  #ret, image_np = cap.read()s
-  #print image_np.shape
-
   if (not np.array_equal(first,image_np)):
     second = first
     first = image_np
@@ -214,20 +303,99 @@ while True:
     elif i%4 == 2:
       tensor2.setImage(image_np)
 
-  '''  
-  if i%2 == 0:
-    tensor.setImage(image_np)
-  else:
-    tensor2.setImage(image_np)
-  '''
+    #print('START')
+    scores = tensor.read_scores()
+    image_np = tensor.read()
+    classes = tensor.read_classes()
+    boxes = tensor.read_boxes()
+
+    '''
+    print('scores')
+    print(scores)
+    print('classes')
+    print(classes)
+    print('boxes')
+    print(boxes)
+    '''
 
 
-  #print np.zeros((width, lenght, 3))
-  #image_np = cv2.resize(image_np, (lenght,width))
+    if (scores <> []):
+      cv2.imshow('object detection', image_np)
+      fps.update()
+      #scores = scores[a>0.0] = 1
+      #scores = np.array(tensor.read_scores())
+      scores[scores > 0] = 1
+      
+      classes = classes*scores
+
+      '''
+      print('scores[scores > 0] = 1')
+      print(scores)
+      print('classes = classes*scores')
+      print(classes)
+      '''
+
+      #print(classes)
+      '''if i%2 == 0:
+        cv2.imshow('object detection', tensor.read())
+      elif i%2 == 1:
+        cv2.imshow('object detection', tensor2.read())'''
 
 
-  cv2.imshow('object detection', image_np)
+      persons = np.where(classes == 1)[1]
+      '''
+      print('persons = np.where(classes == 1)[1]')
+      print(str(persons))'''
+      if (str(persons) <> '[]'):
+        persons_num = persons_num + 1
+        classes = tensor.read_classes()
+        print (persons_num, ': found person')
+        person = persons[0]
+        l_w = [width,lenght,width,lenght]
+        box = boxes[0][person]
+
+        box = l_w*box
+        
+        to_x = int(abs(box[1] - box[3])/2.0 + box[1])
+        to_y = int(box[0])
+        
+
+        mov_to_face(
+          ptz, 
+          request, 
+          to_x, 
+          to_y, 
+          lenght/3, 
+          width/3, 
+          speed_kof=2, 
+          lenght = lenght_float, 
+          width = width_float)
+      else:
+        mov_to_face(
+          ptz, 
+          request, 
+          -1, 
+          -1, 
+          lenght/3, 
+          width/3, 
+          speed_kof=2, 
+          lenght = lenght_float, 
+          width = width_float)
+      
+
+  ''''''
+  
   if cv2.waitKey(25) & 0xFF == ord('q'):
+    mov_to_face(
+          ptz, 
+          request, 
+          -1, 
+          -1, 
+          lenght/3, 
+          width/3, 
+          speed_kof=2, 
+          lenght = lenght_float, 
+          width = width_float)
     cv2.destroyAllWindows()
     fps.stop()
 
@@ -235,7 +403,9 @@ while True:
     print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
     cv2.destroyAllWindows()
     break
-  fps.update()
+
+    
+  
     
 
 
