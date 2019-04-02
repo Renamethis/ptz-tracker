@@ -17,6 +17,7 @@ import tarfile
 import tensorflow as tf
 import zipfile
 import threading
+import configparser
 
 from collections import defaultdict
 from io import StringIO
@@ -39,6 +40,8 @@ from time import ctime, sleep
 
 class WebcamVideoStream:
   def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
+  	#def __init__(self, src='rtsp://192.168.15.43:554', name="WebcamVideoStream"):
+    #def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.43:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.52:554/live/av0', name="WebcamVideoStream"):
   
@@ -73,9 +76,16 @@ class WebcamVideoStream:
 
 
 
+config = configparser.ConfigParser()
+config.read("conf/settings.ini")
+mycam_ip        = config.get("Settings","ip")
+mycam_port      = config.get("Settings","port")
+mycam_login     = config.get("Settings","login")
+mycam_password  = config.get("Settings","password")
+mycam_wsdl_path = config.get("Settings","wsdl_path")
 
-mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
-
+mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
+#mycam = ONVIFCamera('192.168.15.43', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
 
 media = mycam.create_media_service()
 profile = media.GetProfiles()[0]
@@ -85,7 +95,7 @@ request.ConfigurationToken = profile.PTZConfiguration._token
 ptz_configuration_options = ptz.GetConfigurationOptions(request)
 request = ptz.create_type('ContinuousMove')
 request.ProfileToken = profile._token
-
+print (request)
 
 
 
@@ -111,31 +121,43 @@ while True:
   image_np = stream.read()
   cv2.imshow('object detection', image_np)
   if cv2.waitKey(25) & 0xFF == ord('q'):
-    cv2.destroyAllWindows()
-    fps.stop()
-
-    print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-    print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-    cv2.destroyAllWindows()
+    request.Velocity.PanTilt._x = 0
+    request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = 0
+    ptz.ContinuousMove(request)
     break
-
-  if cv2.waitKey(25) & 0xFF == ord('d'):
+  elif cv2.waitKey(25) & 0xFF == ord(']'):
+    request.Velocity.PanTilt._x = 0
+    request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = -1
+    ptz.ContinuousMove(request)
+  elif cv2.waitKey(25) & 0xFF == ord('d'):
     request.Velocity.PanTilt._x = 1
     request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)
   elif cv2.waitKey(25) & 0xFF == ord('a'):
     request.Velocity.PanTilt._x = -1
     request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)
   elif cv2.waitKey(25) & 0xFF == ord('w'):
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 1
+    request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)
   elif cv2.waitKey(25) & 0xFF == ord('s'):
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = -1
+    request.Velocity.Zoom._x = 0
+    ptz.ContinuousMove(request)
+  elif cv2.waitKey(25) & 0xFF == ord('['):
+    request.Velocity.PanTilt._x = 0
+    request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = 1
     ptz.ContinuousMove(request)
   else:
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
+    request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)

@@ -19,6 +19,7 @@ import tarfile
 import tensorflow as tf
 import zipfile
 import threading
+import configparser
 
 from collections import defaultdict
 from io import StringIO
@@ -38,40 +39,35 @@ from time import ctime, sleep
 
 
 
-'''
-class Motion:
-  def __init__(self):
-    self.
-
-  def start(self):
-    t = Thread(target=self.update, name=self.name, args=())
-    t.daemon = True
-    t.start()
-    return self
-
-  def update(self):
-    while True:
-      if self.stopped:
-        return (self.grabbed, self.frame) = self.stream.read()
-
-  def read(self):
-    return self.frame
-
-  def stop(self):
-    self.stopped = True
-'''
-
-
-
 class WebcamVideoStream:
-  def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
+  def __init__(self, name="WebcamVideoStream"):
+    #def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.43:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.52:554/live/av0', name="WebcamVideoStream"):
-  
-    self.stream = cv2.VideoCapture(src)
+    
+    pwd = os.getcwd()
+    lst = pwd.split('/')
+    count = len(lst)-3
+    string = ""
+    for i in range(count):
+      string = string + lst[i] + "/"
+    pwd = string
+
+
+    config = configparser.ConfigParser()
+    config.read(pwd + "conf/settings.ini")
+    mycam_rtsp = config.get("Settings","rtsp")
+    
+    try:
+      self.stream = cv2.VideoCapture(mycam_rtsp)
+      print "[INFO]     Successful conection VideoCapture"
+    except:
+      print "[ERROR]    Error with cv2.VideoCapture..."
+      print "[INFO]     Check the correctness of the entered data in the setings.ini (rtsp)"
     (self.grabbed, self.frame) = self.stream.read()
     self.name = name
     self.stopped = False
+
 
   def start(self):
     t = Thread(target=self.update, name=self.name, args=())
@@ -94,38 +90,6 @@ class WebcamVideoStream:
 
 
 
-class Motion:
-  def __init__(self):
-    mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
-    media = mycam.create_media_service()
-    profile = media.GetProfiles()[0]
-    ptz = mycam.create_ptz_service()
-    request = ptz.create_type('GetConfigurationOptions')
-    request.ConfigurationToken = profile.PTZConfiguration._token
-    ptz_configuration_options = ptz.GetConfigurationOptions(request)
-    request = ptz.create_type('ContinuousMove')
-    request.ProfileToken = profile._token
-    self.stopped = False
-
-  def start(self):
-    t = Thread(target=self.update, name=self.name, args=())
-    t.daemon = True
-    t.start()
-    return self
-
-  def update(self):
-    while True:
-      if self.stopped:
-        return
-
-  def read(self):
-    return self.d
-
-  def stop(self):
-    self.stopped = True
-
-
-
 
 class Tensor:
   def __init__(self, lenght = 1280, width = 720, name="Tensor"):
@@ -137,6 +101,7 @@ class Tensor:
     self.stopped = False
 
     MODEL_NAME = 'ssd_mobilenet_v2_coco_2018_03_29'
+    #MODEL_NAME = 'ssd_mobilenet_v2_face'
     MODEL_FILE = MODEL_NAME + '.tar.gz'
     DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
     PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
@@ -187,14 +152,14 @@ class Tensor:
             (self.boxes, self.scores, self.classes, self.num_detections) = sess.run(
                 [boxes, scores, classes, num_detections],
                 feed_dict={self.image_tensor: image_np_expanded})
-            '''vis_util.visualize_boxes_and_labels_on_image_array(
+            vis_util.visualize_boxes_and_labels_on_image_array(
               image,
               np.squeeze(self.boxes),
               np.squeeze(self.classes).astype(np.int32),
               np.squeeze(self.scores),
               self.category_index,
               use_normalized_coordinates=True,
-              line_thickness=8)'''
+              line_thickness=8)
             #print 1
             self.flag = True
             self.old_image = image
@@ -226,50 +191,115 @@ class Tensor:
 
 
 
-def mov_to_face(ptz, request, x, y, to_x, to_y, speed_kof = 1, timeout=0, lenght = 700.0, width = 393.0):
-  if x != -1 or y != -1:
-    if (x < to_x +40 and x > to_x -40 and y < to_y +40 and y > to_y -40):
-      request.Velocity.PanTilt._x = 0
-      request.Velocity.PanTilt._y = 0
-      ptz.ContinuousMove(request)
-    else:
-      len_x = -(to_x - x)
-      len_y = (to_y - y)
-      vec_x = len_x/lenght
-      vec_x = int(vec_x*100)/100.0
-      vec_x *= speed_kof
-      vec_y = len_y/width
-      vec_y = int(vec_y*100)/100.0
-      vec_y *= speed_kof
 
 
-      if vec_x > 1:
-        vec_x = 1
-      if vec_y > 1:
-        vec_y = 1
-      print (str(vec_y), " : ", str(vec_x))
-      request.Velocity.PanTilt._x = vec_x
-      request.Velocity.PanTilt._y = vec_y
-      ptz.ContinuousMove(request)
-
-  else:
-    request.Velocity.PanTilt._x = 0
-    request.Velocity.PanTilt._y = 0
-    ptz.ContinuousMove(request)
+class Motion:
+  def __init__(self, lenght = 1280, width = 720,mycam_ip="192.168.11.33", mycam_port="80", mycam_login="admin", mycam_password="Supervisor", mycam_wsdl_path="/etc/onvif/wsdl/", name="Motion"):
+    self.x = -1
+    self.y = -1
+    self.to_x = 0
+    self.to_y = 0
+    self.lenght = lenght
+    self.width = width
+    self.speed_kof = 0
+    self.name = name
 
 
+    pwd = os.getcwd()
+    lst = pwd.split('/')
+    count = len(lst)-3
+    string = ""
+    for i in range(count):
+      string = string + lst[i] + "/"
+    pwd = string
 
-mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
+
+    config = configparser.ConfigParser()
+    config.read(pwd + "conf/settings.ini")
+    mycam_ip        = config.get("Settings","ip")
+    mycam_port      = config.get("Settings","port")
+    mycam_login     = config.get("Settings","login")
+    mycam_password  = config.get("Settings","password")
+    mycam_wsdl_path = config.get("Settings","wsdl_path")
 
 
-media = mycam.create_media_service()
-profile = media.GetProfiles()[0]
-ptz = mycam.create_ptz_service()
-request = ptz.create_type('GetConfigurationOptions')
-request.ConfigurationToken = profile.PTZConfiguration._token
-ptz_configuration_options = ptz.GetConfigurationOptions(request)
-request = ptz.create_type('ContinuousMove')
-request.ProfileToken = profile._token
+    #mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
+    #mycam = ONVIFCamera('192.168.15.43', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
+    try:
+      mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
+      print "[INFO]:     Successful conection ONVIFCamera"
+    except:
+      print "[ERROR]:    Error with conect ONVIFCamera..."
+      print "[INFO]:     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+      sys.exit(0)
+    
+
+
+    media = mycam.create_media_service()
+    profile = media.GetProfiles()[0]
+    self.ptz = mycam.create_ptz_service()
+    self.request = self.ptz.create_type('GetConfigurationOptions')
+    self.request.ConfigurationToken = profile.PTZConfiguration._token
+    ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request)
+    self.request = self.ptz.create_type('ContinuousMove')
+    self.request.ProfileToken = profile._token
+    self.stopped = False
+
+  def start(self):
+    t = Thread(target=self.update, name=self.name, args=())
+    t.daemon = True
+    t.start()
+    return self
+
+  def update(self):
+    while True:
+      if self.x != -1 or self.y != -1:
+        
+        if (self.x < self.to_x +80 and self.x > self.to_x -80 and self.y < self.to_y +80 and self.y > self.to_y -80):
+          #print(0)
+          self.request.Velocity.PanTilt._x = 0
+          self.request.Velocity.PanTilt._y = 0
+          self.ptz.ContinuousMove(self.request)
+        else:
+          #print(self.x," & ", self.y)
+          len_x = float(-(self.to_x - self.x))
+          len_y = float((self.to_y - self.y))
+          vec_x = len_x/self.lenght
+          vec_x = int(vec_x*100)/100.0
+          vec_x *= self.speed_kof
+          vec_y = len_y/self.width
+          vec_y = int(vec_y*100)/100.0
+          vec_y *= self.speed_kof
+
+
+          if vec_x > 1:
+            vec_x = 1
+          if vec_y > 1:
+            vec_y = 1
+          print (str(vec_y), " : ", str(vec_x))
+          self.request.Velocity.PanTilt._x = vec_x
+          self.request.Velocity.PanTilt._y = vec_y
+          self.ptz.ContinuousMove(self.request)
+
+      else:
+        self.request.Velocity.PanTilt._x = 0
+        self.request.Velocity.PanTilt._y = 0
+        self.ptz.ContinuousMove(self.request)
+      if self.stopped:
+        return
+  def setParam(self, x, y, to_x, to_y, speed_kof = 1):
+    self.x = x
+    self.y = y
+    self.to_x = to_x
+    self.to_y = to_y
+    self.speed_kof = speed_kof
+
+  def stop(self):
+    self.stopped = True
+
+
+
+
 
 
 
@@ -277,15 +307,20 @@ lenght_float = 1280.0
 width_float = 720.0
 lenght = int(lenght_float)
 width = int(width_float)
+
+
+
+
 first = []
 second = []
-#old_image_np = cap.read()
 threads = []
 stream = WebcamVideoStream()
 tensor = Tensor()
 tensor.start()
-tensor2 = Tensor()
-tensor2.start()
+#tensor2 = Tensor()
+#tensor2.start()
+motion = Motion()
+motion.start()
 stream.start()
 
 fps = FPS().start()
@@ -298,10 +333,11 @@ while True:
   if (not np.array_equal(first,image_np)):
     second = first
     first = image_np
-    if i%4 == 0:
+    tensor.setImage(image_np)
+    '''if i%4 == 0:
       tensor.setImage(image_np)
     elif i%4 == 2:
-      tensor2.setImage(image_np)
+      tensor2.setImage(image_np)'''
 
     #print('START')
     scores = tensor.read_scores()
@@ -360,42 +396,30 @@ while True:
         to_y = int(box[0])
         
 
-        mov_to_face(
-          ptz, 
-          request, 
+        motion.setParam(
           to_x, 
           to_y, 
           lenght/3, 
           width/3, 
-          speed_kof=2, 
-          lenght = lenght_float, 
-          width = width_float)
+          speed_kof=0.5)
       else:
-        mov_to_face(
-          ptz, 
-          request, 
+         motion.setParam(
           -1, 
           -1, 
           lenght/3, 
           width/3, 
-          speed_kof=2, 
-          lenght = lenght_float, 
-          width = width_float)
+          speed_kof=0.5)
       
 
   ''''''
   
   if cv2.waitKey(25) & 0xFF == ord('q'):
-    mov_to_face(
-          ptz, 
-          request, 
+    motion.setParam(
           -1, 
           -1, 
           lenght/3, 
           width/3, 
-          speed_kof=2, 
-          lenght = lenght_float, 
-          width = width_float)
+          speed_kof=0.5)
     cv2.destroyAllWindows()
     fps.stop()
 
