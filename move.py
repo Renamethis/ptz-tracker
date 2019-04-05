@@ -39,16 +39,27 @@ from time import ctime, sleep
 
 
 class WebcamVideoStream:
-  def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
-  	#def __init__(self, src='rtsp://192.168.15.43:554', name="WebcamVideoStream"):
+  def __init__(self, name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.33:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.43:554', name="WebcamVideoStream"):
     #def __init__(self, src='rtsp://192.168.11.52:554/live/av0', name="WebcamVideoStream"):
-  
-    self.stream = cv2.VideoCapture(src)
+    
+
+
+    config = configparser.ConfigParser()
+    config.read("conf/settings.ini")
+    mycam_rtsp = config.get("Settings","rtsp")
+    
+    try:
+      self.stream = cv2.VideoCapture(mycam_rtsp)
+      print "[INFO]     Successful conection VideoCapture"
+    except:
+      print "[ERROR]    Error with cv2.VideoCapture..."
+      print "[INFO]     Check the correctness of the entered data in the setings.ini (rtsp)"
     (self.grabbed, self.frame) = self.stream.read()
     self.name = name
     self.stopped = False
+
 
   def start(self):
     t = Thread(target=self.update, name=self.name, args=())
@@ -115,6 +126,7 @@ threads = []
 stream = WebcamVideoStream()
 stream.start()
 print ('START')
+
 
 
 while True:
