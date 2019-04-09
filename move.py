@@ -95,6 +95,12 @@ mycam_login     = config.get("Settings","login")
 mycam_password  = config.get("Settings","password")
 mycam_wsdl_path = config.get("Settings","wsdl_path")
 
+print mycam_ip       
+print mycam_port    
+print mycam_login
+print mycam_password 
+print mycam_wsdl_path
+
 mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
 #mycam = ONVIFCamera('192.168.15.43', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
 

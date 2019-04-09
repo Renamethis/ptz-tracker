@@ -21,6 +21,7 @@ import zipfile
 import threading
 import configparser
 import math
+import face_recognition
 
 from collections import defaultdict
 from io import StringIO
@@ -91,10 +92,44 @@ class WebcamVideoStream:
 
 
 
+class Face_rec:
+  def __init__(self, lenght = 1280, width = 720, name="Face_rec"):
+    self.name = name
+    self.new_image = np.zeros((width, lenght, 3))
+    self.old_image = np.zeros((width, lenght, 3))
+    self.stopped = False
+    self.arr = []
+    self.flag = False
+  def start(self):
+    t = Thread(target=self.update, name=self.name, args=())
+    t.daemon = True
+    t.start()
+    return self
+  def update(self):
+    while True:
+      image = self.new_image
+      if self.stopped:
+        return
+      if not np.array_equal(image,self.old_image):
+
+        print 1
+        face_locations = face_recognition.face_locations(image)
+        for top, right, bottom, left in face_locations:
+          cv2.rectangle(image, (left, top), (right, bottom), (255,0,0), 2)
+
+        self.flag = True
+        self.old_image = image
+  def setImage(self, image):
+    self.new_image = image
+  def read(self):
+    if self.flag:
+      return self.old_image
+    else:
+      return self.arr
 
 
 class Tensor:
-  def __init__(self, lenght = 1280, width = 720, name="Tensor"):
+  def __init__(self, lenght = 1280, width = 720, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
     self.flag = False
     self.arr = []
     self.name = name
@@ -102,8 +137,9 @@ class Tensor:
     self.old_image = np.zeros((width, lenght, 3))
     self.stopped = False
 
-    MODEL_NAME = 'ssd_mobilenet_v2_coco_2018_03_29'
+    #MODEL_NAME = 'ssd_mobilenet_v2_coco_2018_03_29'
     #MODEL_NAME = 'ssd_mobilenet_v2_face'
+    MODEL_NAME = model_name
     MODEL_FILE = MODEL_NAME + '.tar.gz'
     DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
     PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
@@ -191,116 +227,6 @@ class Tensor:
     self.stopped = True
 
 
-'''
-class Motion:
-  def __init__(self, lenght = 1280, width = 720, name="Motion"):
-    self.x = -1
-    self.y = -1
-    self.to_x = 0
-    self.to_y = 0
-    self.lenght = lenght
-    self.width = width
-    self.speed_kof = 0
-    self.name = name
-
-
-    pwd = os.getcwd()
-    lst = pwd.split('/')
-    count = len(lst)-3
-    string = ""
-    for i in range(count):
-      string = string + lst[i] + "/"
-    pwd = string
-
-
-    config = configparser.ConfigParser()
-    config.read(pwd + "conf/settings.ini")
-    mycam_ip        = config.get("Settings","ip")
-    mycam_port      = config.get("Settings","port")
-    mycam_login     = config.get("Settings","login")
-    mycam_password  = config.get("Settings","password")
-    mycam_wsdl_path = config.get("Settings","wsdl_path")
-
-
-    #mycam = ONVIFCamera('192.168.11.33', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
-    #mycam = ONVIFCamera('192.168.15.43', 80, 'admin', 'Supervisor', '/etc/onvif/wsdl/')
-    try:
-      mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
-      print "[INFO]     Successful conection ONVIFCamera"
-    except:
-      print "[ERROR]    Error with conect ONVIFCamera..."
-      print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-      sys.exit(0)
-    
-
-
-    media = mycam.create_media_service()
-    profile = media.GetProfiles()[0]
-    self.ptz = mycam.create_ptz_service()
-    self.request = self.ptz.create_type('GetConfigurationOptions')
-    self.request.ConfigurationToken = profile.PTZConfiguration._token
-    ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request)
-    self.request = self.ptz.create_type('ContinuousMove')
-    self.request.ProfileToken = profile._token
-    self.stopped = False
-
-  def start(self):
-    t = Thread(target=self.update, name=self.name, args=())
-    t.daemon = True
-    t.start()
-    return self
-
-  def update(self):
-    while True:
-      x = self.x
-      y = self.y
-      to_x = self.to_x
-      to_y = self.to_y
-
-      if x != -1 or y != -1:
-        
-        if (x < to_x +80 and x > to_x -80 and y < to_y +80 and y > to_y -80):
-          #print(0)
-          self.request.Velocity.PanTilt._x = 0
-          self.request.Velocity.PanTilt._y = 0
-          self.ptz.ContinuousMove(self.request)
-        else:
-          #print(self.x," & ", self.y)
-          len_x = float(-(to_x - x))
-          len_y = float((to_y - y))
-          vec_x = len_x/self.lenght
-          vec_x = int(vec_x*100)/100.0
-          vec_x *= self.speed_kof
-          vec_y = len_y/self.width
-          vec_y = int(vec_y*100)/100.0
-          vec_y *= self.speed_kof
-
-
-          if vec_x > 1:
-            vec_x = 1
-          if vec_y > 1:
-            vec_y = 1
-          print (str(vec_y), " : ", str(vec_x))
-          self.request.Velocity.PanTilt._x = vec_x
-          self.request.Velocity.PanTilt._y = vec_y
-          self.ptz.ContinuousMove(self.request)
-
-      else:
-        self.request.Velocity.PanTilt._x = 0
-        self.request.Velocity.PanTilt._y = 0
-        self.ptz.ContinuousMove(self.request)
-      if self.stopped:
-        return
-  def setParam(self, x, y, to_x, to_y, speed_kof = 1):
-    self.x = x
-    self.y = y
-    self.to_x = to_x
-    self.to_y = to_y
-    self.speed_kof = speed_kof
-
-  def stop(self):
-    self.stopped = True
-'''
 
 
 class Motion:
@@ -402,13 +328,18 @@ class Motion:
 def initTracker(stream, tensor):
   print "[INFO]     Start init"
   flag = True
+  lenght_float = 1280.0 
+  width_float = 720.0
+  lenght = int(lenght_float)
+  width = int(width_float)
   frame_count = 0
   x1 = 0
   x2 = 0
   while flag:
     image_np = stream.read()
+    image_np = cv2.resize(image_np, (lenght,width))
     tensor.setImage(image_np)
-
+    
     scores = tensor.read_scores()
     image_np = tensor.read()
     classes = tensor.read_classes()
@@ -428,9 +359,9 @@ def initTracker(stream, tensor):
         person = persons[0]
         l_w = [width,lenght,width,lenght]
         box = boxes[0][person]
+        print box 
 
-
-        if (box[1] > 0.1 and box[3] < 0.9):
+        if (box[1] > 0.05 and box[3] < 0.95):
           frame_count = frame_count + 1
           x1 = x1 + box[1]
           x2 = x2 + box[3]
@@ -488,10 +419,19 @@ media = mycam.create_media_service()
 profile = media.GetProfiles()[0]
 ptz = mycam.create_ptz_service()
 request = ptz.create_type('GetConfigurationOptions')
+
+
+requestp = ptz.create_type('SetPreset')
+requestg = ptz.create_type('GotoPreset')
+
 request.ConfigurationToken = profile.PTZConfiguration._token
 ptz_configuration_options = ptz.GetConfigurationOptions(request)
 request = ptz.create_type('ContinuousMove')
 request.ProfileToken = profile._token
+
+
+requestg.PresetToken = '1'
+ptz.GotoPreset(requestg)
 
 lenght_float = 1280.0 
 width_float = 720.0
@@ -505,16 +445,18 @@ first = []
 second = []
 threads = []
 stream = WebcamVideoStream()
-tensor = Tensor()
-#tensor2 = Tensor()
-motion = Motion()
+tensor = Tensor(model_name = 'ssd_mobilenet_v2_coco_2018_03_29')
+tensor_face = Tensor(model_name = 'ssd_mobilenet_v2_face')
+#motion = Motion()
 
 tensor.start()
-#tensor2.start()
+tensor_face.start()
 #motion.start()
 stream.start()
+
   
-#initTracker(stream, tensor)
+scale = initTracker(stream, tensor)
+print 'Scale = ' + str(scale)
 
 fps = FPS().start()
 persons_num = 0
@@ -527,37 +469,34 @@ while True:
   if (not np.array_equal(first,image_np)):
     second = first
     first = image_np
-    tensor.setImage(image_np)
-    '''if i%4 == 0:
+    if (scale > 45):
+      tensor_face.setImage(image_np)
+
+      #print('START')
+      scores = tensor_face.read_scores()
+      image_np = tensor_face.read()
+      classes = tensor_face.read_classes()
+      boxes = tensor_face.read_boxes()
+    else:
       tensor.setImage(image_np)
-    elif i%4 == 2:
-      tensor2.setImage(image_np)'''
 
-    #print('START')
-    scores = tensor.read_scores()
-    image_np = tensor.read()
-    classes = tensor.read_classes()
-    boxes = tensor.read_boxes()
-
-    '''
-    print('scores')
-    print(scores)
-    print('classes')
-    print(classes)
-    print('boxes')
-    print(boxes)
-    '''
-
+      #print('START')
+      scores = tensor.read_scores()
+      image_np = tensor.read()
+      classes = tensor.read_classes()
+      boxes = tensor.read_boxes()
 
     if (scores <> []):
       cv2.imshow('object detection', image_np)
       fps.update()
       #scores = scores[a>0.0] = 1
       #scores = np.array(tensor.read_scores())
-      scores[scores > 0] = 1
-      
+      scores[scores > 0.2] = 1
+      print 'scores'
+      print scores
       classes = classes*scores
-
+      print 'classes'
+      print classes
       '''
       print('scores[scores > 0] = 1')
       print(scores)
@@ -578,7 +517,7 @@ while True:
       print(str(persons))'''
       if (str(persons) <> '[]'):
         persons_num = persons_num + 1
-        classes = tensor.read_classes()
+        #classes = tensor.read_classes()
         #print (persons_num, ': found person')
         person = persons[0]
         l_w = [width,lenght,width,lenght]
@@ -590,10 +529,6 @@ while True:
         to_y = int(box[0])
         
         
-        #print 'x    = ' + str(to_x)
-        #print 'y    = ' + str(to_y)
-        #print 'to_x = ' + str(lenght/3)
-        #print 'to_y = ' + str(width/3)
         if (to_x < lenght/3 - 80 or to_x > lenght/3 + 80):
           vec_x = float(to_x - lenght/3)/(lenght)
         else:
@@ -602,31 +537,17 @@ while True:
           vec_y = float(width/3 - to_y)/(width)
         else:
           vec_y = 0
-        print vec_x
-        print vec_y
-        request.Velocity.PanTilt._x = vec_x
-        request.Velocity.PanTilt._y = vec_y
+
+        speed_kof = 0.5
+
+        request.Velocity.PanTilt._x = vec_x*speed_kof
+        request.Velocity.PanTilt._y = vec_y*speed_kof
         ptz.ContinuousMove(request)
-        
-        '''
-        
-        motion.setParam(
-          to_x, 
-          to_y, 
-          lenght/3, 
-          width/3, 
-          speed_kof=1)'''
+
       else:
         request.Velocity.PanTilt._x = 0
         request.Velocity.PanTilt._y = 0
         ptz.ContinuousMove(request)
-        '''
-        motion.setParam(
-          -1, 
-          -1, 
-          lenght/3, 
-          width/3, 
-          speed_kof=0.1)'''
       
 
   ''''''
@@ -635,17 +556,7 @@ while True:
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
     ptz.ContinuousMove(request)
-    '''
-    motion.setParam(
-          -1, 
-          -1, 
-          lenght/3, 
-          width/3, 
-          speed_kof=0.1)
-    '''
-    cv2.destroyAllWindows()
     fps.stop()
-    motion.stop()
     sleep(2)
 
     print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
