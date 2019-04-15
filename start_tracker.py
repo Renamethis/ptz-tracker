@@ -35,11 +35,11 @@ try:
   import six.moves.urllib as urllib
   import tarfile
   import smtplib
+  import time
   import base64
   import traceback
   import tensorflow as tf
   import configparser
-  from imutils.video import VideoStream
   from imutils.video import FPS
   from onvif import ONVIFCamera
   from time import sleep
@@ -91,6 +91,7 @@ try:
 
       # 3.1.4. Read frame
       (self.grabbed, self.frame) = self.stream.read()
+      print self.frame
       self.name = name
       self.stopped = False
 
@@ -103,12 +104,22 @@ try:
 
     # 3.3. Infinite loop of receiving frames from a stream
     def update(self):
+      stream = self.stream
       print "[INFO]     VideoCapture started"
+      i = 0
+      time_1 = time.time()
       while True:
+        #print 1
         if self.stopped:
           print "[INFO]     VideoCapture stopped"
           return
-        (self.grabbed, self.frame) = self.stream.read()
+        (self.grabbed, self.frame) = stream.read()
+        i = i + 1
+        if (i == 25):
+          time_2 = time.time()
+          #print time_1 - time_2
+          i = 0
+          time_1 = time.time()
 
     # 3.4. Get frame
     def read(self):
@@ -264,6 +275,53 @@ try:
     server.quit()
 
 
+  def initTracker(stream, tensor):
+    print "[INFO]     Start init"
+    flag = True
+    lenght_float = 1280.0 
+    width_float = 720.0
+    lenght = int(lenght_float)
+    width = int(width_float)
+    frame_count = 0
+    x1 = 0
+    x2 = 0
+    while flag:
+      image_np = stream.read()
+      image_np = cv2.resize(image_np, (lenght,width))
+      tensor.setImage(image_np)
+      
+      scores = tensor.read_scores()
+      image_np = tensor.read()
+      classes = tensor.read_classes()
+      boxes = tensor.read_boxes()
+      
+      if (scores <> []):
+        scores[scores > 0] = 1
+        
+        classes = classes*scores
+
+        persons = np.where(classes == 1)[1]
+
+        if (str(persons) <> '[]'):
+          classes = tensor.read_classes()
+          #print (persons_num, ': found person')
+          person = persons[0]
+          l_w = [width,lenght,width,lenght]
+          box = boxes[0][person]
+          #print box 
+
+          if (box[1] > 0.05 and box[3] < 0.95):
+            frame_count = frame_count + 1
+            x1 = x1 + box[1]
+            x2 = x2 + box[3]
+          else:
+            frame_count = 0
+            x1 = 0
+            x2 = 0
+
+          if frame_count >= 50:
+            return round((x2/50 - x1/50) *100)
+
 
   def main():
     image_np_old = []
@@ -273,8 +331,8 @@ try:
     stream.start()
     tensor_person.start()
     tensor_face.start()
-    face_rec = False
-    person_rec = True
+    face_rec = True
+    person_rec = False
 
 
     lenght_float = 1280.0 
@@ -319,9 +377,10 @@ try:
     ptz_configuration_options = ptz.GetConfigurationOptions(request)
     request = ptz.create_type('ContinuousMove')
     request.ProfileToken = profile._token
-
+    send_msg(msg = "Started",SUBJECT="Info")
     while True:
       image_np = stream.read()
+      #print image_np
       if (image_np is not None):
         image_np = cv2.resize(image_np, (1280,720))
 
@@ -333,6 +392,7 @@ try:
             tensor_face.setImage(image_np)
           
             scores   = tensor_face.read_scores()
+            
             image_np = tensor_face.read()
             classes  = tensor_face.read_classes()
             boxes    = tensor_face.read_boxes()
@@ -355,6 +415,7 @@ try:
             scores[scores > 0.2] = 1
             classes = classes*scores
             persons   = np.where(classes == 1)[1]
+            #print persons
             
 
             if (str(persons) <> '[]'):
@@ -378,16 +439,64 @@ try:
               else:
                 vec_y = 0
 
+              #print vec_x
+              #print vec_y
               speed_kof = 0.5
 
               request.Velocity.PanTilt._x = vec_x*speed_kof
               request.Velocity.PanTilt._y = vec_y*speed_kof
-              ptz.ContinuousMove(request)
+              try:
+                ptz.ContinuousMove(request)
+              except:
+                sleep(1)
+                try:
+                  mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
+                  print "[INFO]     Successful conection ONVIFCamera"
+                except:
+                  err_msg = "[ERROR]    Error with conect ONVIFCamera..."
+                  print err_msg
+                  print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+                  send_msg(msg=err_msg)
+                  sys.exit(0)
+
+
+                media = mycam.create_media_service()
+                profile = media.GetProfiles()[0]
+                ptz = mycam.create_ptz_service()
+                request = ptz.create_type('GetConfigurationOptions')
+                request.ConfigurationToken = profile.PTZConfiguration._token
+                ptz_configuration_options = ptz.GetConfigurationOptions(request)
+                request = ptz.create_type('ContinuousMove')
+                request.ProfileToken = profile._token
+                ptz.ContinuousMove(request)
 
             else:
               request.Velocity.PanTilt._x = 0
               request.Velocity.PanTilt._y = 0
-              ptz.ContinuousMove(request)
+              try:
+                ptz.ContinuousMove(request)
+              except:
+                sleep(1)
+                try:
+                  mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
+                  print "[INFO]     Successful conection ONVIFCamera"
+                except:
+                  err_msg = "[ERROR]    Error with conect ONVIFCamera..."
+                  print err_msg
+                  print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+                  send_msg(msg=err_msg)
+                  sys.exit(0)
+
+
+                media = mycam.create_media_service()
+                profile = media.GetProfiles()[0]
+                ptz = mycam.create_ptz_service()
+                request = ptz.create_type('GetConfigurationOptions')
+                request.ConfigurationToken = profile.PTZConfiguration._token
+                ptz_configuration_options = ptz.GetConfigurationOptions(request)
+                request = ptz.create_type('ContinuousMove')
+                request.ProfileToken = profile._token
+                ptz.ContinuousMove(request)
 
             
 
