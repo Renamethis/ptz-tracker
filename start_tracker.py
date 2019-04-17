@@ -1,3 +1,25 @@
+import smtplib
+import traceback
+def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
+  HOST="smtp.gmail.com"
+  FROM = "tensorflow21@gmail.com"
+  BODY = "\r\n".join((
+    "From: %s" % FROM,
+    "To: %s" % TO,
+    "Subject: %s" % SUBJECT ,
+    "",
+    msg
+  ))
+
+  server = smtplib.SMTP(HOST, 587)
+  server.starttls()
+  server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
+  server.sendmail(FROM, [TO], BODY)
+  server.quit()
+
+
+
+
 try:
   ###
   ## add_try  - add validation
@@ -34,10 +56,9 @@ try:
   import cv2
   import six.moves.urllib as urllib
   import tarfile
-  import smtplib
   import time
   import base64
-  import traceback
+  import pyping
   import tensorflow as tf
   import configparser
   from imutils.video import FPS
@@ -91,7 +112,7 @@ try:
 
       # 3.1.4. Read frame
       (self.grabbed, self.frame) = self.stream.read()
-      print self.frame
+      #print self.frame
       self.name = name
       self.stopped = False
 
@@ -108,6 +129,7 @@ try:
       print "[INFO]     VideoCapture started"
       i = 0
       time_1 = time.time()
+      err = 0
       while True:
         #print 1
         if self.stopped:
@@ -117,9 +139,12 @@ try:
         i = i + 1
         if (i == 25):
           time_2 = time.time()
-          #print time_1 - time_2
+          err =  err + time_2 - time_1 - 1
+          if err < 0:
+            err = 0
           i = 0
           time_1 = time.time()
+          #print 'WideoStream err = ' + str(err)
 
     # 3.4. Get frame
     def read(self):
@@ -136,7 +161,7 @@ try:
 
   class Tensor:
     # 4.1. Initialization
-    def __init__(self, lenght = 1280, width = 720, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
+    def __init__(self, lenght = 720, width = 405, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
       self.flag       = False
       self.arr        = []
       self.name       = name
@@ -185,6 +210,9 @@ try:
     # 4.3. Infinite image processing cycle
     def update(self):
       print "[INFO]     Tensor started"
+      i = 0
+      time_1 = time.time()
+      err = 0
       with self.detection_graph.as_default():
         with tf.Session(graph=self.detection_graph) as sess:
           while True:
@@ -206,6 +234,7 @@ try:
                     feed_dict={self.image_tensor: image_np_expanded})
               except:
                 print '[ERROR]     Run tensor error...'
+              #print self.scores
               '''
               vis_util.visualize_boxes_and_labels_on_image_array(
                 image,
@@ -218,6 +247,11 @@ try:
               '''
               self.flag = True
               self.old_image = image
+              time_2 = time.time()
+              err =  time_2 - time_1
+              #i = 0
+              time_1 = time.time()
+              #print 'Tensor time = ' + str(err)
           print "[INFO]     Tensor stopped"
 
 
@@ -256,24 +290,6 @@ try:
     def stop(self):
       self.stopped = True
   
-
-  def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
-    HOST="smtp.gmail.com"
-    FROM = "tensorflow21@gmail.com"
-    BODY = "\r\n".join((
-      "From: %s" % FROM,
-      "To: %s" % TO,
-      "Subject: %s" % SUBJECT ,
-      "",
-      msg
-    ))
-
-    server = smtplib.SMTP(HOST, 587)
-    server.starttls()
-    server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
-    server.sendmail(FROM, [TO], BODY)
-    server.quit()
-
 
   def initTracker(stream, tensor):
     print "[INFO]     Start init"
@@ -327,16 +343,21 @@ try:
     image_np_old = []
     stream = WebcamVideoStream()
     tensor_person = Tensor(model_name = 'ssd_mobilenet_v2_coco_2018_03_29')
-    tensor_face = Tensor(model_name = 'ssd_mobilenet_v2_face')
+    #tensor_face = Tensor(model_name = 'ssd_mobilenet_v2_face')
     stream.start()
     tensor_person.start()
-    tensor_face.start()
-    face_rec = True
-    person_rec = False
+    #tensor_face.start()
+    face_rec = False
+    person_rec = True
+
+    old_vec_y = 0
+    old_vec_x = 0
+    vec_y = 0
+    vec_x = 0
 
 
-    lenght_float = 1280.0 
-    width_float = 720.0
+    lenght_float = 720.0 
+    width_float = 405.0
     lenght = int(lenght_float)
     width = int(width_float)
 
@@ -379,10 +400,11 @@ try:
     request.ProfileToken = profile._token
     send_msg(msg = "Started",SUBJECT="Info")
     while True:
+      time_1 = time.time()
       image_np = stream.read()
       #print image_np
       if (image_np is not None):
-        image_np = cv2.resize(image_np, (1280,720))
+        image_np = cv2.resize(image_np, (720,405))
 
 
         if (not np.array_equal(image_np_old,image_np)):
@@ -404,6 +426,17 @@ try:
             image_np = tensor_person.read()
             classes  = tensor_person.read_classes()
             boxes    = tensor_person.read_boxes()
+            '''
+            print 'scores'
+            print scores
+            print 'image_np'
+            print image_np
+            print 'classes'
+            print classes
+            print 'boxes'
+            print boxes
+            '''
+            
 
           else:
             err_msg = "[ERROR]     face tracker and people tracking off..."
@@ -415,7 +448,12 @@ try:
             scores[scores > 0.2] = 1
             classes = classes*scores
             persons   = np.where(classes == 1)[1]
-            #print persons
+            '''
+            print 'classes'
+            print classes
+            print 'persons'
+            print persons
+            '''
             
 
             if (str(persons) <> '[]'):
@@ -430,25 +468,37 @@ try:
               to_y = int(box[0])
               
               
+              speed_kof = 0.5
+
               if (to_x < lenght/3 - 80 or to_x > lenght/3 + 80):
-                vec_x = float(to_x - lenght/3)/(lenght)
+                if to_x > lenght/3:
+                  vec_x = float(to_x - lenght/3)/(lenght)
+                else:
+                  vec_x = float(to_x - lenght/3)/(lenght)*4
               else:
                 vec_x = 0
               if (to_y < width/3 - 80 or to_y > width/3 + 80):
                 vec_y = float(width/3 - to_y)/(width)
               else:
                 vec_y = 0
-
+              
               #print vec_x
               #print vec_y
-              speed_kof = 0.5
+              #sys.exit(0)
+              
 
               request.Velocity.PanTilt._x = vec_x*speed_kof
               request.Velocity.PanTilt._y = vec_y*speed_kof
               try:
-                ptz.ContinuousMove(request)
+                if (old_vec_x <> vec_x or old_vec_y <> vec_y):
+                  old_vec_x = vec_x
+                  old_vec_y = vec_y
+                  ptz.ContinuousMove(request)
               except:
                 sleep(1)
+                r = pyping.ping(mycam_ip)
+                if r.ret_code == 0:
+                  send_msg(msg = "Conection to camera ",SUBJECT="Warning")
                 try:
                   mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
                   print "[INFO]     Successful conection ONVIFCamera"
@@ -470,12 +520,24 @@ try:
                 request.ProfileToken = profile._token
                 ptz.ContinuousMove(request)
 
+              time_2 = time.time()
+
+              #print time_2 - time_1
+
             else:
+              vec_x = 0
+              vec_y = 0
               request.Velocity.PanTilt._x = 0
               request.Velocity.PanTilt._y = 0
               try:
-                ptz.ContinuousMove(request)
+                if (old_vec_x <> vec_x or old_vec_y <> vec_y):
+                  old_vec_x = vec_x
+                  old_vec_y = vec_y
+                  ptz.ContinuousMove(request)
               except:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+                print err_msg
                 sleep(1)
                 try:
                   mycam = ONVIFCamera(mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
@@ -499,8 +561,11 @@ try:
                 ptz.ContinuousMove(request)
 
             
-
-  
+  '''
+  t = Thread(target=main, name='main', args=())
+  t.daemon = True
+  t.start()
+  '''
   main()
 
 except:

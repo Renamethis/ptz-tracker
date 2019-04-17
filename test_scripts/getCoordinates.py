@@ -1,30 +1,77 @@
 import os
+
+#os.chdir('..')
+import sys
+activate_this_file = "venv/bin/activate_this.py"
+execfile(activate_this_file, dict(__file__=activate_this_file))
 from onvif import ONVIFCamera
-os.chdir('..')
+import configparser
+pwd = os.getcwd()
+print pwd
 
-#activate_this_file = "venv/bin/activate_this.py"
-#execfile(activate_this_file, dict(__file__=activate_this_file))
+config = configparser.ConfigParser()
+config.read(pwd + "/conf/settings.ini")
+mycam_ip        = config.get("Settings","ip")
+mycam_port      = config.get("Settings","port")
+mycam_login     = config.get("Settings","login")
+mycam_password  = config.get("Settings","password")
+mycam_wsdl_path = config.get("Settings","wsdl_path")
 
 
-mycam = ONVIFCamera('192.168.11.52', 2000, 'admin', 'Supervisor', '/home/ilya/git/MM.Tracker/venv/wsdl').create_media_service().GetProfiles()[0]
-print mycam
+try:
+  mycam = ONVIFCamera('192.168.15.42', mycam_port, mycam_login, mycam_password, mycam_wsdl_path)
+  print "[INFO]     Successful conection ONVIFCamera"
+except:
+  err_msg = "[ERROR]    Error with conect ONVIFCamera..."
+  print err_msg
+  print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+  send_msg(msg=err_msg)
+  sys.exit(0)
+
+# port
+#print mycam.devicemgmt.GetNetworkProtocols()
+#
+ptz_service = mycam.create_ptz_service()
+print mycam.devicemgmt.GetServices({'IncludeCapability': True})
+
+# event
+# to_dict
+# events
+# services
+# devicemgmt
+## ws_client
+##
+# ptz
+# 
+
+
+
+#print mycam
+'''
+resp = mycam.devicemgt.GetHostname()
+#print resp
 
 
 
 media = mycam.create_media_service()
+
 profile = media.GetProfiles()[0]
 ptz = mycam.create_ptz_service()
+#print mycam.ptz
+
 request = ptz.create_type('GetConfigurationOptions')
 request.ConfigurationToken = profile.PTZConfiguration._token
 ptz_configuration_options = ptz.GetConfigurationOptions(request)
+print ptz_configuration_options
 request = ptz.create_type('AbsoluteMove')
+#print request
 request.ProfileToken = profile._token
 
 request.Position.PanTilt._x = 0.0114
 request.Position.PanTilt._y = -0.0116
 request.Speed.PanTilt._x = 1
 request.Speed.PanTilt._y = 1
-
+#print ptz.create_type('GetConfiguration')
 ptz.AbsoluteMove(request)
 
 
@@ -39,8 +86,8 @@ centr_y = -116.0
 mov_x = 1899.0
 mov_y = 3937.0
 x = 100
-y = 100
-
+y = 100'''
+'''
 camera_x = ptz.GetStatus().Position.PanTilt._x
 camera_y = ptz.GetStatus().Position.PanTilt._y
 print (camera_x, " : ", camera_y)
@@ -64,3 +111,4 @@ print (str(vec_y), " : ", str(vec_x))
 #while True:
 #    print (ptz.GetStatus().Position.PanTilt._x,' : ',ptz.GetStatus().Position.PanTilt._y)
 
+'''
