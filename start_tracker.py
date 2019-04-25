@@ -43,7 +43,14 @@ try:
   os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/') 
   os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
   os.chdir('models/research')
+
+  pwd = os.getcwd()
+  sys.path.append(pwd)
+  sys.path.append(pwd+'/slim')
+
   os.chdir('object_detection')
+
+
 
   ################################
   # 2. Loading the libraries
@@ -67,7 +74,7 @@ try:
   from threading import Thread
   from object_detection.utils import label_map_util
   from object_detection.utils import visualization_utils as vis_util
-
+  
   ################################
   # 3. The process of taking a frame from a stream
   ################################
@@ -511,7 +518,7 @@ try:
 
 
                 media = mycam.create_media_service()
-                profile = media.GetProfiles()[0]
+                profile = media.GetProfiles()[0]l
                 ptz = mycam.create_ptz_service()
                 request = ptz.create_type('GetConfigurationOptions')
                 request.ConfigurationToken = profile.PTZConfiguration._token
@@ -571,7 +578,9 @@ try:
 except:
   exc_type, exc_value, exc_traceback = sys.exc_info()
   err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+  print err_msg
   send_msg(msg=err_msg)
+  sys.exit(0)
   
   #main()
 
