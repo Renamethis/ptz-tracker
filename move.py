@@ -1,5 +1,20 @@
 activate_this_file = "venv/bin/activate_this.py"
 execfile(activate_this_file, dict(__file__=activate_this_file))
+import sys
+import os
+os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/') 
+os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
+
+pwd = os.getcwd()
+sys.path.append(pwd+'/classes')
+
+os.chdir('models/research')
+
+pwd = os.getcwd()
+sys.path.append(pwd)
+sys.path.append(pwd+'/slim')
+
+os.chdir('object_detection')
 
 import sys
 import os
@@ -33,6 +48,7 @@ from threading import Thread
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 from time import ctime, sleep
+import Utility_Functions as UF
 
 
 
@@ -46,9 +62,8 @@ class WebcamVideoStream:
     
 
 
-    config = configparser.ConfigParser()
-    config.read("conf/settings.ini")
-    mycam_rtsp = config.get("Settings","rtsp")
+    
+    mycam_rtsp = UF.get_setting("rtsp")
     
     try:
       self.stream = cv2.VideoCapture(mycam_rtsp)
@@ -89,11 +104,11 @@ class WebcamVideoStream:
 
 config = configparser.ConfigParser()
 config.read("conf/settings.ini")
-mycam_ip        = config.get("Settings","ip")
-mycam_port      = config.get("Settings","port")
-mycam_login     = config.get("Settings","login")
-mycam_password  = config.get("Settings","password")
-mycam_wsdl_path = config.get("Settings","wsdl_path")
+mycam_ip        = UF.get_setting("ip")
+mycam_port      = UF.get_setting("port")
+mycam_login     = UF.get_setting("login")
+mycam_password  = UF.get_setting("password")
+mycam_wsdl_path = UF.get_setting("wsdl_path")
 
 print mycam_ip       
 print mycam_port    
@@ -144,7 +159,7 @@ while True:
     request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)
     break
-  elif cv2.waitKey(25) & 0xFF == ord(']'):
+  '''elif cv2.waitKey(25) & 0xFF == ord(']'):
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
     request.Velocity.Zoom._x = -1
@@ -178,4 +193,4 @@ while True:
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
     request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)
+    ptz.ContinuousMove(request)'''

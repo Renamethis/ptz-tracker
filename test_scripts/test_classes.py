@@ -92,6 +92,7 @@ password = UF.get_setting("password")
 wsdl_path = UF.get_setting("wsdl_path")
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
+init = UF.get_setting("init")
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
 move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path)
@@ -100,6 +101,9 @@ tensor.start()
 move.start()
 ping = P.Ping(mycam_ip = ip)
 ping.start()
+
+if init == 'Yes':
+  UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
 
 
 while True:
@@ -133,7 +137,7 @@ while True:
 
 
       if (scores is not None and image_np is not None and classes is not None and boxes is not None):
-        scores[scores > 0.2] = 1
+        scores[scores > 0.45] = 1
         classes = classes*scores
         persons   = np.where(classes == 1)[1]
 

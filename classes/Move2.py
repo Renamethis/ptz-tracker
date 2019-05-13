@@ -48,11 +48,14 @@ class Move:
       media = mycam.create_media_service()
       profile = media.GetProfiles()[0]
       self.ptz = mycam.create_ptz_service()
-      self.request = self.ptz.create_type('GetConfigurationOptions')
-      self.request.ConfigurationToken = profile.PTZConfiguration._token
-      ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request)
-      self.request = self.ptz.create_type('ContinuousMove')
-      self.request.ProfileToken = profile._token
+      #self.request = self.ptz.create_type('GetConfigurationOptions')
+      self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
+
+      for _, r in self.request.items(): r.ProfileToken = profile._token
+      #self.request.ConfigurationToken = profile.PTZConfiguration._token
+      ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
+      #self.request = self.ptz.create_type('ContinuousMove')
+      #self.request.ProfileToken = profile._token
     except:
       init_logger.critical("Error in %s.__init__" % (self.name))
       init_logger.exception("Error!")
@@ -90,14 +93,14 @@ class Move:
           
           
 
-          if (to_x < self.length/3 - 80 or to_x > self.length/3 + 80):
+          if (to_x < self.length/3 - 40 or to_x > self.length/3 + 40):
             if to_x > self.length/3:
               vec_x = float(to_x - self.length/3)/(self.length)
             else:
               vec_x = float(to_x - self.length/3)/(self.length)*2
           else:
             vec_x = 0
-          if (to_y < self.hight/3 - 80 or to_y > self.hight/3 + 80):
+          if (to_y < self.hight/5 - 40 or to_y > self.hight/5 + 40):
             vec_y = float(self.hight/3 - to_y)/(self.hight)
           else:
             vec_y = 0
@@ -106,10 +109,10 @@ class Move:
 
           vec_x = vec_x*self.speed_coef
           vec_y = vec_y*self.speed_coef
-          self.request.Velocity.PanTilt._x = vec_x
-          self.request.Velocity.PanTilt._y = vec_y 
+          self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
+          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
           try:
-            self.ptz.ContinuousMove(self.request)
+            self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
             update_logger.exception("Error!")
             sleep(2)
@@ -126,16 +129,16 @@ class Move:
           old_box = box
 
         elif box is None and old_box is not None:
-          self.request.Velocity.PanTilt._x = vec_x
-          self.request.Velocity.PanTilt._y = vec_y 
+          self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
+          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
           if (self.count_frame == 30):
-            self.request.Velocity.PanTilt._x = 0
-            self.request.Velocity.PanTilt._y = 0 
+            self.request['ContinuousMove'].Velocity.PanTilt._x = 0
+            self.request['ContinuousMove'].Velocity.PanTilt._y = 0 
             old_box = box
             self.count_frame = 0
             sleep (0.1)
           try:
-            self.ptz.ContinuousMove(self.request)
+            self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
             update_logger.exception("Error!")
             sleep(2)

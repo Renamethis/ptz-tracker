@@ -5,7 +5,9 @@ import base64
 from time import sleep
 from threading import Thread
 import configparser
+import numpy as np
 import logging
+import cv2
 
 def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
   send_msg_logger = logging.getLogger("Main.functions.send_msg")
@@ -56,5 +58,52 @@ def get_setting(get_setting = ""):
     return setting
   else:
     return ""
+
+
+def init_tracker(stream, tensor, move, length, hight, speed_coef):
+  print "[INFO]     Start init"
+  flag = True
+  frame_count = 0
+  x1 = 0
+  x2 = 0
+  while flag:
+    image_np = stream.read()
+    image_np = cv2.resize(image_np, (length,hight))
+    tensor.set_image(image_np)
+    
+    scores = tensor.read_scores()
+    image_np = tensor.read()
+    classes = tensor.read_classes()
+    boxes = tensor.read_boxes()
+    
+    if image_np is not None:
+      scores[scores > 0] = 1
+      
+      classes = classes*scores
+
+      persons = np.where(classes == 1)[1]
+
+      if (str(persons) <> '[]'):
+        classes = tensor.read_classes()
+        #print (persons_num, ': found person')
+        person = persons[0]
+        l_w = [hight,length,hight,length]
+        box = boxes[0][person]
+        #print box 
+
+        if (box[1] > 0.05 and box[3] < 0.95):
+          frame_count = frame_count + 1
+          x1 = x1 + box[1]
+          x2 = x2 + box[3]
+        else:
+          frame_count = 0
+          x1 = 0
+          x2 = 0
+
+        if frame_count >= 50:
+          percent = round((x2/50 - x1/50) *100)
+          print percent
+          return 0
+
 
 
