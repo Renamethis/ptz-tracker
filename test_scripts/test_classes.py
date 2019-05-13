@@ -75,6 +75,10 @@ logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler(pwd+"/main.log")
 
+pwd_images_to_recognize = UF.get_pwd("images_to_recognize")
+pwd_recognition_queue = UF.get_pwd("recognition_queue")
+
+
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
@@ -82,6 +86,8 @@ logger.addHandler(fh)
 logger.info("__________________Program_started__________________")
 
 
+# modify
+face_recognition_on = True
 
 ip = UF.get_setting("ip")
 length = int(UF.get_setting("length"))
@@ -96,6 +102,7 @@ init = UF.get_setting("init")
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
 move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path)
+move.goto_home()
 stream.start()
 tensor.start()
 move.start()
@@ -105,6 +112,9 @@ ping.start()
 if init == 'Yes':
   UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
 
+
+
+next_time = 0
 
 while True:
   img = stream.read()
@@ -125,6 +135,11 @@ while True:
 
 
   if img is not None:
+
+    
+
+
+
     img = cv2.resize(img, (length,hight))
     tensor.set_image(img)
     img = tensor.read()
@@ -142,6 +157,20 @@ while True:
         persons   = np.where(classes == 1)[1]
 
         if (str(persons) <> '[]'):
+
+
+          # <>
+          if time.time() > next_time and face_recognition_on:
+            img_path = pwd_images_to_recognize + '/' + str(round(time.time())) + '.png'
+            cv2.imwrite(img_path, img)
+
+            with open(pwd_recognition_queue + '/recognition_queue.txt', 'a+') as file:
+              file.write(img_path)
+
+            next_time = time.time() + 3
+
+          # /<>
+
 
           person = persons[0]
           l_h = [hight,length,hight,length]

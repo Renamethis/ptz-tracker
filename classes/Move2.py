@@ -170,5 +170,7 @@ class Move:
     return self.t.isAlive()
   def set_box(self, box):
     self.box = box
+  def goto_home(self):
+    self.ptz.GotoHomePosition(self.request['GotoHomePosition'])
   def stop(self):
     self.stopped = True
