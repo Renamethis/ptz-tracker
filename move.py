@@ -153,44 +153,50 @@ print ('START')
 while True:
   image_np = stream.read()
   cv2.imshow('object detection', image_np)
-  if cv2.waitKey(25) & 0xFF == ord('q'):
+  if cv2.waitKey(1) & 0xFF == ord('q'):
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
     request.Velocity.Zoom._x = 0
     ptz.ContinuousMove(request)
     break
-  '''elif cv2.waitKey(25) & 0xFF == ord(']'):
-    request.Velocity.PanTilt._x = 0
-    request.Velocity.PanTilt._y = 0
-    request.Velocity.Zoom._x = -1
-    ptz.ContinuousMove(request)
-  elif cv2.waitKey(25) & 0xFF == ord('d'):
-    request.Velocity.PanTilt._x = 1
-    request.Velocity.PanTilt._y = 0
-    request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)
-  elif cv2.waitKey(25) & 0xFF == ord('a'):
-    request.Velocity.PanTilt._x = -1
-    request.Velocity.PanTilt._y = 0
-    request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)
-  elif cv2.waitKey(25) & 0xFF == ord('w'):
-    request.Velocity.PanTilt._x = 0
-    request.Velocity.PanTilt._y = 1
-    request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)
-  elif cv2.waitKey(25) & 0xFF == ord('s'):
-    request.Velocity.PanTilt._x = 0
-    request.Velocity.PanTilt._y = -1
-    request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)
-  elif cv2.waitKey(25) & 0xFF == ord('['):
-    request.Velocity.PanTilt._x = 0
-    request.Velocity.PanTilt._y = 0
-    request.Velocity.Zoom._x = 1
-    ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord(']'):
+    while cv2.waitKey(1) & 0xFF == ord(']'):
+      request.Velocity.PanTilt._x = 0
+      request.Velocity.PanTilt._y = 0
+      request.Velocity.Zoom._x = -1
+      ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord('d'):
+    while cv2.waitKey(1) & 0xFF == ord('d'):
+      request.Velocity.PanTilt._x = 1
+      request.Velocity.PanTilt._y = 0
+      request.Velocity.Zoom._x = 0
+      ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord('a'):
+    while  cv2.waitKey(1) & 0xFF == ord('a'):
+      request.Velocity.PanTilt._x = -1
+      request.Velocity.PanTilt._y = 0
+      request.Velocity.Zoom._x = 0
+      ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord('w'):
+    while cv2.waitKey(1) & 0xFF == ord('w'):
+      request.Velocity.PanTilt._x = 0
+      request.Velocity.PanTilt._y = 1
+      request.Velocity.Zoom._x = 0
+      ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord('s'):
+    while cv2.waitKey(1) & 0xFF == ord('s'):
+      request.Velocity.PanTilt._x = 0
+      request.Velocity.PanTilt._y = -1
+      request.Velocity.Zoom._x = 0
+      ptz.ContinuousMove(request)
+  elif cv2.waitKey(1) & 0xFF == ord('['):
+    while cv2.waitKey(1) & 0xFF == ord('['):
+      request.Velocity.PanTilt._x = 0
+      request.Velocity.PanTilt._y = 0
+      request.Velocity.Zoom._x = 1
+      ptz.ContinuousMove(request)
   else:
     request.Velocity.PanTilt._x = 0
     request.Velocity.PanTilt._y = 0
     request.Velocity.Zoom._x = 0
-    ptz.ContinuousMove(request)'''
+    ptz.ContinuousMove(request)

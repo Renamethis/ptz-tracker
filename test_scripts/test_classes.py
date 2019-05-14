@@ -102,7 +102,7 @@ init = UF.get_setting("init")
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
 move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path)
-move.goto_home()
+
 stream.start()
 tensor.start()
 move.start()
@@ -110,7 +110,9 @@ ping = P.Ping(mycam_ip = ip)
 ping.start()
 
 if init == 'Yes':
-  UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
+  speed_coef = UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
+  print speed_coef
+  move.set_speed_coef(speed_coef)
 
 
 
@@ -136,14 +138,11 @@ while True:
 
   if img is not None:
 
-    
-
-
-
     img = cv2.resize(img, (length,hight))
     tensor.set_image(img)
     img = tensor.read()
     #print tensor.get_tps()
+
     if img is not None:
       scores   = tensor.read_scores()
       image_np = tensor.read()

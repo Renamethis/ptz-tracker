@@ -103,7 +103,9 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
         if frame_count >= 50:
           percent = round((x2/50 - x1/50) *100)
           print percent
-          return 0
+          flag = False
+
+  return speed_coef*(1.1-move.get_zoom())*0.8
 
 
 

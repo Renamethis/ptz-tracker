@@ -101,7 +101,7 @@ class Move:
           else:
             vec_x = 0
           if (to_y < self.hight/5 - 40 or to_y > self.hight/5 + 40):
-            vec_y = float(self.hight/3 - to_y)/(self.hight)
+            vec_y = float(self.hight/5 - to_y)/(self.hight)
           else:
             vec_y = 0
 
@@ -109,6 +109,12 @@ class Move:
 
           vec_x = vec_x*self.speed_coef
           vec_y = vec_y*self.speed_coef
+          if vec_x > 1:
+            vec_x = 1
+          if vec_y > 1:
+            vec_y = 1
+
+
           self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
           self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
           try:
@@ -170,7 +176,11 @@ class Move:
     return self.t.isAlive()
   def set_box(self, box):
     self.box = box
+  def set_speed_coef(self, speed_coef):
+    self.speed_coef = speed_coef
   def goto_home(self):
     self.ptz.GotoHomePosition(self.request['GotoHomePosition'])
+  def get_zoom(self):
+    return self.ptz.GetStatus(self.request['GetStatus'])[0][1]._x
   def stop(self):
     self.stopped = True
