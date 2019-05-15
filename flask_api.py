@@ -2,15 +2,25 @@ from flask import Flask, render_template, request
 import cherrypy
 from paste.translogger import TransLogger
 
+import json
+
 app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    return """Face recognition and tracking API<br><br>
-    Results URL: {}\n
-    On/off endpoint: {}\n
-    Documentation: {}\n
+    return """<h1>Face recognition and tracking API</h1><br><br>
+    Results URL: {}<br>
+    On/off endpoint: {}<br>
+    Documentation: {}<br>
     """
+
+
+@app.route('/tracking')
+def tracking_url():
+    data = json.loads(request.data)
+    print(data)
+    return 'Tracking: {}'.format(request.data)
+
 
 
 
