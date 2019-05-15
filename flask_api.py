@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    return """Face recognition and tracking API
-    Results URL: {}
-    On/off endpoint: {}
-    Documentation: {}
+    return """Face recognition and tracking API<br><br>
+    Results URL: {}\n
+    On/off endpoint: {}\n
+    Documentation: {}\n
     """
 
 
