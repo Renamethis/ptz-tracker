@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import cherrypy
+from paste.translogger import TransLogger
 
 app = Flask(__name__)
 
@@ -11,7 +12,6 @@ def homepage():
 
 def run_server():
     # Enable WSGI access logging via Paste
-    crDict()
     app_logged = TransLogger(app)
 
     # Mount the WSGI callable object (app) on the root directory
