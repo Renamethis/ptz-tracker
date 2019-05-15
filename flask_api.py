@@ -18,8 +18,8 @@ def homepage():
 @app.route('/tracking', methods=['GET', 'POST'])
 def tracking_url():
     if request.method == 'POST':
-        data = json.loads(request.data)
-        print(data)
+        print(request.data)
+        print(request.data)
         return 'Tracking: {}'.format(request.data)
     else:
         return 'Tracking on/off method'
