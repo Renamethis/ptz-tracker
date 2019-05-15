@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request
 import cherrypy
 from paste.translogger import TransLogger
+import configparser
 
 import json
+
+config_file = '/home/ibaryshnikov/MM.Tracker/conf/settings.ini'
 
 app = Flask(__name__)
 
@@ -18,6 +21,9 @@ def homepage():
 @app.route('/tracking', methods=['GET', 'POST'])
 def tracking_url():
     if request.method == 'POST':
+        config = configparser.ConfigParser()
+        config.read(config_file)
+
         print(request.data)
         print(request.data)
         return 'Tracking: {}'.format(request.data)
