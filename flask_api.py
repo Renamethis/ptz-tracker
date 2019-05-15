@@ -21,8 +21,7 @@ def homepage():
 @app.route('/tracking', methods=['GET', 'POST'])
 def tracking_url():
     if request.method == 'POST':
-        data = json.loads(request.data)
-        print(data)
+        print(request.data['on'])
         config = configparser.ConfigParser()
         config.read(config_file)
         return 'Tracking: {}'.format(request.data)
