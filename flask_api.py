@@ -15,11 +15,15 @@ def homepage():
     """
 
 
-@app.route('/tracking')
+@app.route('/tracking', methods=['GET', 'POST'])
 def tracking_url():
-    data = json.loads(request.data)
-    print(data)
-    return 'Tracking: {}'.format(request.data)
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        print(data)
+        return 'Tracking: {}'.format(request.data)
+    else:
+        return 'Tracking on/off method'
+
 
 
 
