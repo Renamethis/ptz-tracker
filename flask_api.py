@@ -6,7 +6,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    return 'Face recognition and tracking API'
+    return """Face recognition and tracking API
+    Results URL: {}
+    On/off endpoint: {}
+    Documentation: {}
+    """
 
 
 
@@ -28,6 +32,7 @@ def run_server():
     # Start the CherryPy WSGI web server
     cherrypy.engine.start()
     cherrypy.engine.block()
+
 
 if __name__ == "__main__":
     run_server()
