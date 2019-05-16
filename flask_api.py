@@ -10,7 +10,7 @@ import json
 import os
 
 
-config_file = '/home/ibaryshnikov/MM.Tracker/conf/settings.ini'
+config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
 
 app = Flask(__name__)
 
