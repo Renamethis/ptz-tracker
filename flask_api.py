@@ -1,5 +1,5 @@
-# activate_this_file = "venv/bin/activate_this.py"
-# execfile(activate_this_file, dict(__file__=activate_this_file))
+activate_this_file = "venv/bin/activate_this.py"
+execfile(activate_this_file, dict(__file__=activate_this_file))
 
 from flask import Flask, render_template, request
 import cherrypy

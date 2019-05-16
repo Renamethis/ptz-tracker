@@ -108,7 +108,7 @@ class Move:
           self.count_frame = 0
 
           vec_x = vec_x*self.speed_coef
-          vec_y = vec_y*self.speed_coef
+          vec_y = vec_y*self.speed_coef/2
           if vec_x > 1:
             vec_x = 1
           if vec_y > 1:

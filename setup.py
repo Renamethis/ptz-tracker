@@ -31,19 +31,32 @@ os.system('pip install --upgrade pip')
 print ('pip upgrade done')
 
 #foo = Popen('pip install tensorflow==1.5', shell=True, stdout=PIPE)
-os.system('pip install tensorflow==1.5')
+os.system('sudo pip install tensorflow==1.5')
 print ('tensorflow install done')
 
-os.system('sudo apt-get install protobuf-compiler python-pil python-lxml python-tk')
+os.system('sudo apt-get -y install protobuf-compiler python-pil python-lxml python-tk')
 print ('apt-get install done')
-os.system('pip install --user Cython')
+os.system('sudo pip install --user Cython')
 print ('Cython install done')
-os.system('pip install --user contextlib2')
+os.system('sudo pip install --user flask')
+os.system('sudo pip install --user contextlib2')
 print ('contextlib2 install done')
-os.system('pip install --user jupyter')
+os.system('sudo pip install --user jupyter')
 print ('jupyter install done')
-os.system('pip install --user matplotlib')
+os.system('sudo pip install --user matplotlib')
 print ('matplotlib install done')
+os.system('sudo pip install --user pyping')
+os.system('sudo pip install --user opencv-python')
+os.system('sudo apt-get install -y libsm6 libxext6')
+os.system('sudo pip install --user imutils')
+os.system('sudo pip install --user onvif')
+#sudo apt-get -y install curl
+#curl -OL https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
+#sudo apt-get -y install unzip
+#unzip protoc-3.3.0-linux-x86_64.zip -d protoc3
+#sudo mv protoc3/bin/* /usr/local/bin/
+#sudo mv protoc3/include/* /usr/local/include/
+
 
 os.system('git clone https://github.com/cocodataset/cocoapi.git')
 os.system('git clone https://github.com/tensorflow/models.git')
