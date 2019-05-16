@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    return """<h1>Face recognition and tracking API</h1><br><br>
+    return """<h1>Face recognition and tracking API</h1><br>
     Results URL: {}<br>
     On/off endpoint: {}<br>
     Documentation: {}<br>
@@ -22,7 +22,15 @@ def homepage():
 def tracking_url():
     if request.method == 'POST':
         data = request.form
-        print(data)
+        ideal_data ={
+            'ip': '0.0.0.0',
+            'port': 43,
+        }
+
+        ip = data['ip'] if 'ip' in data else None
+
+        port = data['port'] if 'port' in data else 80
+
         config = configparser.ConfigParser()
         config.read(config_file)
         return 'Tracking: {}'.format(data)
