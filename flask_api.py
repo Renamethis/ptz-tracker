@@ -34,7 +34,7 @@ def tracking_url():
         config = configparser.ConfigParser()
         config.read(config_file)
         config['Settings']['ip'] = str(ip)
-        config['Settings']['ip'] = str(port)
+        config['Settings']['port'] = str(port)
 
         with open(config_file, 'w') as configfile:
             config.write(configfile)
