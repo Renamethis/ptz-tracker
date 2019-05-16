@@ -1,9 +1,14 @@
+# activate_this_file = "venv/bin/activate_this.py"
+# execfile(activate_this_file, dict(__file__=activate_this_file))
+
 from flask import Flask, render_template, request
 import cherrypy
 from paste.translogger import TransLogger
 import configparser
 
 import json
+import os
+
 
 config_file = '/home/ibaryshnikov/MM.Tracker/conf/settings.ini'
 
@@ -39,6 +44,9 @@ def tracking_url():
 
         with open(config_file, 'w') as configfile:
             config.write(configfile)
+
+        # TODO Run script
+        os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
 
         return 'Tracking: {}'.format(data)
     else:
