@@ -21,7 +21,7 @@ def homepage():
 @app.route('/tracking', methods=['GET', 'POST'])
 def tracking_url():
     if request.method == 'POST':
-        data = request.form.get_json()
+        data = request.get_json()
         print(data)
         ideal_data ={
             'ip': '0.0.0.0',
