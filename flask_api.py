@@ -33,6 +33,12 @@ def tracking_url():
 
         config = configparser.ConfigParser()
         config.read(config_file)
+        config['Settings']['ip'] = ip
+        config['Settings']['ip'] = port
+
+        with open(config_file, 'w') as configfile:
+            config.write(configfile)
+
         return 'Tracking: {}'.format(data)
     else:
         return 'Tracking on/off method'
