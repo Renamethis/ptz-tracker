@@ -14,6 +14,7 @@ import os
 
 
 config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
+pid_file ='/home/ubuntu/MM.Tracker/log/pid'
 
 app = Flask(__name__)
 
@@ -48,12 +49,19 @@ def tracking_url():
         with open(config_file, 'w') as configfile:
             config.write(configfile)
 
-        # TODO Run script
+        # Run Tracking Script
         tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
-        #tracking_proc = subprocess.Popen('sudo python test_scripts/test_classes.py')
         time.sleep(0.5)
         tracking_pid = tracking_proc.pid
-        print("TRACKING PID: {} {} {}".format(tracking_pid, int(tracking_pid)+1, int(tracking_pid)+2))
+        print("TRACKING PID:", int(tracking_pid)+2)
+
+        # Save tracking PID to file
+        with open(config_file, 'w') as pid_file:
+            pid_file.write(str(int(tracking_pid)+2))
+
+        # TODO Run Recognition Script
+
+
         """
         screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"
         screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";
