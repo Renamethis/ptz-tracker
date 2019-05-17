@@ -47,7 +47,8 @@ def tracking_url():
             config.write(configfile)
 
         # TODO Run script
-        proc = subprocess.Popen(['python', 'test_scripts/test_classes.py'], shell=True)
+        argument = '...'
+        proc = subprocess.Popen(['python', 'test_scripts/test_classes.py', argument], shell=True)
         tracking_pid = proc.pid
 
 
