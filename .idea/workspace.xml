@@ -17,8 +17,8 @@
       <file leaf-file-name="flask_api.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/flask_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="49" column="16" lean-forward="false" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="16" />
+            <state relative-caret-position="232">
+              <caret line="49" column="37" lean-forward="false" selection-start-line="49" selection-start-column="37" selection-end-line="49" selection-end-column="37" />
               <folding>
                 <element signature="e#114#163#0" expanded="true" />
               </folding>
@@ -136,15 +136,9 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classes/Move2.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classes/Move2.pyc</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classes/Tensor.pyc</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classes/Utility_Functions.pyc</PATH>
           <PATH vcs="Git" revision="">$PROJECT_DIR$/conf/settings.ini</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/flask_api.py</PATH>
           <PATH vcs="Git" revision="">$PROJECT_DIR$/log/main.log</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/recognition_queue/recognition_queue.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/setup.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_scripts/test_classes.py</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Created" />
@@ -152,39 +146,7 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/accesscontrol.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/actionengine.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/addressing</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/advancedsecurity.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/analytics.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/analyticsdevice.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/b-2.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/bf-2.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/bw-2.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/deviceio.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/devicemgmt.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/display.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/doorcontrol.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/envelope</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/events.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/imaging.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/include</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/media.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/onvif.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/ptz.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/r-2.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/receiver.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/recording.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/remotediscovery.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/replay.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/rw-2.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/search.wsdl</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/t-1.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/types.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/ws-addr.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/ws-discovery.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/xml.xsd</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/wsdl/xmlmime</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/nohup.out</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Deleted" />
@@ -503,7 +465,14 @@
       <option name="project" value="LOCAL" />
       <updated>1558098274871</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="API tracking method config write">
+      <created>1558103071596</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1558103071596</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -608,8 +577,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/flask_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="49" column="16" lean-forward="false" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="16" />
+        <state relative-caret-position="232">
+          <caret line="49" column="37" lean-forward="false" selection-start-line="49" selection-start-column="37" selection-end-line="49" selection-end-column="37" />
           <folding>
             <element signature="e#114#163#0" expanded="true" />
           </folding>
