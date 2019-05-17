@@ -49,11 +49,16 @@ def tracking_url():
             config.write(configfile)
 
         # TODO Run script
-        proc = subprocess.Popen('nohup sudo python test_scripts/test_classes.py &')
-        time.sleep(2)
-        tracking_pid = proc.pid
-        print("TRACKING PID:", tracking_pid)
-
+        tracking_proc = subprocess.Popen('nohup sudo python test_scripts/test_classes.py &')
+        time.sleep(0.5)
+        tracking_pid = tracking_proc.pid
+        print("TRACKING PID: {} {} {}".format(tracking_pid, int(tracking_pid)+1, int(tracking_pid)+2))
+        """
+        screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"
+        screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";
+        screen -S WebAPI -dm bash -c "cd /home/ibakhtizin/miem_visi0n/Tracking_System; python3 main_flask.py;"
+        screen -ls
+        """
 
 
         # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
