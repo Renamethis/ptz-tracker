@@ -49,7 +49,8 @@ def tracking_url():
             config.write(configfile)
 
         # TODO Run script
-        tracking_proc = subprocess.Popen('sudo python test_scripts/test_classes.py')
+        tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
+        #tracking_proc = subprocess.Popen('sudo python test_scripts/test_classes.py')
         time.sleep(0.5)
         tracking_pid = tracking_proc.pid
         print("TRACKING PID: {} {} {}".format(tracking_pid, int(tracking_pid)+1, int(tracking_pid)+2))
