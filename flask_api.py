@@ -56,8 +56,8 @@ def tracking_url():
         print("TRACKING PID:", int(tracking_pid)+2)
 
         # Save tracking PID to file
-        with open(config_file, 'w') as pid_file:
-            pid_file.write(str(int(tracking_pid)+2))
+        with open(pid_file, 'w') as p_file:
+            p_file.write(str(int(tracking_pid)+2))
 
         # TODO Run Recognition Script
 
