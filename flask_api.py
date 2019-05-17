@@ -5,6 +5,7 @@ from flask import Flask, render_template, request
 import cherrypy
 from paste.translogger import TransLogger
 import configparser
+import subprocess
 
 import json
 import os
@@ -46,9 +47,15 @@ def tracking_url():
             config.write(configfile)
 
         # TODO Run script
-        os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
+        argument = '...'
+        proc = subprocess.Popen(['python', 'test_scripts/test_classes.py', argument], shell=True)
+        tracking_pid = proc.pid
 
-        return 'Tracking: {}'.format(data)
+
+        # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
+        # proc2 =
+
+        return 'Input data: {} <br><br>Tracking PID: {}'.format(data, tracking_pid)
     else:
         return 'Tracking on/off method'
 
