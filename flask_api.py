@@ -41,6 +41,8 @@ def tracking_url():
         with open(pid_file) as f:
             pid_list = f.readlines()
 
+        print('PID LIST ({}): {}'.format(len(pid_list), pid_list))
+
         if data['command'] == 'start':
             if len(pid_list) > 0:
                 ip = data['ip'] if 'ip' in data else None
