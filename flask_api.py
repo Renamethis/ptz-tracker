@@ -44,7 +44,7 @@ def tracking_url():
         print('PID LIST ({}): {}'.format(len(pid_list), pid_list))
 
         if data['command'] == 'start':
-            if len(pid_list) > 0:
+            if len(pid_list) < 1:
                 ip = data['ip'] if 'ip' in data else None
 
                 port = data['port'] if 'port' in data else 80
