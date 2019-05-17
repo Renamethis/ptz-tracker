@@ -11,6 +11,7 @@ import time
 
 import json
 import os
+import signal
 
 
 config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
@@ -31,49 +32,67 @@ def homepage():
 def tracking_url():
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
-        ideal_data ={
+        ideal_data = {
+            'command': 'start',
             'ip': '0.0.0.0',
             'port': 43,
         }
 
-        ip = data['ip'] if 'ip' in data else None
+        with open(pid_file) as f:
+            pid_list = f.readlines()
 
-        port = data['port'] if 'port' in data else 80
+        if data['command'] == 'start':
+            if len(pid_list) > 0:
+                ip = data['ip'] if 'ip' in data else None
 
-        config = configparser.ConfigParser()
-        config.read(config_file)
-        config['Settings']['ip'] = str(ip)
-        config['Settings']['port'] = str(port)
+                port = data['port'] if 'port' in data else 80
 
-        with open(config_file, 'w') as configfile:
-            config.write(configfile)
+                config = configparser.ConfigParser()
+                config.read(config_file)
+                config['Settings']['ip'] = str(ip)
+                config['Settings']['port'] = str(port)
 
-        # Run Tracking Script
-        tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
-        time.sleep(0.5)
-        tracking_pid = tracking_proc.pid
-        print("TRACKING PID:", int(tracking_pid)+2)
+                with open(config_file, 'w') as configfile:
+                    config.write(configfile)
 
-        # Save tracking PID to file
-        with open(pid_file, 'w') as p_file:
-            p_file.write(str(int(tracking_pid)+2))
+                # Run Tracking Script
+                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
+                time.sleep(0.5)
+                tracking_pid = tracking_proc.pid
+                print("TRACKING PID:", int(tracking_pid)+2)
 
-        # TODO Run Recognition Script
+                # Save tracking PID to file
+                with open(pid_file, 'a+') as f:
+                    f.write(str(int(tracking_pid)+2))
 
-
-        """
-        screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"
-        screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";
-        screen -S WebAPI -dm bash -c "cd /home/ibakhtizin/miem_visi0n/Tracking_System; python3 main_flask.py;"
-        screen -ls
-        """
+                # TODO Run Recognition Script
 
 
-        # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
-        # proc2 =
+                """
+                screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"
+                screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";
+                screen -S WebAPI -dm bash -c "cd /home/ibakhtizin/miem_visi0n/Tracking_System; python3 main_flask.py;"
+                screen -ls
+                """
 
-        return 'Input data: {} <br><br>Tracking PID: {}'.format(data, tracking_pid)
+
+                # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
+                # proc2 =
+
+                return 'Tracking started\nTracking PID: {}'.format(data, int(tracking_pid)+2)
+            else:
+                return 'Tracking already started with PID {}'.format(pid_list)
+
+        elif data['command'] == 'stop':
+
+            for pid in pid_list:
+                os.kill(int(pid), signal.SIGTERM)
+
+            with open(pid_file, 'w') as p_file:
+                p_file.write('')
+
+            return 'Tracking STOPED and pid file clean'
+
     else:
         return 'Tracking on/off method'
 
