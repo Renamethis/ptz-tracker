@@ -7,6 +7,8 @@ from paste.translogger import TransLogger
 import configparser
 import subprocess
 
+import time
+
 import json
 import os
 
@@ -48,7 +50,10 @@ def tracking_url():
 
         # TODO Run script
         proc = subprocess.Popen('nohup sudo python test_scripts/test_classes.py &', shell=True)
+        time.sleep(2)
         tracking_pid = proc.pid
+        print("TRACKING PID:", tracking_pid)
+
 
 
         # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
