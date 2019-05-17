@@ -96,6 +96,8 @@ port = UF.get_setting("port")
 login = UF.get_setting("login")
 password = UF.get_setting("password")
 wsdl_path = UF.get_setting("wsdl_path")
+wsdl_path = UF.get_pwd("wsdl/")
+print wsdl_path
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
 init = UF.get_setting("init")
