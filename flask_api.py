@@ -32,7 +32,7 @@ def discover():
         for i, service in enumerate(ret):
             if 'onvif' in service.getXAddrs()[0]:
                 ip = service.getXAddrs()[0]
-                cameras.append(Camera(ip=ip))
+                cameras.append(str(ip))
         wsd.stop()
         return cameras
 
