@@ -36,15 +36,11 @@ sys.path.append(pwd+'/slim')
 
 os.chdir('object_detection')
 
-#print sys.path
-
-
 
 ################################
 # 2. Loading the libraries
 ################################
 
-# add_try (checking libraries)
 
 import numpy as np
 import math
@@ -70,6 +66,12 @@ import Move2 as M2
 import Utility_Functions as UF
 import Ping as P
 
+
+################################
+# 3. Create log file
+################################
+
+
 pwd = UF.get_pwd("log")
 logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
@@ -86,8 +88,10 @@ logger.addHandler(fh)
 logger.info("__________________Program_started__________________")
 
 
-# modify
-face_recognition_on = True
+################################
+# 4. Get settings from settings
+################################
+
 
 ip = UF.get_setting("ip")
 length = int(UF.get_setting("length"))
@@ -95,12 +99,13 @@ hight = int(UF.get_setting("hight"))
 port = UF.get_setting("port")
 login = UF.get_setting("login")
 password = UF.get_setting("password")
-wsdl_path = UF.get_setting("wsdl_path")
 wsdl_path = UF.get_pwd("wsdl/")
-print wsdl_path
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
 init = UF.get_setting("init")
+face_recognition_on = UF.get_setting("face_recognition_on")
+
+
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
 move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path)
@@ -156,12 +161,13 @@ while True:
         scores[scores > 0.45] = 1
         classes = classes*scores
         persons   = np.where(classes == 1)[1]
+        print tensor.get_tps()
 
         if (str(persons) <> '[]'):
 
 
           # <>
-          if time.time() > next_time and face_recognition_on:
+          if time.time() > next_time and face_recognition_on == 'Yes':
             img_path = pwd_images_to_recognize + '/' + str(round(time.time())) + '.png'
             cv2.imwrite(img_path, img)
 

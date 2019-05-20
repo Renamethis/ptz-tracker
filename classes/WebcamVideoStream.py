@@ -10,28 +10,29 @@ import numpy as np
 import Utility_Functions as UF
 import logging
 ################################
-# 3. The process of taking a frame from a stream
+# 1. The process of taking a frame from a stream
 ################################
 
 class WebcamVideoStream:
-  # 3.1. Initialization
+  # 1.1. Initialization
   def __init__(self, name="WebcamVideoStream"):
     try:
       self.name = name
     
-      # 3.1.1. Determining the path to the configuration file
+      # 1.1.1. Determining the path to the configuration file
       # add_try (count >= 3)
       
 
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
 
-      # 3.1.2. Read configuration file (rtsp)
+      # 1.1.2. Read configuration file (rtsp)
       # modify (receiving rtsp from camera)
 
       self.mycam_rtsp = UF.get_setting("rtsp")
+      print self.mycam_rtsp
       self.mycam_ip = UF.get_setting("ip")
 
-      # 3.1.3. Sturt function cv2.VideoCapture
+      # 1.1.3. Sturt function cv2.VideoCapture
       
       try:
         self.stream = cv2.VideoCapture(self.mycam_rtsp)     

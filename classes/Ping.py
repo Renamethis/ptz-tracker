@@ -8,7 +8,7 @@ class Ping:
     self.name = name
     self.mycam_ip = mycam_ip
     self.stopped = False
-    self.r = os.system("timeout 0.2 ping -c 1  " + self.mycam_ip + " > /dev/null 2>&1")
+    self.r = os.system("timeout 0.4 ping -c 1  " + self.mycam_ip + " > /dev/null 2>&1")
   def start(self):
     start_logger = logging.getLogger("Main.Ping.start")
     start_logger.info("Process starting")
@@ -24,7 +24,7 @@ class Ping:
     while True:
       if self.stopped:
         return
-      self.r = os.system("timeout 0.2 ping -c 1  " + self.mycam_ip + " > /dev/null 2>&1")
+      self.r = os.system("timeout 0.4 ping -c 1  " + self.mycam_ip + " > /dev/null 2>&1")
       sleep(1)
   # 3.4. Get frame
   def read(self):

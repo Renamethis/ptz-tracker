@@ -17,13 +17,13 @@ from object_detection.utils import visualization_utils as vis_util
 
 class Tensor:
   # 4.1. Initialization
-  def __init__(self, visible, lenght = 720, width = 405, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
+  def __init__(self, visible, length = 720, hight = 405, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
     self.name       = name
     self.dellay     = 0
     self.flag       = False
     self.arr        = []
-    self.new_image  = np.zeros((width, lenght, 3))
-    self.old_image  = np.zeros((width, lenght, 3))
+    self.new_image  = np.zeros((hight, length, 3))
+    self.old_image  = np.zeros((hight, length, 3))
     self.stopped    = False
     self.visible    = visible
     self.count      = 0
@@ -103,8 +103,12 @@ class Tensor:
                     [boxes, scores, classes, num_detections],
                     feed_dict={self.image_tensor: image_np_expanded})
               except:
+                update_logger.critical("Error with run tensor")
+                update_logger.exception("Error!")
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+                UF.send_msg(msg=err_msg)
 
-                print '[ERROR]     Run tensor error...'
               if (self.visible == 'Yes'):
                 vis_util.visualize_boxes_and_labels_on_image_array(
                   image,
@@ -119,7 +123,7 @@ class Tensor:
               err =  time_2 - time_1
               dellay = dellay + err
               count = count + 1
-              if count == 100:
+              if count == 10:
                 self.dellay = dellay
                 print dellay
                 self.count = count

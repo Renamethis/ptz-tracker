@@ -48,14 +48,10 @@ class Move:
       media = mycam.create_media_service()
       profile = media.GetProfiles()[0]
       self.ptz = mycam.create_ptz_service()
-      #self.request = self.ptz.create_type('GetConfigurationOptions')
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
-
       for _, r in self.request.items(): r.ProfileToken = profile._token
-      #self.request.ConfigurationToken = profile.PTZConfiguration._token
-      ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
-      #self.request = self.ptz.create_type('ContinuousMove')
-      #self.request.ProfileToken = profile._token
+      #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
+      
     except:
       init_logger.critical("Error in %s.__init__" % (self.name))
       init_logger.exception("Error!")
@@ -108,7 +104,7 @@ class Move:
           self.count_frame = 0
 
           vec_x = vec_x*self.speed_coef
-          vec_y = vec_y*self.speed_coef/2
+          vec_y = vec_y*self.speed_coef
           if vec_x > 1:
             vec_x = 1
           if vec_y > 1:
