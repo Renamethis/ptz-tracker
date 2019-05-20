@@ -9,17 +9,12 @@ import numpy as np
 import logging
 import cv2
 
-def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
+def send_msg(msg,SUBJECT="Error"):
+  email = get_setting("email")
   send_msg_logger = logging.getLogger("Main.functions.send_msg")
   HOST="smtp.gmail.com"
   FROM = "tensorflow21@gmail.com"
-  BODY = "\r\n".join((
-    "From: %s" % FROM,
-    "To: %s" % TO,
-    "Subject: %s" % SUBJECT ,
-    "",
-    msg
-  ))
+  BODY = "\r\n".join(("From: %s" % FROM, "To: %s" % email, "Subject: %s" % SUBJECT , "", msg))
   try:
     server = smtplib.SMTP(HOST, 587)
   except:
@@ -28,7 +23,7 @@ def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
     exit(0)
   server.starttls()
   server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
-  server.sendmail(FROM, [TO], BODY)
+  server.sendmail(FROM, [email], BODY)
   server.quit()
 
 
