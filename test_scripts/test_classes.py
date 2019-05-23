@@ -168,7 +168,7 @@ while True:
 
           # <>
           if time.time() > next_time and face_recognition_on == 'Yes':
-            img_path = pwd_images_to_recognize + '/' + str(round(time.time())) + '.png'
+            img_path = pwd_images_to_recognize + '/temp_frames/' + str(round(time.time())) + '.png'
             cv2.imwrite(img_path, img)
 
             with open(pwd_recognition_queue + '/recognition_queue.txt', 'a+') as file:
