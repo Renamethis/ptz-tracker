@@ -134,7 +134,7 @@ def tracking_url():
                 """
 
 
-                # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
+                # os.system'screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
                 # proc2 =
                 # {recognition_pid}
 
