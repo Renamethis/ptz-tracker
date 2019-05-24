@@ -100,6 +100,7 @@ def tracking_url():
                 config.read(config_file)
                 config['Settings']['ip'] = str(ip)
                 config['Settings']['port'] = str(port)
+                config['Settings']['rtsp'] = 'rtsp://admin:Supervisor@{ip}:554/2'.format(ip=str(ip))
                 # TODO Save login and password from POST data to CONFIG
 
                 with open(config_file, 'w') as configfile:
