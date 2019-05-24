@@ -93,8 +93,8 @@ def tracking_url():
             if len(pid_list) < 1:
                 ip = data['ip'] if 'ip' in data else None
                 port = data['port'] if 'port' in data else 80
-                login = data['login'] if 'login' in data else 'login'
-                password = data['password'] if 'password' in data else 'password'
+                login = data['login'] if 'login' in data else 'admin'
+                password = data['password'] if 'password' in data else 'Supervisor'
 
                 config = configparser.ConfigParser()
                 config.read(config_file)
@@ -107,7 +107,7 @@ def tracking_url():
                     config.write(configfile)
 
                 # Run Tracking Script
-                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
+                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
                 time.sleep(0.1)
                 tracking_pid = tracking_proc.pid
                 print("TRACKING PID:", int(tracking_pid)+2)
@@ -147,7 +147,7 @@ def tracking_url():
                 return 'Tracking started' \
                        '' \
                        'Tracking PID: {tracking_pid}\n' \
-                       'Recognition PID: {recognition_pid}' \
+                       'Recognition PID: {recognition_pid}\n' \
                        'Input: {data}'.format(
                     tracking_pid=int(tracking_pid)+2,
                     recognition_pid=int(recognition_pid) + 2,

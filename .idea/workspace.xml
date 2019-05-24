@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af3a1a70-2e09-4c80-bf96-7f7173e529f3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/flask_api.py" afterPath="$PROJECT_DIR$/flask_api.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_scripts/test_classes.py" afterPath="$PROJECT_DIR$/test_scripts/test_classes.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +18,8 @@
       <file leaf-file-name="flask_api.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/flask_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2242">
-              <caret line="121" column="73" lean-forward="false" selection-start-line="121" selection-start-column="56" selection-end-line="121" selection-end-column="73" />
+            <state relative-caret-position="1898">
+              <caret line="109" column="148" lean-forward="true" selection-start-line="109" selection-start-column="50" selection-end-line="109" selection-end-column="148" />
               <folding>
                 <element signature="e#114#163#0" expanded="true" />
               </folding>
@@ -37,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_classes.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test_classes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_scripts/test_classes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="79" column="57" lean-forward="false" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="57" />
+            <state relative-caret-position="114">
+              <caret line="82" column="0" lean-forward="true" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -72,8 +72,8 @@
       <file leaf-file-name="scratch_3.py" pinned="false" current-in-tab="false">
         <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="323">
+              <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -109,7 +109,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitkeep" pinned="false" current-in-tab="true">
+      <file leaf-file-name=".gitkeep" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/images_to_recognize/temp_frames/.gitkeep">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
@@ -131,6 +131,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>pid_file</find>
+      <find>pwd_recognition_queue</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -142,10 +143,10 @@
       <list>
         <option value="$PROJECT_DIR$/vision.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_7.py" />
-        <option value="$PROJECT_DIR$/test_scripts/test_classes.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py" />
         <option value="$PROJECT_DIR$/flask_api.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/test_scripts/test_classes.py" />
       </list>
     </option>
   </component>
@@ -185,6 +186,12 @@
               <item name="MM.Tracker" type="b2602c69:ProjectViewProjectNode" />
               <item name="MM.Tracker" type="462c0819:PsiDirectoryNode" />
               <item name="images_to_recognize" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MM.Tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MM.Tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="images_to_recognize" type="462c0819:PsiDirectoryNode" />
+              <item name="temp_frames" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MM.Tracker" type="b2602c69:ProjectViewProjectNode" />
@@ -621,7 +628,21 @@
       <option name="project" value="LOCAL" />
       <updated>1558711633725</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Folder name changed">
+      <created>1558711899615</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1558711899615</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Folder name changed">
+      <created>1558711941193</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1558711941193</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TodoView">
@@ -688,7 +709,8 @@
     <MESSAGE value="Discovery method added to API" />
     <MESSAGE value="Recognition queue changes" />
     <MESSAGE value="Rtsp to config saving" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rtsp to config saving" />
+    <MESSAGE value="Folder name changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Folder name changed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -908,16 +930,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_scripts/test_classes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="79" column="57" lean-forward="false" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conf/settings.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
@@ -934,24 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/flask_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2242">
-          <caret line="121" column="73" lean-forward="false" selection-start-line="121" selection-start-column="56" selection-end-line="121" selection-end-column="73" />
-          <folding>
-            <element signature="e#114#163#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -965,6 +959,34 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flask_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1898">
+          <caret line="109" column="148" lean-forward="true" selection-start-line="109" selection-start-column="50" selection-end-line="109" selection-end-column="148" />
+          <folding>
+            <element signature="e#114#163#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_scripts/test_classes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="82" column="0" lean-forward="true" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
