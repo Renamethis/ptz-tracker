@@ -172,7 +172,7 @@ while True:
             cv2.imwrite(img_path, img)
 
             with open(pwd_images_to_recognize + '/recognition_queue.txt', 'a+') as file:
-              file.write(img_path)
+              file.write(img_path + '\n')
 
             next_time = time.time() + 3
 
