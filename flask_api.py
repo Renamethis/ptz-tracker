@@ -156,7 +156,10 @@ def tracking_url():
         elif data['command'] == 'stop':
             print("Stopping processes:", pid_list)
             for pid in pid_list:
-                os.kill(int(pid), signal.SIGTERM)
+                try:
+                    os.kill(int(pid), signal.SIGTERM)
+                except Exception as e:
+                    print(e)
 
             with open(pid_file, 'w') as p_file:
                 p_file.write('')
