@@ -117,14 +117,21 @@ def tracking_url():
                     f.write(str(int(tracking_pid)+2))
 
                 # # TODO Run Recognition Script
-                # recognition_proc = subprocess.Popen('screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";', shell=True)
-                # time.sleep(0.1)
-                # recognition_pid = recognition_proc.pid
-                # print("RECOGNITION PID:", int(recognition_pid) + 2)
-                #
-                # # Save recognition PID to file
-                # with open(pid_file, 'a+') as f:
-                #     f.write(str(int(recognition_pid) + 2))
+                recognition_proc = subprocess.Popen(
+                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; '
+                    'source venv/bin/activate; '
+                    'python3 recognition_subprocess.py {folder}";'.format(
+                        folder='/home/ubuntu/MM.Tracker/recognition_queue/'
+                    ),
+                    shell=True
+                )
+                time.sleep(0.1)
+                recognition_pid = recognition_proc.pid
+                print("RECOGNITION PID:", int(recognition_pid) + 2)
+
+                # Save recognition PID to file
+                with open(pid_file, 'a+') as f:
+                    f.write(str(int(recognition_pid) + 2))
 
 
                 """
@@ -141,11 +148,11 @@ def tracking_url():
 
                 return 'Tracking started' \
                        '' \
-                       'Tracking PID: {tracking_pid}' \
-                       'Recognition PID: ' \
+                       'Tracking PID: {tracking_pid}\n' \
+                       'Recognition PID: {recognition_pid}' \
                        'Input: {data}'.format(
                     tracking_pid=int(tracking_pid)+2,
-                    # recognition_pid=int(recognition_pid) + 2,
+                    recognition_pid=int(recognition_pid) + 2,
                     data=data
                 )
             else:
