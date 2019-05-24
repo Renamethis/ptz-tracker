@@ -114,7 +114,7 @@ def tracking_url():
 
                 # Save tracking PID to file
                 with open(pid_file, 'a+') as f:
-                    f.write(str(int(tracking_pid)+2))
+                    f.write(str(int(tracking_pid)+2) + '\n')
 
                 # # TODO Run Recognition Script
                 recognition_proc = subprocess.Popen(
@@ -131,7 +131,7 @@ def tracking_url():
 
                 # Save recognition PID to file
                 with open(pid_file, 'a+') as f:
-                    f.write(str(int(recognition_pid) + 2))
+                    f.write(str(int(recognition_pid) + 2) + '\n')
 
 
                 """
