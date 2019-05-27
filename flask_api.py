@@ -17,7 +17,7 @@ import signal
 
 config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
 pid_file ='/home/ubuntu/MM.Tracker/log/pid'
-recognition_result_file = '/home/ubuntu/MM.Tracker/result.json'
+recognition_result_file = '/home/ubuntu/MM.Tracker/images_to_recognize/result.json'
 
 app = Flask(__name__)
 
