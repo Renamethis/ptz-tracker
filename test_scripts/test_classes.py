@@ -4,16 +4,6 @@ import traceback
 
 
 
-
-###
-## add_try  - add validation
-## modify   - it is possible to change
-## add_func - add function
-## error    - error 
-### 
-
-
-
 ################################
 # 1. Starting the virtual environment
 ################################
@@ -122,7 +112,7 @@ if init == 'Yes':
   move.set_speed_coef(speed_coef)
 
 
-
+move.goto_home()
 next_time = 0
 
 while True:
@@ -161,7 +151,7 @@ while True:
         scores[scores > 0.45] = 1
         classes = classes*scores
         persons   = np.where(classes == 1)[1]
-        print tensor.get_tps()
+        #####print tensor.get_tps()
 
         if (str(persons) <> '[]'):
 

@@ -125,7 +125,7 @@ class Tensor:
               count = count + 1
               if count == 10:
                 self.dellay = dellay
-                print dellay
+                #print dellay
                 self.count = count
                 dellay = 0
                 count = 0

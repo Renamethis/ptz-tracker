@@ -32,6 +32,7 @@ class Move:
       self.old_vec_y = 0
       self.count_frame = 0
       self.speed_coef = speed_coef
+      self.pause = False
 
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
       try:
@@ -76,6 +77,10 @@ class Move:
       update_logger = logging.getLogger("Main.%s.update" % (self.name))
       update_logger.info("Process started")
       while True:
+        if self.pause:
+          self.request['ContinuousMove'].Velocity.PanTilt._x = 0
+          self.request['ContinuousMove'].Velocity.PanTilt._y = 0 
+          sleep(0.1)
         if self.stopped:
           return
         box = self.box
@@ -131,19 +136,24 @@ class Move:
           old_box = box
 
         elif box is None and old_box is not None:
-          self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
-          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
-          if (self.count_frame == 30):
+          if (self.count_frame < 20):
+            self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
+            self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
+          if (self.count_frame == 20):
             self.request['ContinuousMove'].Velocity.PanTilt._x = 0
             self.request['ContinuousMove'].Velocity.PanTilt._y = 0 
-            old_box = box
+            #self.count_frame = 0
+            sleep (0.1)
+          if (self.count_frame == 60):
             self.count_frame = 0
+            self.goto_home()
+            old_box = box
             sleep (0.1)
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
             update_logger.exception("Error!")
-            sleep(2)
+            sleep(s2)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
               print "[INFO]     Successful conection ONVIFCamera"
@@ -153,8 +163,10 @@ class Move:
               print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
               UF.send_msg(msg=err_msg)
               sys.exit(0)
+          sleep(0.1)
 
           self.count_frame = self.count_frame + 1
+          print self.count_frame
 
         self.old_box = old_box
 
@@ -175,7 +187,10 @@ class Move:
   def set_speed_coef(self, speed_coef):
     self.speed_coef = speed_coef
   def goto_home(self):
+    self.pause = True
     self.ptz.GotoHomePosition(self.request['GotoHomePosition'])
+    sleep(5)
+    self.pause = False
   def get_zoom(self):
     return self.ptz.GetStatus(self.request['GetStatus'])[0][1]._x
   def stop(self):
