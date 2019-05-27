@@ -17,6 +17,7 @@ import signal
 
 config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
 pid_file ='/home/ubuntu/MM.Tracker/log/pid'
+recognition_result_file = '/home/ibakhtizin/ololo/MM.Tracker/result.json'
 
 app = Flask(__name__)
 
@@ -31,8 +32,8 @@ def discover():
         print('Discovered {} services:'.format(len(ret)))
         for i, service in enumerate(ret):
             if 'onvif' in service.getXAddrs()[0]:
-                ip = service.getXAddrs()[0]
-                cameras.append(str(ip))
+                ip, port = get_ip_and_port_from_str(service.getXAddrs()[0])
+                cameras.append({'ip': ip, 'port': port})
         wsd.stop()
         return cameras
 
@@ -40,6 +41,29 @@ def discover():
         print(e)
         print('Failed to discover services')
         return
+
+def get_ip_and_port_from_str(ip_str):
+    ip = ip_str.split('.')
+    ip = ip[len(ip) - 1].split(':')
+    ip = ip[0].split('/')[0]
+
+    port = ip_str
+    if port.count(':') > 1:
+        port = port.split('.')
+        port = port[len(port) - 1].split(':')
+        port = port[len(port) - 1].split('/')
+        port = port[0]
+    else:
+        port = 80
+    network = ip_str
+    network = network.split('/')
+    network = network[2].split('.')
+    network = network[0] + '.' + network[1] + '.' + network[2]
+
+    ip = str(network) + '.' + str(ip)
+    # print('IP: {}, Port: {}'.format(ip, port))
+    return ip, port
+
 
 @app.route('/')
 def homepage():
@@ -69,37 +93,43 @@ def tracking_url():
             if len(pid_list) < 1:
                 ip = data['ip'] if 'ip' in data else None
                 port = data['port'] if 'port' in data else 80
-                login = data['login'] if 'login' in data else 'login'
-                password = data['password'] if 'password' in data else 'password'
+                login = data['login'] if 'login' in data else 'admin'
+                password = data['password'] if 'password' in data else 'Supervisor'
 
                 config = configparser.ConfigParser()
                 config.read(config_file)
                 config['Settings']['ip'] = str(ip)
                 config['Settings']['port'] = str(port)
+                config['Settings']['rtsp'] = 'rtsp://admin:Supervisor@{ip}:554/2'.format(ip=str(ip))
                 # TODO Save login and password from POST data to CONFIG
 
                 with open(config_file, 'w') as configfile:
                     config.write(configfile)
 
                 # Run Tracking Script
-                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
+                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
                 time.sleep(0.1)
                 tracking_pid = tracking_proc.pid
                 print("TRACKING PID:", int(tracking_pid)+2)
 
                 # Save tracking PID to file
                 with open(pid_file, 'a+') as f:
-                    f.write(str(int(tracking_pid)+2))
+                    f.write(str(int(tracking_pid)+2) + '\n')
 
-                # TODO Run Recognition Script
-                recognition_proc = subprocess.Popen('screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";', shell=True)
+                # # TODO Run Recognition Script
+                recognition_proc = subprocess.Popen(
+                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; source venv/bin/activate; python3 recognition_subprocess.py {folder}";'.format(
+                        folder='/home/ubuntu/MM.Tracker/recognition_queue/'
+                    ),
+                    shell=True
+                )
                 time.sleep(0.1)
                 recognition_pid = recognition_proc.pid
                 print("RECOGNITION PID:", int(recognition_pid) + 2)
 
                 # Save recognition PID to file
                 with open(pid_file, 'a+') as f:
-                    f.write(str(int(recognition_pid) + 2))
+                    f.write(str(int(recognition_pid) + 2) + '\n')
 
 
                 """
@@ -110,13 +140,14 @@ def tracking_url():
                 """
 
 
-                # os.system('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
+                # os.system'screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"')
                 # proc2 =
+                # {recognition_pid}
 
                 return 'Tracking started' \
                        '' \
-                       'Tracking PID: {tracking_pid}' \
-                       'Recognition PID: {recognition_pid}' \
+                       'Tracking PID: {tracking_pid}\n' \
+                       'Recognition PID: {recognition_pid}\n' \
                        'Input: {data}'.format(
                     tracking_pid=int(tracking_pid)+2,
                     recognition_pid=int(recognition_pid) + 2,
@@ -130,7 +161,10 @@ def tracking_url():
         elif data['command'] == 'stop':
             print("Stopping processes:", pid_list)
             for pid in pid_list:
-                os.kill(int(pid), signal.SIGTERM)
+                try:
+                    os.kill(int(pid), signal.SIGTERM)
+                except Exception as e:
+                    print(e)
 
             with open(pid_file, 'w') as p_file:
                 p_file.write('')
@@ -141,9 +175,11 @@ def tracking_url():
         return 'Tracking on/off method'
 
 
-@app.route('/results')
-def results():
-    return 'Face Recognition Results'
+@app.route('/recognition_result')
+def recognition_result_json():
+    with open(recognition_result_file, 'r') as file:
+        data = file.read()
+    return data
 
 
 @app.route('/discovery')
