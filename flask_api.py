@@ -17,7 +17,7 @@ import signal
 
 config_file = '/home/ubuntu/MM.Tracker/conf/settings.ini'
 pid_file ='/home/ubuntu/MM.Tracker/log/pid'
-recognition_result_file = '/home/ibakhtizin/ololo/MM.Tracker/result.json'
+recognition_result_file = '/home/ubuntu/MM.Tracker/result.json'
 
 app = Flask(__name__)
 
@@ -118,9 +118,7 @@ def tracking_url():
 
                 # # TODO Run Recognition Script
                 recognition_proc = subprocess.Popen(
-                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; source venv/bin/activate; python3 recognition_subprocess.py {folder}";'.format(
-                        folder='/home/ubuntu/MM.Tracker/recognition_queue/'
-                    ),
+                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; source venv/bin/activate; python3 recognition_process.py /home/ubuntu/MM.Tracker/images_to_recognize/"',
                     shell=True
                 )
                 time.sleep(0.1)
