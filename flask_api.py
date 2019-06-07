@@ -107,7 +107,7 @@ def tracking_url():
                     config.write(configfile)
 
                 # Run Tracking Script
-                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ubuntu/MM.Tracker/; python test_scripts/test_classes.py;"', shell=True)
+                tracking_proc = subprocess.Popen('screen -S Tracking -dm bash -c "cd /home/ibakhtizin/MM.Tracker/; python2 test_scripts/test_classes.py;"', shell=True)
                 time.sleep(0.1)
                 tracking_pid = tracking_proc.pid
                 print("TRACKING PID:", int(tracking_pid)+2)
@@ -118,7 +118,7 @@ def tracking_url():
 
                 # # TODO Run Recognition Script
                 recognition_proc = subprocess.Popen(
-                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; source venv/bin/activate; python3 recognition_process.py /home/ubuntu/MM.Tracker/images_to_recognize/"',
+                    'screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; python3 recognition_process.py /home/ubuntu/MM.Tracker/images_to_recognize/"',
                     shell=True
                 )
                 time.sleep(0.1)
@@ -131,9 +131,9 @@ def tracking_url():
 
 
                 """
-                screen -S Tracking -dm bash -c "cd /home/ibakhtizin/ololo/MM.Tracker/; python test_scripts/test_classes.py;"
-                screen -S Recognition -dm bash -c "python3 recognition_subprocess.py;";
-                screen -S WebAPI -dm bash -c "cd /home/ibakhtizin/miem_visi0n/Tracking_System; python3 main_flask.py;"
+                sudo screen -S Tracking -dm bash -c "cd /home/ibakhtizin/MM.Tracker/; python2 test_scripts/test_classes.py;"
+                sudo screen -S Recognition -dm bash -c "cd /home/ubuntu/FaceRecognizer; python3 recognition_process.py /home/ubuntu/MM.Tracker/images_to_recognize/"
+                sudo screen -S WebAPI -dm bash -c "cd /home/ibakhtizin/MM.Tracker/; python2 flask_api.py;"
                 screen -ls
                 """
 
