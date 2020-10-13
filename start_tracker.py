@@ -11,11 +11,11 @@ def send_msg(msg,SUBJECT="Error",TO="prostepm21@gmail.com"):
     msg
   ))
 
-  server = smtplib.SMTP(HOST, 587)
-  server.starttls()
-  server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
-  server.sendmail(FROM, [TO], BODY)
-  server.quit()
+  #server = smtplib.SMTP(HOST, 587)
+  #server.starttls()
+  #server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
+  #server.sendmail(FROM, [TO], BODY)
+  #server.quit()
 
 
 
@@ -74,7 +74,8 @@ try:
   from threading import Thread
   from object_detection.utils import label_map_util
   from object_detection.utils import visualization_utils as vis_util
-  
+  import tensorflow.compat.v1 as tf
+  tf.disable_v2_behavior() 
   ################################
   # 3. The process of taking a frame from a stream
   ################################
@@ -97,7 +98,7 @@ try:
       # 3.1.2. Read configuration file (rtsp)
       # add_try (checking file existence)
       # add_try (check the existence of settings in Conf. file)
-      # modify (receiving rtsp from camera)
+     # modify (receiving rtsp from camera)
 
       config = configparser.ConfigParser()
       config.read(pwd + "conf/settings.ini")
@@ -113,7 +114,7 @@ try:
         err_msg = "[ERROR]    Error with cv2.VideoCapture..."
         print err_msg
         print "[INFO]     Check the correctness of the entered data in the setings.ini (rtsp)"
-        send_msg(msg=err_msg)
+        #send_msg(msg=err_msg)
         sys.exit(0)
 
 
@@ -175,7 +176,7 @@ try:
       self.new_image  = np.zeros((width, lenght, 3))
       self.old_image  = np.zeros((width, lenght, 3))
       self.stopped    = False
-
+      print os.getcwd()
       # modify (add models in folder, copy, without tar)
       MODEL_NAME = model_name
       MODEL_FILE = MODEL_NAME + '.tar.gz'
@@ -393,7 +394,7 @@ try:
       err_msg = "[ERROR]    Error with conect ONVIFCamera..."
       print err_msg
       print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-      send_msg(msg=err_msg)
+     # send_msg(msg=err_msg)
       sys.exit(0)
 
 
@@ -448,7 +449,7 @@ try:
           else:
             err_msg = "[ERROR]     face tracker and people tracking off..."
             print err_msg
-            send_msg(msg=err_msg)
+            #send_msg(msg=err_msg)
             sys.exit(0)
 
           if (scores <> [] and (person_rec or face_rec)):
@@ -513,12 +514,12 @@ try:
                   err_msg = "[ERROR]    Error with conect ONVIFCamera..."
                   print err_msg
                   print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-                  send_msg(msg=err_msg)
+             #     send_msg(msg=err_msg)
                   sys.exit(0)
 
 
                 media = mycam.create_media_service()
-                profile = media.GetProfiles()[0]l
+                profile = media.GetProfiles()[0]
                 ptz = mycam.create_ptz_service()
                 request = ptz.create_type('GetConfigurationOptions')
                 request.ConfigurationToken = profile.PTZConfiguration._token
@@ -553,7 +554,7 @@ try:
                   err_msg = "[ERROR]    Error with conect ONVIFCamera..."
                   print err_msg
                   print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-                  send_msg(msg=err_msg)
+              #    send_msg(msg=err_msg)
                   sys.exit(0)
 
 
@@ -579,7 +580,7 @@ except:
   exc_type, exc_value, exc_traceback = sys.exc_info()
   err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
   print err_msg
-  send_msg(msg=err_msg)
+  #send_msg(msg=err_msg)
   sys.exit(0)
   
   #main()
