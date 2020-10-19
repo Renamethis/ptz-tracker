@@ -2,12 +2,13 @@
 os=($cat /etc/*-release)
 if ! grep "Fedora" $os 
 then
-	exit
+	str="apt-get"
+else
+	str="dnf"
 fi
-sudo dnf upgrade --refresh
-sudo dnf install dnf-plugin-system-upgrade
-sudo dnf install python2 
-sudo python2 get-pip.py
-sudo pip2 install -U virtualenv
-sudo pip2 install opencv-contrib-python
-sudo python2 setup.py
+sudo $str upgrade --refresh
+sudo $str install dnf-plugin-system-upgrade
+sudo $str install python2 
+sudo pip get-pip.py
+sudo $str install -U virtualenv
+sudo python2 setup.py $str

@@ -1,10 +1,10 @@
 from subprocess import Popen, PIPE
 import sys
 import os
-
+oname = sys.argv[0]
 out, err = Popen('ls | grep venv', shell=True, stdout=PIPE).communicate()
 #print out
-if out == 'venv\n':
+if out == 'venv':
     print ('Venv error...')
     sys.exit()
 
@@ -35,7 +35,7 @@ os.system('sudo pip install tensorflow==1.5')
 print ('tensorflow install done')
 
 os.system('sudo dnf install protobuf-compiler python-pil python-lxml python-tk')
-print ('apt-get install done')
+print ('sudo' + oname + ' install done')
 os.system('sudo pip install --user Cython')
 print ('Cython install done')
 os.system('sudo pip install --user flask')
@@ -46,8 +46,8 @@ print ('jupyter install done')
 os.system('sudo pip install --user matplotlib')
 print ('matplotlib install done')
 os.system('sudo pip install --user pyping')
-os.system('sudo pip install --user opencv-python')
-os.system('sudo dnf install -y libsm6 libxext6')
+os.system('sudo pip install --user opencv-contrib-python')
+os.system('sudo ' + onamed + ' install -y libsm6 libxext6')
 os.system('sudo pip install --user imutils')
 os.system('sudo pip install --user onvif')
 os.system('sudo pip install Pillow')
