@@ -1,7 +1,5 @@
 #!/bin/bash
-cd /
 os=($cat /etc/*-release)
-echo os
 if ! grep "Fedora" $os 
 then
 	str="apt-get"
@@ -11,6 +9,6 @@ fi
 $str upgrade --refresh
 $str install dnf-plugin-system-upgrade
 $str install python2 
-python2 get-pip.py
+python get-pip.py
 $str install -U virtualenv
 python2 setup.py $str

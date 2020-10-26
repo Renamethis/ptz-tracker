@@ -51,6 +51,7 @@ os.system('sudo ' + onamed + ' install -y libsm6 libxext6')
 os.system('sudo pip install --user imutils')
 os.system('sudo pip install --user onvif')
 os.system('sudo pip install Pillow')
+os.system('sudo pip install numpy')
 #sudo apt-get -y install curl
 #curl -OL https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
 #sudo apt-get -y install unzip
