@@ -3,12 +3,15 @@ output=$(cat /etc/*-release)
 if ! echo $output  | grep "Ubuntu"
 then
 	str="dnf"
-	sudo $str upgrade --refresh
+	sudo $str install dnf-plugin-system-upgrade
 else
 	str="apt-get"
-	sudo $str install dnf-plugin-system-upgrade
+	sudo $str upgrade --refresh
+	sudo $str update
 fi
+sudo $str install python2.7
 sudo $str install virtualenv
+sudo virtualenv -p python2.7 ./venv
 output=$(ls)
 if ! echo $output | grep "venv"
 then
@@ -16,14 +19,17 @@ then
 	exit 1
 fi
 echo "Venv is ok!"
-sudo virtualenv -p python2.7 ./venv
-cd venv
-cd bin
-./activate
-cd ..
-cd ..
-sudo python2 get-pip.py
+sudo sh ./venv/bin/activate
+sudo python2.7 get-pip.py
 sudo pip install -r requirements.txt
+git clone https://github.com/tensorflow/models.git
 sudo wget "http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz"
-sudo cp ssd_mobilenet_v2_coco_2018_03_29.tar.gz models/research/object_detection/
+sudo cp ssd_mobilenet_v2_coco_2018_03_29.tar.gz models/research/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
+sudo apt-get install protobuf-compiler python-pil python-lxml python-tk
+cd models/research
+sudo wget -O protobuf.zip https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip
+sudo unzip protobuf.zip
+./bin/protoc object_detection/protos/*.proto --python_out=.
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+sudo python2.7 conf/conf.py
 #sudo python2 setup.py $str

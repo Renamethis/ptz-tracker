@@ -75,7 +75,7 @@ try:
   from object_detection.utils import label_map_util
   from object_detection.utils import visualization_utils as vis_util
   import tensorflow.compat.v1 as tf
-  tf.disable_v2_behavior() 
+  tf.disable_v2_behavior()
   ################################
   # 3. The process of taking a frame from a stream
   ################################

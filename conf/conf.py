@@ -7,8 +7,8 @@ def createConfig(path):
     """
     config = configparser.ConfigParser()
     config.add_section("Settings")
-    config.set("Settings", "ip", "172.18.191.52")
-    config.set("Settings", "rtsp", "rtsp://172.18.191.52:554/Streaming/Channels/1")
+    config.set("Settings", "ip", "172.18.191.72")
+    config.set("Settings", "rtsp", "rtsp://172.18.191.72:554")
     config.set("Settings", "model_name", "ssd_mobilenet_v2_coco_2018_03_29")
     config.set("Settings", "port", "80")
     config.set("Settings", "login", "admin")
