@@ -1,12 +1,11 @@
 #!/bin/bash
-cd /
 os=($cat /etc/*-release)
 echo os
-if ! grep "Fedora" $os 
+if ! grep "Ubuntu" $os 
 then
-	str="apt-get"
-else
 	str="dnf"
+else
+	str="apt-get"
 fi
 $str upgrade --refresh
 $str install dnf-plugin-system-upgrade
