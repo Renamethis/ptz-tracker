@@ -19,9 +19,9 @@ then
 	exit 1
 fi
 echo "Venv is ok!"
-sudo sh ./venv/bin/activate
+. ./venv/bin/activate
 sudo python2.7 get-pip.py
-sudo pip install -r requirements.txt
+pip install -r requirements.txt
 git clone https://github.com/tensorflow/models.git
 sudo wget "http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz"
 sudo cp ssd_mobilenet_v2_coco_2018_03_29.tar.gz models/research/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
