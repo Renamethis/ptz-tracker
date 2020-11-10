@@ -11,7 +11,8 @@ else
 fi
 sudo $str install python2.7
 sudo $str install virtualenv
-sudo virtualenv -p python2.7 ./venv
+virtualenv -p python2.7 venv
+sudo chmod -R 770 venv
 output=$(ls)
 if ! echo $output | grep "venv"
 then
