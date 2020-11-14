@@ -90,10 +90,10 @@ six==1.15.0
 subprocess32==3.5.4
 suds==0.4
 suds-passworddigest==0.1.2
-tensorboard==1.14.0
+tensorboard==2.0.2
 tensorflow==2.0.0
 tensorflow-estimator==2.0.1
-tensorflow-tensorboard==1.5.1
+tensorflow-tensorboard==1.5.0
 termcolor==1.1.0
 terminado==0.8.3
 testpath==0.4.4
@@ -105,4 +105,4 @@ Werkzeug==1.0.1
 widgetsnbextension==3.5.1
 wrapt==1.12.1
 zipp==1.2.0
-enum==44.4.1
+enum==0.4.7

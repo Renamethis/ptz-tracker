@@ -18,10 +18,10 @@ class WebcamVideoStream:
   def __init__(self, name="WebcamVideoStream"):
     try:
       self.name = name
-    
+
       # 1.1.1. Determining the path to the configuration file
       # add_try (count >= 3)
-      
+
 
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
 
@@ -33,15 +33,15 @@ class WebcamVideoStream:
       self.mycam_ip = UF.get_setting("ip")
 
       # 1.1.3. Sturt function cv2.VideoCapture
-      
+
       try:
-        self.stream = cv2.VideoCapture(self.mycam_rtsp)     
+        self.stream = cv2.VideoCapture(self.mycam_rtsp)
       except:
         init_logger.critical("Error with cv2.VideoCapture")
         init_logger.exception("Error!")
         exc_type, exc_value, exc_traceback = sys.exc_info()
         err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-        UF.send_msg(msg=err_msg)
+        #UF.send_msg(msg=err_msg)
         sys.exit(0)
 
       if self.stream.isOpened() is False:
@@ -49,7 +49,7 @@ class WebcamVideoStream:
         err_msg = "Stream is close"
         init_logger.critical(err_msg)
         init_logger.info("Check rtsp in settings file")
-        UF.send_msg(msg=err_msg)
+        #UF.send_msg(msg=err_msg)
         sys.exit(0)
       else:
         init_logger.info("Process get rtsp stream.")
@@ -63,7 +63,7 @@ class WebcamVideoStream:
       init_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      UF.send_msg(msg=err_msg)
+      #UF.send_msg(msg=err_msg)
       sys.exit(0)
 
   # 3.2. Start thread
@@ -111,7 +111,7 @@ class WebcamVideoStream:
       sys.exit(0)
   def check_connect(self):
     try:
-      check_stream = cv2.VideoCapture(self.mycam_rtsp) 
+      check_stream = cv2.VideoCapture(self.mycam_rtsp)
     except:
       return False
     if check_stream.isOpened() is False:

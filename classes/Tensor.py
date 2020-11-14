@@ -9,7 +9,7 @@ import logging
 import tarfile
 import time
 from time import sleep
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import Utility_Functions as UF
 from threading import Thread
 from object_detection.utils import label_map_util
@@ -18,6 +18,7 @@ from object_detection.utils import visualization_utils as vis_util
 class Tensor:
   # 4.1. Initialization
   def __init__(self, visible, length = 720, hight = 405, model_name = 'ssd_mobilenet_v2_coco_2018_03_29', name="Tensor"):
+    tf.disable_v2_behavior()
     self.name       = name
     self.dellay     = 0
     self.flag       = False
@@ -57,7 +58,7 @@ class Tensor:
       init_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      UF.send_msg(msg=err_msg)
+      #UF.send_msg(msg=err_msg)
       sys.exit(0)
 
 
@@ -107,7 +108,7 @@ class Tensor:
                 update_logger.exception("Error!")
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-                UF.send_msg(msg=err_msg)
+                #UF.send_msg(msg=err_msg)
 
               if (self.visible == 'Yes'):
                 vis_util.visualize_boxes_and_labels_on_image_array(
@@ -118,7 +119,7 @@ class Tensor:
                   self.category_index,
                   use_normalized_coordinates=True,
                   line_thickness=8)
-              
+
               time_2 = time.time()
               err =  time_2 - time_1
               dellay = dellay + err
@@ -179,9 +180,8 @@ class Tensor:
       return self.t.isAlive()
     except:
       return False
-
   def get_tps(self):
-    try: 
+    try:
       result = (float(self.count) / self.dellay)
     except:
       result = 0

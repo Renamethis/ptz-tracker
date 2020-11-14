@@ -65,18 +65,18 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
     image_np = stream.read()
     image_np = cv2.resize(image_np, (length,hight))
     tensor.set_image(image_np)
-    
+
     scores = tensor.read_scores()
     image_np = tensor.read()
     classes = tensor.read_classes()
     boxes = tensor.read_boxes()
-    
+
     if image_np is not None:
       scores[scores > 0] = 1
-      
+
       classes = classes*scores
 
-      persons = np.where(classes == 1)[1]
+      persons = max(np.where(classes == 1)[1])
 
       if (str(persons) <> '[]'):
         classes = tensor.read_classes()
@@ -84,7 +84,7 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
         person = persons[0]
         l_w = [hight,length,hight,length]
         box = boxes[0][person]
-        #print box 
+        #print box
 
         if (box[1] > 0.05 and box[3] < 0.95):
           frame_count = frame_count + 1
@@ -101,7 +101,3 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
           flag = False
 
   return speed_coef*(1.1-move.get_zoom())*0.8
-
-
-
-

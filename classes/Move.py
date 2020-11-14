@@ -8,7 +8,7 @@ import traceback
 import time
 from time import sleep
 import numpy as np
-import Utility_Functions as UF
+#import Utility_Functions as UF
 import logging
 ################################
 # 3. The process of taking a frame from a stream
@@ -41,7 +41,7 @@ class Move:
         err_msg = "Error with conect ONVIFCamera..."
         init_logger.critical(err_msg)
         init_logger.info("Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
-        UF.send_msg(msg=err_msg)
+        #UF.send_msg(msg=err_msg)
         sys.exit(0)
 
 
@@ -58,7 +58,7 @@ class Move:
       init_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      UF.send_msg(msg=err_msg)
+      #UF.send_msg(msg=err_msg)
       sys.exit(0)
 
   # 3.2. Start thread
@@ -86,7 +86,7 @@ class Move:
           if box is not None:
             to_x = int(abs(box[1] - box[3])/2.0 + box[1])
             to_y = int(box[0])
-            
+
 
             if (to_x < self.length/3 - 80 or to_x > self.length/3 + 80):
               if to_x > self.length/3:
@@ -104,9 +104,9 @@ class Move:
             self.old_vec_x = vec_x
             self.old_vec_y = vec_y
             self.request.Velocity.PanTilt._x = vec_x
-            self.request.Velocity.PanTilt._y = vec_y           
+            self.request.Velocity.PanTilt._y = vec_y
           else:
-            
+
             self.request.Velocity.PanTilt._x = 0
             self.request.Velocity.PanTilt._y = 0
           try:
@@ -121,9 +121,9 @@ class Move:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
               print err_msg
               print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-              send_msg(msg=err_msg)
+              #send_msg(msg=err_msg)
               sys.exit(0)
-        else: 
+        else:
           sleep(0.2)
         self.old_box = box
     except:

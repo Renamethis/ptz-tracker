@@ -7,14 +7,17 @@ def createConfig(path):
     """
     config = configparser.ConfigParser()
     config.add_section("Settings")
-    config.set("Settings", "ip", "172.18.191.72")
-    config.set("Settings", "rtsp", "rtsp://172.18.191.72:554")
+    ip = raw_input("Enter IP adress: ")
+    rtsp = raw_input("Enter address of rtsp-thread: ")
+    login = raw_input("Enter login: ")
+    password = raw_input("Enter password: ")
+    config.set("Settings", "ip", ip)
+    config.set("Settings", "rtsp", rtsp)
     config.set("Settings", "model_name", "ssd_mobilenet_v2_coco_2018_03_29")
     config.set("Settings", "port", "80")
-    config.set("Settings", "login", "admin")
-    config.set("Settings", "password", "Supervisor")
-    config.set("Settings", "wsdl_path", os.path.abspath(os.getcwd()).split('MM.Tracker')[0] + 'MM.Tracker/wsdl')
-    
+    config.set("Settings", "login", login)
+    config.set("Settings", "password", password)
+    config.set("Settings", "wsdl_path", os.path.abspath(os.getcwd()).split('ptz-tracker')[0] + 'ptz-tracker/wsdl')
     with open(path, "w") as config_file:
         config.write(config_file)
  

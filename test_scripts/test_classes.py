@@ -12,8 +12,8 @@ activate_this_file = "venv/bin/activate_this.py"
 execfile(activate_this_file, dict(__file__=activate_this_file))
 import sys
 import os
-os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/') 
-os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
+os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
+os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/')
 
 pwd = os.getcwd()
 sys.path.append(pwd+'/classes')
@@ -41,7 +41,7 @@ import time
 import base64
 import pyping
 import logging
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import configparser
 from imutils.video import FPS
 from onvif import ONVIFCamera
@@ -61,12 +61,11 @@ import Ping as P
 # 3. Create log file
 ################################
 
-
+tf.disable_v2_behavior()
 pwd = UF.get_pwd("log")
 logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler(pwd+"/main.log")
-
 pwd_images_to_recognize = UF.get_pwd("images_to_recognize")
 pwd_recognition_queue = UF.get_pwd("recognition_queue")
 
@@ -81,7 +80,6 @@ logger.info("__________________Program_started__________________")
 ################################
 # 4. Get settings from settings
 ################################
-
 
 ip = UF.get_setting("ip")
 length = int(UF.get_setting("length"))

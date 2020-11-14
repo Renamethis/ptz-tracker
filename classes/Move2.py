@@ -8,7 +8,7 @@ import traceback
 import time
 from time import sleep
 import numpy as np
-import Utility_Functions as UF
+#import Utility_Functions as UF
 import logging
 ################################
 # 3. The process of taking a frame from a stream
@@ -42,7 +42,7 @@ class Move:
         err_msg = "Error with conect ONVIFCamera..."
         init_logger.critical(err_msg)
         init_logger.info("Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
-        UF.send_msg(msg=err_msg)
+        #UF.send_msg(msg=err_msg)
         sys.exit(0)
 
 
@@ -52,13 +52,13 @@ class Move:
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
       for _, r in self.request.items(): r.ProfileToken = profile._token
       #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
-      
+
     except:
       init_logger.critical("Error in %s.__init__" % (self.name))
       init_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      UF.send_msg(msg=err_msg)
+      #UF.send_msg(msg=err_msg)
       sys.exit(0)
 
   # 3.2. Start thread
@@ -79,7 +79,7 @@ class Move:
       while True:
         if self.pause:
           self.request['ContinuousMove'].Velocity.PanTilt._x = 0
-          self.request['ContinuousMove'].Velocity.PanTilt._y = 0 
+          self.request['ContinuousMove'].Velocity.PanTilt._y = 0
           sleep(0.1)
         if self.stopped:
           return
@@ -91,8 +91,8 @@ class Move:
         elif box is not None:
           to_x = int(abs(box[1] - box[3])/2.0 + box[1])
           to_y = int(box[0])
-          
-          
+
+
 
           if (to_x < self.length/3 - 40 or to_x > self.length/3 + 40):
             if to_x > self.length/3:
@@ -117,7 +117,7 @@ class Move:
 
 
           self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
-          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
+          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
@@ -130,7 +130,7 @@ class Move:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
               print err_msg
               print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-              UF.send_msg(msg=err_msg)
+              #UF.send_msg(msg=err_msg)
               sys.exit(0)
 
           old_box = box
@@ -138,10 +138,10 @@ class Move:
         elif box is None and old_box is not None:
           if (self.count_frame < 20):
             self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
-            self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y 
+            self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y
           if (self.count_frame == 20):
             self.request['ContinuousMove'].Velocity.PanTilt._x = 0
-            self.request['ContinuousMove'].Velocity.PanTilt._y = 0 
+            self.request['ContinuousMove'].Velocity.PanTilt._y = 0
             #self.count_frame = 0
             sleep (0.1)
           if (self.count_frame == 60):
@@ -161,7 +161,7 @@ class Move:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
               print err_msg
               print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
-              UF.send_msg(msg=err_msg)
+              #UF.send_msg(msg=err_msg)
               sys.exit(0)
           sleep(0.1)
 
@@ -171,7 +171,7 @@ class Move:
         self.old_box = old_box
 
 
-        
+
     except:
       update_logger.critical("Error in process")
       update_logger.exception("Error!")

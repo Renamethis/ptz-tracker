@@ -35,11 +35,9 @@ try:
   ################################
 
   # add_func (execute the command: "export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim")
-
-  activate_this_file = "venv/bin/activate_this.py"
-  execfile(activate_this_file, dict(__file__=activate_this_file))
   import sys
   import os
+  os.system('. ./venv/bin/activate')
   os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/') 
   os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
   os.chdir('models/research')
