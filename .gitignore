@@ -1,13 +1,1 @@
-/venv/
-/cocoapi/
-/models/
-
-nohup.out
-/log/
-
-/conf/
-/classes/*pyc
-/images_to_recognize/temp_frames/*
-/images_to_recognize/*png
-!/images_to_recognize/recognition_queue.txt
-!/images_to_recognize/temp_frames/.gitkeep
+/venv
