@@ -36,8 +36,12 @@ def tracker_listener():
 				return error('Tracking already running, stop this one before start new')
 			ip = data['ip']
 			port = data['port']
-			login = data['login']
-			password = data['password']
+			try:
+				login = data['login']
+				password = data['password']
+			except:
+				login = 'admin'
+				password = 'Supervisor'
 			wsdl_path = pwd + '/wsdl'
 			cam = Camera(ip, port, login, password, wsdl_path)
 			if not cam.connect():
@@ -48,6 +52,7 @@ def tracker_listener():
 			config.set('Settings', 'ip', ip)
 			config.set('Settings', 'rtsp', rtsp)
 			config.set('Settings', 'port', port)
+			config.set('Settings', 'login', login)
 			config.set('Settings', 'password', password)
 			config.set('Settings', 'wsdl_path', wsdl_path)
 			with open(config_path, "w") as config_file:
@@ -58,7 +63,7 @@ def tracker_listener():
 			with open(pid_path, 'w') as f:
 				f.write(str(int(pid)))
 			print "Tracker Successful started on pid: " + str(pid)
-			return answer('Tracker started:', {'pid':pid, 'stream':rtsp})
+			return answer('Tracker started', {'pid':pid, 'stream':rtsp})
 		elif data['command'] == 'stop':
 			try:
 				os.kill(int(pid_lines[0]), signal.SIGTERM)
