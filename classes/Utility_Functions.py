@@ -30,7 +30,7 @@ def send_msg(msg,SUBJECT="Error"):
 
 def get_pwd(dir=""):
   pwd = os.getcwd()
-  if dir <> "":
+  if dir != "":
     lst = pwd.split('/')
     count = len(lst)-3
     string = ""
@@ -41,7 +41,7 @@ def get_pwd(dir=""):
 
 def get_setting(get_setting = ""):
   get_setting_logger = logging.getLogger("Main.functions.get_setting")
-  if get_setting <> "":
+  if get_setting != "":
     config = configparser.ConfigParser()
     pwd = get_pwd("conf")
     config.read(pwd + "/settings.ini")
@@ -56,7 +56,7 @@ def get_setting(get_setting = ""):
 
 
 def init_tracker(stream, tensor, move, length, hight, speed_coef):
-  print "[INFO]     Start init"
+  print("[INFO]     Start init")
   flag = True
   frame_count = 0
   x1 = 0
@@ -78,7 +78,7 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
 
       persons = max(np.where(classes == 1)[1])
 
-      if (str(persons) <> '[]'):
+      if (str(persons) != '[]'):
         classes = tensor.read_classes()
         #print (persons_num, ': found person')
         person = persons[0]
@@ -97,7 +97,7 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
 
         if frame_count >= 50:
           percent = round((x2/50 - x1/50) *100)
-          print percent
+          print(percent)
           flag = False
 
   return speed_coef*(1.1-move.get_zoom())*0.8

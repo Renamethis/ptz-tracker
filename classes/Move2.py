@@ -50,7 +50,7 @@ class Move:
       profile = media.GetProfiles()[0]
       self.ptz = mycam.create_ptz_service()
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
-      for _, r in self.request.items(): r.ProfileToken = profile._token
+      for _, r in list(self.request.items()): r.ProfileToken = profile.token
       #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
 
     except:
@@ -125,11 +125,11 @@ class Move:
             sleep(2)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
-              print "[INFO]     Successful conection ONVIFCamera"
+              print("[INFO]     Successful conection ONVIFCamera")
             except:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
-              print err_msg
-              print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+              print(err_msg)
+              print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
 
@@ -156,17 +156,17 @@ class Move:
             sleep(s2)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
-              print "[INFO]     Successful conection ONVIFCamera"
+              print("[INFO]     Successful conection ONVIFCamera")
             except:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
-              print err_msg
-              print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+              print(err_msg)
+              print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
           sleep(0.1)
 
           self.count_frame = self.count_frame + 1
-          print self.count_frame
+          print((self.count_frame))
 
         self.old_box = old_box
 
@@ -177,7 +177,7 @@ class Move:
       update_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      print err_msg
+      print(err_msg)
       sys.exit(0)
 
   def status(self):

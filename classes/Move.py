@@ -52,7 +52,7 @@ class Move:
       self.request.ConfigurationToken = profile.PTZConfiguration._token
       ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request)
       self.request = self.ptz.create_type('ContinuousMove')
-      self.request.ProfileToken = profile._token
+      self.request.ProfileToken = profile.token
     except:
       init_logger.critical("Error in %s.__init__" % (self.name))
       init_logger.exception("Error!")
@@ -116,11 +116,11 @@ class Move:
             sleep(1)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
-              print "[INFO]     Successful conection ONVIFCamera"
+              print("[INFO]     Successful conection ONVIFCamera")
             except:
               err_msg = "[ERROR]    Error with conect ONVIFCamera..."
-              print err_msg
-              print "[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)"
+              print(err_msg)
+              print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #send_msg(msg=err_msg)
               sys.exit(0)
         else:
@@ -131,7 +131,7 @@ class Move:
       update_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      print err_msg
+      print(err_msg)
       sys.exit(0)
 
   def status(self):

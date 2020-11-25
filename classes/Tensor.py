@@ -141,7 +141,7 @@ class Tensor:
       update_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      print err_msg
+      print(err_msg)
       sys.exit(0)
 
   def set_image(self, image):

@@ -9,9 +9,9 @@ else
 	sudo $str upgrade
 	sudo $str update
 fi
-sudo $str install python2.7
+sudo $str install python3
 sudo $str install virtualenv
-virtualenv -p python2.7 venv
+virtualenv -p python3 venv
 sudo chmod -R 770 venv
 output=$(ls)
 if ! echo $output | grep "venv"
@@ -20,14 +20,15 @@ then
 	exit 1
 fi
 echo "Venv is ok!"
-sudo python2.7 get-pip.py
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+sudo python3 get-pip.py
 . ./venv/bin/activate
 pip install -r requirements.txt
 pip uninstall tensorboard
 pip install tensorboard==2.0.2
 git clone https://github.com/tensorflow/models.git
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 tar -xzvf ssd_mobilenet_v2_coco_2018_03_29.tar.gz
-mkdir detection_models
 cp ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb detection_models/ssd_mobilenet_v2_body.pb
 rm ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk

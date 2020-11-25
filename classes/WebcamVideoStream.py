@@ -29,7 +29,7 @@ class WebcamVideoStream:
       # modify (receiving rtsp from camera)
 
       self.mycam_rtsp = UF.get_setting("rtsp")
-      print self.mycam_rtsp
+      print(self.mycam_rtsp)
       self.mycam_ip = UF.get_setting("ip")
 
       # 1.1.3. Sturt function cv2.VideoCapture
@@ -107,7 +107,7 @@ class WebcamVideoStream:
       update_logger.exception("Error!")
       exc_type, exc_value, exc_traceback = sys.exc_info()
       err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-      print err_msg
+      print(err_msg)
       sys.exit(0)
   def check_connect(self):
     try:

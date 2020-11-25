@@ -9,7 +9,7 @@ import traceback
 ################################
 
 activate_this_file = "venv/bin/activate_this.py"
-execfile(activate_this_file, dict(__file__=activate_this_file))
+exec(compile(open(activate_this_file, "rb").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))
 import sys
 import os
 os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
@@ -39,7 +39,6 @@ import six.moves.urllib as urllib
 import tarfile
 import time
 import base64
-import pyping
 import logging
 import tensorflow.compat.v1 as tf
 import configparser
@@ -47,7 +46,6 @@ from imutils.video import FPS
 from onvif import ONVIFCamera
 from time import sleep
 from threading import Thread
-from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 import WebcamVideoStream as WVS
 import Tensor as T
@@ -106,7 +104,7 @@ ping.start()
 
 if init == 'Yes':
   speed_coef = UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
-  print speed_coef
+  print(speed_coef)
   move.set_speed_coef(speed_coef)
 
 
@@ -116,10 +114,10 @@ next_time = 0
 while True:
   img = stream.read()
 
-  if ping.read()  <> 0:
+  if ping.read()  != 0:
     stream.stop()
     logger.warning("Camera conection lost. Reconnect...")
-    while ping.read() <> 0 or not stream.check_connect() or stream.status():
+    while ping.read() != 0 or not stream.check_connect() or stream.status():
       sleep(1)
 
 
@@ -145,13 +143,13 @@ while True:
       boxes    = tensor.read_boxes()
 
 
-      if (scores is not None and image_np is not None and classes is not None and boxes is not None):
+      if (scores.any() and image_np is not None and classes is not None and boxes is not None):
         scores[scores > 0.45] = 1
         classes = classes*scores
         persons   = np.where(classes == 1)[1]
         #####print tensor.get_tps()
 
-        if (str(persons) <> '[]'):
+        if (str(persons) != '[]'):
 
 
           # <>
