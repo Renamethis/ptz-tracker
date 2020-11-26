@@ -33,7 +33,6 @@ class Move:
       self.count_frame = 0
       self.speed_coef = speed_coef
       self.pause = False
-
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
       try:
         mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
@@ -51,6 +50,8 @@ class Move:
       self.ptz = mycam.create_ptz_service()
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
       for _, r in list(self.request.items()): r.ProfileToken = profile.token
+      status = self.ptz.GetStatus({'ProfileToken': profile.token})
+      self.request['ContinuousMove'].Velocity = status.Position
       #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
 
     except:
@@ -78,8 +79,8 @@ class Move:
       update_logger.info("Process started")
       while True:
         if self.pause:
-          self.request['ContinuousMove'].Velocity.PanTilt._x = 0
-          self.request['ContinuousMove'].Velocity.PanTilt._y = 0
+          self.request['ContinuousMove'].Velocity.PanTilt.x = 0
+          self.request['ContinuousMove'].Velocity.PanTilt.y = 0
           sleep(0.1)
         if self.stopped:
           return
@@ -116,8 +117,8 @@ class Move:
             vec_y = 1
 
 
-          self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
-          self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y
+          self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
+          self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
@@ -137,11 +138,11 @@ class Move:
 
         elif box is None and old_box is not None:
           if (self.count_frame < 20):
-            self.request['ContinuousMove'].Velocity.PanTilt._x = vec_x
-            self.request['ContinuousMove'].Velocity.PanTilt._y = vec_y
+            self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
+            self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
           if (self.count_frame == 20):
-            self.request['ContinuousMove'].Velocity.PanTilt._x = 0
-            self.request['ContinuousMove'].Velocity.PanTilt._y = 0
+            self.request['ContinuousMove'].Velocity.PanTilt.x = 0
+            self.request['ContinuousMove'].Velocity.PanTilt.y = 0
             #self.count_frame = 0
             sleep (0.1)
           if (self.count_frame == 60):
