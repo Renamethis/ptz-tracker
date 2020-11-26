@@ -27,6 +27,11 @@ sudo python3 get-pip.py
 pip3 install -r requirements.txt
 pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow
 git clone https://github.com/tensorflow/models.git
+git clone https://github.com/FalkTannhaeuser/python-onvif-zeep.git
+cd python-onvif-zeep
+python3 setup.py install
+pip3 install --upgrade onvif_zeep
+cd ..
 #wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 #tar -xzvf ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 #cp ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb detection_models/ssd_mobilenet_v2_body.pb
