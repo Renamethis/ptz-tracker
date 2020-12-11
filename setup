@@ -2,16 +2,14 @@
 output=$(cat /etc/*-release)
 if ! echo $output  | grep "Ubuntu"
 then
-	str="dnf"
-	sudo $str install dnf-plugin-system-upgrade
-else
-	str="apt-get"
-	sudo $str upgrade
-	sudo $str update
+	echo "OS is incompatible"
+	exit 1
 fi
-sudo $str install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
-sudo $str install python3
-sudo $str install virtualenv
+sudo apt-get upgrade
+sudo apt-get update
+sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+sudo apt-get install python3
+sudo apt-get install virtualenv
 virtualenv -p python3 venv
 sudo chmod -R 770 venv
 output=$(ls)
@@ -25,7 +23,7 @@ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python3 get-pip.py
 . ./venv/bin/activate
 pip3 install -r requirements.txt
-pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow
+#pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow
 git clone https://github.com/tensorflow/models.git
 git clone https://github.com/FalkTannhaeuser/python-onvif-zeep.git
 cd python-onvif-zeep
