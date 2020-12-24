@@ -9,14 +9,15 @@ class Camera:
         self.password = password
         self.wpath = wsdl_path
         self.init_logger = logging.getLogger("Main.%s.init" % (self.name))
+
     def getStreamUri(self):
         self.request = self.media.create_type('GetStreamUri')
-        self.request.ProfileToken = self.profile._token
+        self.request.ProfileToken = self.profile.token
         ans = self.media.GetStreamUri(self.request)
         return ans['Uri']
     def move(self, x, y):
         self.request = self.ptz.create_type('ContinuousMove')
-        self.request.ConfigurationToken = self.profile.PTZConfiguration._token
+        self.request.ConfigurationToken = self.profile.PTZConfiguration.token
         self.request.Velocity.PanTilt._x = x
         self.request.Velocity.PanTilt._y = y
         self.ptz.ContinuousMove(self.request)

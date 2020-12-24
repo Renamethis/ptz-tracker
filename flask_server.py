@@ -1,17 +1,16 @@
 import os
 import sys
-activate_this_file = "venv/bin/activate_this.py"
-execfile(activate_this_file, dict(__file__=activate_this_file))
+#activate_this_file = "venv/bin/activate_this.py"
+#exec(compile(open(activate_this_file, "rb").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))
 pwd = os.getcwd()
 sys.path.append(pwd+'/classes')
 config_path = pwd + '/conf/settings.ini'
 pid_path = pwd + '/log/pid'
+python_bin = "venv/bin/python"
+script_file = "test_scripts/test_classes.py"
 from flask import Flask
-
-
 from flask import request
 from flask import jsonify
-from OnvifInteraction import Camera
 import configparser
 import signal
 import subprocess
@@ -30,40 +29,17 @@ def tracker_listener():
 	if request.method == 'POST':
 		with open(pid_path) as pid_file:
 			pid_lines = pid_file.readlines()
-		data = request.form
+		data = request.get_json(force=True)
 		if data['command'] == 'start':
-			if len(pid_lines) <> 0 and check_pid(int(pid_lines[0])) :
+			if len(pid_lines) != 0 and check_pid(int(pid_lines[0])) :
 				return error('Tracking already running, stop this one before start new')
-			ip = data['ip']
-			port = data['port']
-			try:
-				login = data['login']
-				password = data['password']
-			except:
-				login = 'admin'
-				password = 'Supervisor'
-			wsdl_path = pwd + '/wsdl'
-			cam = Camera(ip, port, login, password, wsdl_path)
-			if not cam.connect():
-				return error('Data is invalid')
-			rtsp = cam.getStreamUri()
-			config = configparser.ConfigParser()
-			config.read(config_path)
-			config.set('Settings', 'ip', ip)
-			config.set('Settings', 'rtsp', rtsp)
-			config.set('Settings', 'port', port)
-			config.set('Settings', 'login', login)
-			config.set('Settings', 'password', password)
-			config.set('Settings', 'wsdl_path', wsdl_path)
-			with open(config_path, "w") as config_file:
-				config.write(config_file)
-			tracking = subprocess.Popen(['python2.7 ' +  pwd + '/test_scripts/test_classes.py'], shell=True)
+			tracking = subprocess.Popen([python_bin, script_file], shell=True)
 			time.sleep(0.1)
-			pid = int(tracking.pid) + 1
+			pid = int(tracking.pid)
 			with open(pid_path, 'w') as f:
 				f.write(str(int(pid)))
-			print "Tracker Successful started on pid: " + str(pid)
-			return answer('Tracker started', {'pid':pid, 'stream':rtsp})
+			print("Tracker Successful started on pid: " + str(pid))
+			return answer('Tracker started', {'pid':pid})
 		elif data['command'] == 'stop':
 			try:
 				os.kill(int(pid_lines[0]), signal.SIGTERM)
@@ -72,6 +48,20 @@ def tracker_listener():
 			except:
 				return error('Internal error. Try to restart server and check log to get more information')
 			return answer('Tracker stopped')
+		elif data['command'] == 'set':
+			port = data['port']
+			ip = data['ip']
+			rtsp = "rtsp://" + ip + ':554'
+			config = configparser.ConfigParser()
+			config.read(config_path)
+			config.set('Settings', 'ip', ip)
+			config.set('Settings', 'rtsp', rtsp)
+			config.set('Settings', 'port', port)
+			config.set('Settings', 'login', 'admin')
+			config.set('Settings', 'password', 'Supervisor')
+			with open(config_path, "w") as config_file:
+				config.write(config_file)
+			return answer('Data set up successfully')
 		else:
 			return error('Bad command')
 	else:

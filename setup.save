@@ -31,23 +31,13 @@ cd python-onvif-zeep
 python3 setup.py install
 pip3 install --upgrade onvif_zeep
 cd ..
-sudo rm -rf python-onvif-zeep
 #wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 #tar -xzvf ssd_mobilenet_v2_coco_2018_03_29.tar.gz
 #cp ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb detection_models/ssd_mobilenet_v2_body.pb
 #rm ssd_mobilenet_v2_coco_2018_03_29.tar.gz
-output=$(cat /etc/nv_tegra_release)
-if echo $output | grep aarch64
-then
-        url="https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-aarch_64.zip"
-        pip3 install -r requirements_jetson.txt
-else
-        url="https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-x86_64.zip"
-        pip3 install -r requirements_server.txt
-fi
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk
 cd models/research
-wget -O protobuf.zip $url
+wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/
 unzip protobuf.zip
 ./bin/protoc object_detection/protos/*.proto --python_out=.
 export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim

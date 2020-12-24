@@ -7,9 +7,6 @@ import traceback
 ################################
 # 1. Starting the virtual environment
 ################################
-
-activate_this_file = "venv/bin/activate_this.py"
-exec(compile(open(activate_this_file, "rb").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))
 import sys
 import os
 os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
