@@ -77,4 +77,4 @@ def answer(type, data=None):
 		'information':data
 	}), 400
 if __name__ == '__main__':
-	app.run()
+	app.run(host='172.18.159.27')
