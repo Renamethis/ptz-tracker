@@ -17,15 +17,17 @@ def server():
         if(data['command'] == 'start' or data['command'] == 'stop'): # Запуск/Остановка трекера
             # Запрос к базе данных erudite
             response = get(erudite_url + 'equipment', headers = erudite_headers)
-            equipment = response.json()['data']
+            equipment = response.json()
             device_ip = '127.0.0.1'
             device_port = '5000'
             for device in equipment: # Поиск необходимого устройства
                 if((device['type'] == 'Jetson' or device['type'] == 'Server')
-                and device['classroom'] == data['classroom'] ):
+                and device['room_name'] == data['room_name'] ):
                     device_ip = device['ip']
                     device_port = device['port']
-            response = post('http://' + device_ip + ':' + device_port + '/track',
+                    break
+            print(device_ip)
+            response = post('http://' + device_ip + ':' + str(device_port) + '/track',
             data=dumps({'command':data['command']}))
             print(response.json())
             if(response.json()['status'] != 'Error'):
@@ -41,14 +43,14 @@ def server():
             camera_ip = data['camera_ip']
             device_ip = data['device_ip']
             device_port = data['device_port']
-            if(not if_val(equipment, 'ip', device_ip) and if_val(rooms, 'ruz_number', data['classroom'])):
+            if(not if_val(equipment, 'ip', device_ip) and if_val(rooms, 'ruz_number', data['room_name'])):
                 response = post(erudite_url + 'equipment',
                 headers = erudite_headers, data=dumps({
                 'name' : data['name'],
                 'type' : data['type'],
                 'ip' : device_ip,
                 'port' : device_port,
-                'classroom' : data['classroom']
+                'room_name' : data['room_name']
                 }))
                 if(response.json()['message'] == 'Equipment added successfully'):
                     response = post("https://" + device_ip + ":" + device_port + "/track", data=dumps({
