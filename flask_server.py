@@ -75,6 +75,6 @@ def answer(type, data=None):
 	return jsonify({
 		'status':type,
 		'information':data
-	}), 400
+	}), 200
 if __name__ == '__main__':
 	app.run(host='172.18.159.27')
