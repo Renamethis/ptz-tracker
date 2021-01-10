@@ -92,9 +92,6 @@ class Move:
         elif box is not None:
           to_x = int(abs(box[1] - box[3])/2.0 + box[1])
           to_y = int(box[0])
-
-
-
           if (to_x < self.length/3 - 40 or to_x > self.length/3 + 40):
             if to_x > self.length/3:
               vec_x = float(to_x - self.length/3)/(self.length)
@@ -106,9 +103,7 @@ class Move:
             vec_y = float(self.hight/5 - to_y)/(self.hight)
           else:
             vec_y = 0
-
           self.count_frame = 0
-
           vec_x = vec_x*self.speed_coef
           vec_y = vec_y*self.speed_coef
           if vec_x > 1:
@@ -165,12 +160,10 @@ class Move:
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
           sleep(0.1)
-
           self.count_frame = self.count_frame + 1
           print((self.count_frame))
 
         self.old_box = old_box
-
 
 
     except:
