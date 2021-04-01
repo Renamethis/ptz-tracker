@@ -1,0 +1,14 @@
+%YAML:1.0
+---
+mappointsFile: "NewMap.mappoints"
+nMappoints: 1999
+keyframesFile: "NewMap.keyframes"
+nKeyframes: 45
+featuresFile: "NewMap.features"
+nFeatures: 43772
+Options: 66
+Options descriptions: [ ONLY_MAPPOINTS_FEATURES,
+    FEATURES_FILE_NOT_DELIMITED ]
+cameraMatrices:
+   - { fx:5.3540002441406250e+02, fy:5.3920001220703125e+02,
+       cx:3.2010000610351562e+02, cy:2.4760000610351562e+02 }
