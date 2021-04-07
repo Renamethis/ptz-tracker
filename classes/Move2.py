@@ -10,6 +10,7 @@ from time import sleep
 import numpy as np
 #import Utility_Functions as UF
 import logging
+from zmqgrabber import message_grabber
 ################################
 # 3. The process of taking a frame from a stream
 ################################
@@ -70,6 +71,8 @@ class Move:
     self.t = Thread(target=self.update, name=self.name, args=())
     self.t.daemon = True
     self.t.start()
+    self.mt = message_grabber("tcp://*:5555");
+    self.mt.start()
     return self
 
   # 3.3. Infinite loop of receiving frames from a stream

@@ -1,1 +1,13 @@
 venv/
+eigen/
+Pangolin/
+opencv/
+opencv_contrib/
+python_onvif_zeep/
+ORB_SLAM2/
+cppzmq/
+libzmq/
+osmap/
+models/
+protobuf/
+orb_module/build/

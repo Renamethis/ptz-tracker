@@ -15,7 +15,8 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
-
+cd ..
+cd ..
 # OPENCV
 
 sudo apt-get install build-essential
@@ -29,7 +30,8 @@ cd build
 cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
 make -j4
 sudo make install
-
+cd ..
+cd ..
 # EIGEN
 
 git clone https://gitlab.com/libeigen/eigen.git
@@ -40,18 +42,19 @@ cmake ..
 make -j4
 sudo make install
 sudo ln -s /usr/include/eigen3/Eigen /usr/local/include/Eigen
-
+cd ..
+cd ..
 # ROS
 
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-melodic.list'
-sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-sudo apt update
-sudo apt install ros-melodic-desktop-full
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-sudo apt-get install python-rosdep
-sudo rosdep init
-rosdep update
+#sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-melodic.list'
+#sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+#sudo apt update
+#sudo apt install ros-melodic-desktop-full
+#echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+#source ~/.bashrc
+#sudo apt-get install python-rosdep
+#sudo rosdep init
+#rosdep update
 ### export ORB_SLAM2/Examples/ROS/
 ### SOLVE PROBLEM WITH usleep
 ### MAKE LINK WITH libprotobuf.so
@@ -60,3 +63,6 @@ rosdep update
 ### INSTALL ZEOMQ ( cppzmq )
 ### roslaunch rtsp_ros_driver rtsp_camera.launch hostname:=172.18.191.72 username:=admin password:=Supervisor stream:="rtsp://172.18.191.72/Streaming/Channels/2"
 
+### ORB_SLAM 
+git clone https://github.com/raulmur/ORB_SLAM2.git
+mv orb_module ORB_SLAM/orb_module
