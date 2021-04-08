@@ -82,11 +82,10 @@ hight = int(UF.get_setting("hight"))
 port = UF.get_setting("port")
 login = UF.get_setting("login")
 password = UF.get_setting("password")
-wsdl_path = UF.get_pwd("wsdl/")
+wsdl_path = os.path.abspath(os.getcwd()).split('/classes')[0] + '/wsdl'
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
 init = UF.get_setting("init")
-face_recognition_on = UF.get_setting("face_recognition_on")
 
 
 stream = WVS.WebcamVideoStream()
@@ -147,20 +146,6 @@ while True:
         #####print tensor.get_tps()
 
         if (str(persons) != '[]'):
-
-
-          # <>
-          if time.time() > next_time and face_recognition_on == 'Yes':
-            img_path = pwd_images_to_recognize + '/temp_frames/' + str(round(time.time())) + '.png'
-            cv2.imwrite(img_path, img)
-
-            with open(pwd_images_to_recognize + '/recognition_queue.txt', 'a+') as file:
-              file.write(img_path + '\n')
-
-            next_time = time.time() + 3
-
-          # /<>
-
 
           person = persons[0]
           l_h = [hight,length,hight,length]

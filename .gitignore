@@ -11,3 +11,4 @@ osmap/
 models/
 protobuf/
 orb_module/build/
+classes/*.pyc
