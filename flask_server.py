@@ -7,7 +7,7 @@ sys.path.append(pwd+'/classes')
 config_path = pwd + '/conf/settings.ini'
 pid_path = pwd + '/log/pid'
 python_bin = "venv/bin/python"
-script_file = "test_scripts/test_classes.py"
+script_file = "scripts/tracker.py"
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -33,8 +33,8 @@ def tracker_listener():
 		if data['command'] == 'start':
 			if len(pid_lines) != 0 and check_pid(int(pid_lines[0])) :
 				return error('Tracking already running, stop this one before start new')
-			tracking = subprocess.Popen([python_bin, script_file], shell=True)
-			time.sleep(0.1)
+			tracking = subprocess.Popen([python_bin, script_file])
+			time.sleep(0.2)
 			pid = int(tracking.pid)
 			with open(pid_path, 'w') as f:
 				f.write(str(int(pid)))
@@ -77,4 +77,4 @@ def answer(type, data=None):
 		'information':data
 	}), 200
 if __name__ == '__main__':
-	app.run(host='172.18.159.27')
+	app.run(host='0.0.0.0', port='5000')
