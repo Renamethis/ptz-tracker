@@ -48,6 +48,7 @@ class Move:
 
       media = mycam.create_media_service()
       profile = media.GetProfiles()[0]
+      self.token = profile.token
       self.ptz = mycam.create_ptz_service()
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
       for _, r in list(self.request.items()): r.ProfileToken = profile.token
@@ -82,8 +83,7 @@ class Move:
       update_logger.info("Process started")
       while True:
         if self.pause:
-          self.request['ContinuousMove'].Velocity.PanTilt.x = 0
-          self.request['ContinuousMove'].Velocity.PanTilt.y = 0
+          ptz.Stop({'ProfileToken': self.token})
           sleep(0.1)
         if self.stopped:
           return
@@ -139,8 +139,7 @@ class Move:
             self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
             self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
           if (self.count_frame == 20):
-            self.request['ContinuousMove'].Velocity.PanTilt.x = 0
-            self.request['ContinuousMove'].Velocity.PanTilt.y = 0
+            ptz.Stop({'ProfileToken': self.token})
             #self.count_frame = 0
             sleep (0.1)
           if (self.count_frame == 60):

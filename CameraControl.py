@@ -4,6 +4,7 @@ from time import sleep
 import cv2
 import os
 import sys
+os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
 pwd = os.getcwd()
 sys.path.append(pwd+'/classes')
 from queue import Queue
@@ -69,12 +70,16 @@ request.ProfileToken = profile.token
 request.StreamSetup = {'Stream': 'RTP-Unicast',
                         'Transport': {'Protocol': 'RTSP'}}
 Uri = media.GetStreamUri(request)['Uri']
+request = ptz.create_type('GotoHomePosition')
+request.ProfileToken = profile.token
+ptz.GotoHomePosition(request)
 request = ptz.create_type('ContinuousMove')
 status = ptz.GetStatus({'ProfileToken': profile.token})
 status.Position.PanTilt.x = 0.0
 status.Position.PanTilt.y = 0.0
 request.Velocity = status.Position
 request.ProfileToken = profile.token
+ptz.ContinuousMove(request)
 speed = 0.1
 strsplit = Uri.split('//')
 keys = [ord('d'), ord('a'), ord('w'), ord('s')]
@@ -116,14 +121,10 @@ while rtsp_thread.is_opened():
                         (20,620), cv2.FONT_HERSHEY_SIMPLEX,0.7, (255,255,0), 2)
             cv2.imshow('Coordinates', frame)
     elif key & 0xFF == ord('q'):
-        request.Velocity.PanTilt.x = 0
-        request.Velocity.PanTilt.y = 0
-        ptz.ContinuousMove(request)
+        ptz.Stop({'ProfileToken': request.ProfileToken})
         break
-    else:
-        request.Velocity.PanTilt.x = 0
-        request.Velocity.PanTilt.y = 0
-        ptz.ContinuousMove(request)
+    ptz.Stop({'ProfileToken': request.ProfileToken})
+    ptz.ContinuousMove(request)
 
 cv2.destroyAllWindows()
 rtsp_thread.stop_thread()
