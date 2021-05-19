@@ -11,6 +11,7 @@ osmap/
 models/
 protobuf/
 orb_module/build/
+orb_module/map/*
 classes/*.pyc
 conf/*
 log/*
