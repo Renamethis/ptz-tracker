@@ -24,7 +24,7 @@ def check_pid(id):
 	else:
 		return True
 app = Flask(__name__)
-@app.route('/track', methods=['GET', 'POST'])
+@app.route('/trackercpu1/track', methods=['GET', 'POST'])
 def tracker_listener():
 	if request.method == 'POST':
 		with open(pid_path) as pid_file:
@@ -77,4 +77,4 @@ def answer(type, data=None):
 		'information':data
 	}), 200
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port='5000')
+	app.run(host='0.0.0.0', port='80')

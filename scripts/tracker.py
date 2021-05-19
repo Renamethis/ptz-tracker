@@ -9,6 +9,8 @@ import traceback
 ################################
 import sys
 import os
+wsdl_path = os.path.abspath(os.getcwd()).split('/classes')[0] + '/wsdl'
+print(wsdl_path)
 os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
 os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/')
 
@@ -82,7 +84,6 @@ hight = int(UF.get_setting("hight"))
 port = UF.get_setting("port")
 login = UF.get_setting("login")
 password = UF.get_setting("password")
-wsdl_path = os.path.abspath(os.getcwd()).split('/classes')[0] + '/wsdl'
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
 init = UF.get_setting("init")

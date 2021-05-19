@@ -47,13 +47,17 @@ class Move:
 
 
       media = mycam.create_media_service()
-      profile = media.GetProfiles()[0]
+      profile = media.GetProfiles()[1]
       self.token = profile.token
       self.ptz = mycam.create_ptz_service()
       self.request = {k: self.ptz.create_type(k) for k in ['ContinuousMove', 'GotoHomePosition', 'SetHomePosition','GetConfigurationOptions', 'GetStatus']}
       for _, r in list(self.request.items()): r.ProfileToken = profile.token
       status = self.ptz.GetStatus({'ProfileToken': profile.token})
       self.request['ContinuousMove'].Velocity = status.Position
+      self.request['ContinuousMove'].Velocity.PanTilt.x = 0
+      self.request['ContinuousMove'].Velocity.PanTilt.y = 0
+      self.request['ContinuousMove'].Velocity.Zoom.x = 0
+      init_logger.info(str(self.request['ContinuousMove']))
       #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
 
     except:
@@ -83,7 +87,7 @@ class Move:
       update_logger.info("Process started")
       while True:
         if self.pause:
-          ptz.Stop({'ProfileToken': self.token})
+          self.ptz.Stop({'ProfileToken': self.token})
           sleep(0.1)
         if self.stopped:
           return
@@ -113,10 +117,12 @@ class Move:
             vec_x = 1
           if vec_y > 1:
             vec_y = 1
-
-
-          self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
-          self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
+          if(vec_y < 0.05 and vec_x < 0.05):
+            self.ptz.Stop({'ProfileToken': self.token})
+          else:
+            update_logger.info('X: ' + str(vec_x) + ' Y: ' + str(vec_y))
+            self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
+            self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
@@ -139,14 +145,14 @@ class Move:
             self.request['ContinuousMove'].Velocity.PanTilt.x = vec_x
             self.request['ContinuousMove'].Velocity.PanTilt.y = vec_y
           if (self.count_frame == 20):
-            ptz.Stop({'ProfileToken': self.token})
+            self.ptz.Stop({'ProfileToken': self.token})
             #self.count_frame = 0
-            sleep (0.1)
+            sleep (0.01)
           if (self.count_frame == 60):
             self.count_frame = 0
             self.goto_home()
             old_box = box
-            sleep (0.1)
+            sleep (0.01)
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
@@ -161,10 +167,9 @@ class Move:
               print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
-          sleep(0.1)
+          sleep(0.01)
           self.count_frame = self.count_frame + 1
           print((self.count_frame))
-
         self.old_box = old_box
 
 
@@ -188,6 +193,6 @@ class Move:
     sleep(5)
     self.pause = False
   def get_zoom(self):
-    return self.ptz.GetStatus(self.request['GetStatus'])[0][1]._x
+    return self.ptz.GetStatus(self.request['GetStatus'])[0][1].x
   def stop(self):
     self.stopped = True

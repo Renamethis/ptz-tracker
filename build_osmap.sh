@@ -1,7 +1,8 @@
 sudo apt-get install autoconf automake libtool curl make g++ unzip
-git clone https://github.com/protocolbuffers/protobuf.git
+curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.5.0/protobuf-all-3.5.0.zip
+unzip protobuf-all-3.5.0.zip -d protobuf
 cd protobuf
-git submodule update --init --recursive
+cd protobuf-3.5.0
 ./autogen.sh
 ./configure
 make
@@ -9,6 +10,7 @@ make check
 sudo make install
 sudo ldconfig
 ### MAKE LINK TO libprotobuf.so
+cd ..
 cd ..
 git clone https://github.com/AlejandroSilvestri/osmap.git
 cd osmap

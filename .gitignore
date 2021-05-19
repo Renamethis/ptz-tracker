@@ -12,3 +12,5 @@ models/
 protobuf/
 orb_module/build/
 classes/*.pyc
+conf/*
+log/*

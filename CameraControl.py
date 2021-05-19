@@ -1,3 +1,4 @@
+
 ### Control your Camera
 from onvif import ONVIFCamera
 from time import sleep
@@ -85,29 +86,30 @@ strsplit = Uri.split('//')
 keys = [ord('d'), ord('a'), ord('w'), ord('s')]
 controls = [(speed, 0), (-speed, 0), (0, speed), (0, -speed)]
 direction_labels = ['Right', 'Left', 'Up', 'Down']
-rtsp_thread = rtsp_stream(strsplit[0] +
-'//' + 'admin:Supervisor@' + strsplit[1])
+rtsp_url = strsplit[0] + '//' + 'admin:Supervisor@' + strsplit[1]
+rtsp_thread = rtsp_stream(rtsp_url)
+print("Grabbing rtsp from " + rtsp_url)
 rtsp_thread.start()
-message_thread = message_grabber("tcp://*:5555");
-message_thread.start()
-cv2.namedWindow('Coordinates')
-cv2.createTrackbar('Zoom', 'Coordinates' , 1, zoom_max, nothing)
+#message_thread = message_grabber("tcp://*:5555");
+#message_thread.start()
+#cv2.namedWindow('Coordinates')
+#cv2.createTrackbar('Zoom', 'Coordinates' , 1, zoom_max, nothing)
 while rtsp_thread.get_frame() is None:
     pass
 while rtsp_thread.is_opened():
     frame = rtsp_thread.get_frame()
-    message = message_thread.get_message()
-    if(message is not None):
-        translation = message_thread.get_translation()
-        rotation = message_thread.get_rotation()
-        cv2.putText(frame, "Translation: (" + str(translation[0]) + ", " + str(translation[1]) + ", " + str(translation[2]) + ")",
-                    (250,30), cv2.FONT_HERSHEY_SIMPLEX,0.6, (0,255,255), 2)
-        cv2.putText(frame, "Rotation: (" + str(rotation[0]) + ", " + str(rotation[1]) + ", " + str(rotation[2]) + ")",
-                    (250,80), cv2.FONT_HERSHEY_SIMPLEX,0.6, (0,255,255), 2)
-    cv2.imshow('Coordinates', frame)
+   # message = message_thread.get_message()
+#    if(message is not None):
+       # translation = message_thread.get_translation()
+#        rotation = message_thread.get_rotation()
+       # cv2.putText(frame, "Translation: (" + str(translation[0]) + ", " + str(translation[1]) + ", " + str(translation[2]) + ")",
+#                    (250,30), cv2.FONT_HERSHEY_SIMPLEX,0.6, (0,255,255), 2)
+       # cv2.putText(frame, "Rotation: (" + str(rotation[0]) + ", " + str(rotation[1]) + ", " + str(rotation[2]) + ")",
+#                    (250,80), cv2.FONT_HERSHEY_SIMPLEX,0.6, (0,255,255), 2)
+#    cv2.imshow('Coordinates', frame)
     request.Velocity.PanTilt.x = 0
     request.Velocity.PanTilt.y = 0
-    zoom = cv2.getTrackbarPos('Zoom', 'Coordinates')
+#    zoom = cv2.getTrackbarPos('Zoom', 'Coordinates')
     request.Velocity.Zoom.x = 0.1*(zoom-1)
     key = cv2.waitKey(1)
     if key & 0xFF in keys:
@@ -119,12 +121,12 @@ while rtsp_thread.is_opened():
             cv2.putText(frame, 'Moving to ' +
                         direction_labels[keys.index(key & 0xFF)],
                         (20,620), cv2.FONT_HERSHEY_SIMPLEX,0.7, (255,255,0), 2)
-            cv2.imshow('Coordinates', frame)
+#            cv2.imshow('Coordinates', frame)
     elif key & 0xFF == ord('q'):
         ptz.Stop({'ProfileToken': request.ProfileToken})
         break
     ptz.Stop({'ProfileToken': request.ProfileToken})
     ptz.ContinuousMove(request)
 
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
 rtsp_thread.stop_thread()

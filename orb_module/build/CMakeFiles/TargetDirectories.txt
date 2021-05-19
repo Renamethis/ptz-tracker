@@ -1,3 +1,0 @@
-/home/ivan/Documents/ORB_SLAM2/orb_module/build/CMakeFiles/rebuild_cache.dir
-/home/ivan/Documents/ORB_SLAM2/orb_module/build/CMakeFiles/orb_module.dir
-/home/ivan/Documents/ORB_SLAM2/orb_module/build/CMakeFiles/edit_cache.dir

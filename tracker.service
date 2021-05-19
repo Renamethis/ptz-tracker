@@ -1,0 +1,10 @@
+[Unit]
+Description=Tracker server service
+After=network.target
+[Service]
+User=user
+Group=www-data
+WorkingDirectory=/home/user/ptz-tracker
+ExecStart=/usr/bin/authbind --deep /home/user/ptz-tracker/venv/bin/python3 flask_server.py
+[Install]
+WantedBy=multi-user.target
