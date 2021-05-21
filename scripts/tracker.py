@@ -10,20 +10,15 @@ import traceback
 import sys
 import os
 wsdl_path = os.path.abspath(os.getcwd()).split('/classes')[0] + '/wsdl'
-print(wsdl_path)
-os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
-os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/')
 
 pwd = os.getcwd()
 sys.path.append(pwd+'/classes')
 
-os.chdir('models/research')
 
 pwd = os.getcwd()
 sys.path.append(pwd)
 sys.path.append(pwd+'/slim')
 
-os.chdir('object_detection')
 
 
 ################################
@@ -45,7 +40,6 @@ from imutils.video import FPS
 from onvif import ONVIFCamera
 from time import sleep
 from threading import Thread
-from object_detection.utils import visualization_utils as vis_util
 import WebcamVideoStream as WVS
 import Tensor as T
 import Move as M
@@ -86,12 +80,11 @@ login = UF.get_setting("login")
 password = UF.get_setting("password")
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
-init = UF.get_setting("init")
-
+tweaking = float(UF.get_setting("tweaking"))/100.0
 
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
-move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path)
+move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path, tweaking = tweaking)
 
 stream.start()
 tensor.start()
@@ -99,10 +92,6 @@ move.start()
 ping = P.Ping(mycam_ip = ip)
 ping.start()
 
-if init == 'Yes':
-  speed_coef = UF.init_tracker(stream=stream, tensor=tensor, move=move, length=length, hight=hight, speed_coef=speed_coef)
-  print(speed_coef)
-  move.set_speed_coef(speed_coef)
 
 
 move.goto_home()

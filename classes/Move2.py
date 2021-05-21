@@ -17,10 +17,11 @@ from zmqgrabber import message_grabber
 
 class Move:
   # 3.1. Initialization
-  def __init__(self, length, hight,speed_coef, mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path, name="Move"):
+  def __init__(self, length, hight, speed_coef, mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path, tweaking, name="Move"):
     try:
       self.name = name
       self.box = None
+      self.tweaking = tweaking
       self.old_box = None
       self.mycam_ip = mycam_ip
       self.mycam_port = mycam_port
@@ -34,6 +35,7 @@ class Move:
       self.count_frame = 0
       self.speed_coef = speed_coef
       self.pause = False
+      self.__ddelay = 0.5
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
       try:
         mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
@@ -88,14 +90,14 @@ class Move:
       while True:
         if self.pause:
           self.ptz.Stop({'ProfileToken': self.token})
-          sleep(0.1)
+          sleep(self.__ddelay)
         if self.stopped:
           return
         box = self.box
         old_box = self.old_box
         #print box
         if np.array_equal(box,old_box):
-          sleep(0.2)
+          sleep(self.__ddelay)
         elif box is not None:
           to_x = int(abs(box[1] - box[3])/2.0 + box[1])
           to_y = int(box[0])
@@ -127,7 +129,7 @@ class Move:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
             update_logger.exception("Error!")
-            sleep(2)
+            sleep(self.__ddelay)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
               print("[INFO]     Successful conection ONVIFCamera")
@@ -147,17 +149,17 @@ class Move:
           if (self.count_frame == 20):
             self.ptz.Stop({'ProfileToken': self.token})
             #self.count_frame = 0
-            sleep (0.01)
+            sleep (self.__ddelay)
           if (self.count_frame == 60):
             self.count_frame = 0
             self.goto_home()
             old_box = box
-            sleep (0.01)
+            sleep(self.__ddelay)
           try:
             self.ptz.ContinuousMove(self.request['ContinuousMove'])
           except:
             update_logger.exception("Error!")
-            sleep(s2)
+            sleep(self.__ddelay)
             try:
               mycam = ONVIFCamera(self.mycam_ip, self.mycam_port, self.mycam_login, self.mycam_password, self.mycam_wsdl_path)
               print("[INFO]     Successful conection ONVIFCamera")
@@ -167,7 +169,7 @@ class Move:
               print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
-          sleep(0.01)
+          sleep(self.tweaking)
           self.count_frame = self.count_frame + 1
           print((self.count_frame))
         self.old_box = old_box

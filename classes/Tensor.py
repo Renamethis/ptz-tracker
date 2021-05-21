@@ -12,8 +12,6 @@ from time import sleep
 import tensorflow.compat.v1 as tf
 import Utility_Functions as UF
 from threading import Thread
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as vis_util
 
 class Tensor:
   # 4.1. Initialization
@@ -52,7 +50,6 @@ class Tensor:
       self.classes        = self.detection_graph.get_tensor_by_name('detection_classes:0')
       self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
       self.image_tensor   = self.detection_graph.get_tensor_by_name('image_tensor:0')
-      self.category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS)
     except:
       init_logger.critical("Error in %s.__init__" % (self.name))
       init_logger.exception("Error!")
@@ -111,6 +108,7 @@ class Tensor:
                 #UF.send_msg(msg=err_msg)
 
               if (self.visible == 'Yes'):
+                '''
                 vis_util.visualize_boxes_and_labels_on_image_array(
                   image,
                   np.squeeze(self.boxes),
@@ -119,7 +117,7 @@ class Tensor:
                   self.category_index,
                   use_normalized_coordinates=True,
                   line_thickness=8)
-
+                '''
               time_2 = time.time()
               err =  time_2 - time_1
               dellay = dellay + err

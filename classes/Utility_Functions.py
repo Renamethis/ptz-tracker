@@ -32,10 +32,11 @@ def get_pwd(dir=""):
   pwd = os.getcwd()
   if dir != "":
     lst = pwd.split('/')
-    count = len(lst)-3
     string = ""
-    for i in range(count):
-      string = string + lst[i] + "/"
+    for i in lst:
+      string = string + i + "/"
+      if(i == 'ptz-tracker'):
+          break
     pwd = string + dir
   return pwd
 

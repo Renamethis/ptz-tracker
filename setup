@@ -48,10 +48,3 @@ else
         pip3 install -r requirements_server.txt
 fi
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk
-cd models/research
-wget -O protobuf.zip $url
-unzip protobuf.zip
-./bin/protoc object_detection/protos/*.proto --python_out=.
-export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-cd ..
-cd ..
