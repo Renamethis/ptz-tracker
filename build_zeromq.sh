@@ -14,6 +14,8 @@ mkdir build
 cd build
 cmake ..
 sudo make -j4 install
+cd ..
+cd ..
 # Python zmq
 . ./venv/bin/activate
 python3 -m pip install zmq
