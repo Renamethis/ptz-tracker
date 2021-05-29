@@ -23,11 +23,14 @@ parser.add_argument("-u", "--username", dest="user",
                     help="Username to Onvif Camera user", action="store")
 parser.add_argument("-c", "--password", dest="passw",
                     help="Password to Onvif Camera user", action="store")
+parser.add_argument("-g", "--withGstreamer", dest="gst",
+                    help="Use gstreamer to grap rtsp?", action="store", type=str)
 args = parser.parse_args()
 ip = args.ip_onvif
 port = args.port_onvif if args.port_onvif is not None else "80"
 user = args.user if args.user is not None else "admin"
 password = args.passw if args.passw is not None else "Supervisor"
+gst = args.gst if args.gst is not None else False
 pwd = os.path.dirname(os.path.realpath(__file__))
 zoom_max = 2
 zoom = 0
@@ -39,9 +42,9 @@ class rtsp_stream(Thread):
     __capture = None
     __img = None
     __isCapturing = False
-    def __init__(self, Uri):
+    def __init__(self, Uri, captureFlag):
         Thread.__init__(self)
-        self.__capture = cv2.VideoCapture(Uri)
+        self.__capture = cv2.VideoCapture(Uri, captureFlag)
         self.__isCapturing = True;
     def __del__(self):
         self.__capture.release()
@@ -88,17 +91,19 @@ keys = [ord('d'), ord('a'), ord('w'), ord('s')]
 controls = [(speed, 0), (-speed, 0), (0, speed), (0, -speed)]
 direction_labels = ['Right', 'Left', 'Up', 'Down']
 rtsp_url = strsplit[0] + '//' + 'admin:Supervisor@' + strsplit[1]
-rtsp_url = 'rtsp://172.18.191.72:554/Streaming/Channels/2'
-rtsp_url = "rtspsrc location=" + rtsp_url + " latency=0 ! rtph264depay ! h264parse ! appsink"
-rtsp_thread = rtsp_stream(rtsp_url)
+if(gst == "ON"):
+    rtsp_url = 'rtspsrc location="' + rtsp_url + '" caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! appsink'
+    rtsp_thread = rtsp_stream(rtsp_url, cv2.CAP_GSTREAMER)
+else:
+    rtsp_thread = rtsp_stream(rtsp_url, cv2.CAP_FFMPEG)
 print("Grabbing rtsp from " + rtsp_url)
 rtsp_thread.start()
 #message_thread = message_grabber("tcp://*:5555");
 #message_thread.start()
 cv2.namedWindow('Coordinates')
 cv2.createTrackbar('Zoom', 'Coordinates' , 1, zoom_max, nothing)
-#while rtsp_thread.get_frame() is None:
-#    pass
+while rtsp_thread.get_frame() is None:
+    pass
 while rtsp_thread.is_opened():
     frame = rtsp_thread.get_frame()
    # message = message_thread.get_message()
