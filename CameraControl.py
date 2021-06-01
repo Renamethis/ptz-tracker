@@ -85,14 +85,14 @@ status.Position.PanTilt.y = 0.0
 request.Velocity = status.Position
 request.ProfileToken = profile.token
 ptz.ContinuousMove(request)
-speed = 0.1
+speed = 0.7
 strsplit = Uri.split('//')
 keys = [ord('d'), ord('a'), ord('w'), ord('s')]
 controls = [(speed, 0), (-speed, 0), (0, speed), (0, -speed)]
 direction_labels = ['Right', 'Left', 'Up', 'Down']
 rtsp_url = strsplit[0] + '//' + 'admin:Supervisor@' + strsplit[1]
 if(gst == "ON"):
-    rtsp_url = 'rtspsrc location="' + rtsp_url + '" caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! appsink'
+    rtsp_url = 'rtspsrc location="' + rtsp_url + '" ! rtph264depay ! decodebin ! videoconvert ! appsink'
     rtsp_thread = rtsp_stream(rtsp_url, cv2.CAP_GSTREAMER)
 else:
     rtsp_thread = rtsp_stream(rtsp_url, cv2.CAP_FFMPEG)

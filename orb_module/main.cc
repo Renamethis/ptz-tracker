@@ -22,13 +22,15 @@ int main(int argc, char **argv)
     zmq::context_t context{1};
     zmq::socket_t socket{context, zmq::socket_type::req};
     socket.connect("tcp://localhost:5555");
-    VideoCapture cap("rtsp:172.18.191.72:554/Streaming/Channels/2");
+    string rtsp_url = argv[3];
+    string gst_url = "rtspsrc location=" + rtsp_url + " ! rtph264depay ! decodebin ! videoconvert ! appsink";
+    VideoCapture cap(gst_url);
     cv::Mat frame;
     string FileName = "/home/ivan/Documents/ORB_SLAM2/orb_module/map/NewMap";
     time_t time0;   // create timers.
     time_t time1;
     time(&time0);   // get current time.
-    if(argc != 3) {
+    if(argc != 4) {
         cerr << endl << "Usage: ./orb_module path_to_vocabulary path_to_config" << endl;
         return 1;
     }
@@ -51,6 +53,7 @@ int main(int argc, char **argv)
         break;
       }
       double seconds = time1 - time0;
+      cv::resize(frame, frame, cv::Size(720, 640), 0, 0);
       cv::Mat Tcw = SLAM.TrackMonocular(frame, seconds);
       if (!Tcw.empty()) {
         cv::Mat Rwc = Tcw.rowRange(0,3).colRange(0,3).t(); // Rotation information
@@ -72,14 +75,12 @@ int main(int argc, char **argv)
           return 0;
         }
       }
-      //cv::imshow("ORB_SLAM Test", frame);
       if((char)waitKey(1) == 27) {
         osmap.mapSave(FileName);
         break;
       }
     }
     SLAM.Shutdown();
-    //SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
     cap.release();
     destroyAllWindows();
     return 0;
