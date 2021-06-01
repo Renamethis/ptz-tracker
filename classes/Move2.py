@@ -17,7 +17,7 @@ from zmqgrabber import message_grabber
 
 class Move:
   # 3.1. Initialization
-  def __init__(self, length, hight, speed_coef, mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path, tweaking, name="Move"):
+  def __init__(self, length, hight, speed_coef, mycam_ip, mycam_port, mycam_login, mycam_password, mycam_wsdl_path, tweaking, bounds, name="Move"):
     try:
       self.name = name
       self.box = None
@@ -35,6 +35,7 @@ class Move:
       self.count_frame = 0
       self.speed_coef = speed_coef
       self.pause = False
+      self.bounds = bounds
       self.__ddelay = 0.5
       init_logger = logging.getLogger("Main.%s.init" % (self.name))
       try:
@@ -59,7 +60,6 @@ class Move:
       self.request['ContinuousMove'].Velocity.PanTilt.x = 0
       self.request['ContinuousMove'].Velocity.PanTilt.y = 0
       self.request['ContinuousMove'].Velocity.Zoom.x = 0
-      init_logger.info(str(self.request['ContinuousMove']))
       #ptz_configuration_options = self.ptz.GetConfigurationOptions(self.request['GetConfigurationOptions'])
 
     except:
@@ -88,11 +88,16 @@ class Move:
       update_logger = logging.getLogger("Main.%s.update" % (self.name))
       update_logger.info("Process started")
       while True:
+        message = self.mt.get_message()
+        if(message is not None):
+            translation = mt.get_translation()
+            rotation = mt.get_rotation()
         if self.pause:
           self.ptz.Stop({'ProfileToken': self.token})
           sleep(self.__ddelay)
         if self.stopped:
           return
+
         box = self.box
         old_box = self.old_box
         #print box
@@ -169,9 +174,10 @@ class Move:
               print("[INFO]     Check the correctness of the entered data in the setings.ini (ip,port,login, password or wsdl_path)")
               #UF.send_msg(msg=err_msg)
               sys.exit(0)
+          if(not (rotation[0] > self.bounds[0] and rotation[0] < self.bounds[2] and rotation[1] > self.bounds[1] and rotation[1] < self.bounds[3])):
+              elf.ptz.Stop({'ProfileToken': self.token})
           sleep(self.tweaking)
           self.count_frame = self.count_frame + 1
-          print((self.count_frame))
         self.old_box = old_box
 
 

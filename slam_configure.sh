@@ -1,10 +1,10 @@
 #!/bin/bash
 ### THiS SCRIPT PROVIDES CONFIGURING OF ORB_SLAM2 LIBRARY ###
 ### WARNING! RUN THIS SCRIPT ONLY ONCE ###
-include_add_files=(LocalMapping.cc LoopClosing.cc Tracking.cc System.cc Viewer.cc)
+include_add_files="LocalMapping.cc LoopClosing.cc Tracking.cc System.cc Viewer.cc"
 include_string="#include <unistd.h> \n#include <stdio.h>\n#include <stdlib.h>"
 cd ORB_SLAM2/src
-for file in ${include_add_files[*]}; do
+for file in $include_add_files; do
 	sed -i "1i$include_string" $file
 done
 cd ..

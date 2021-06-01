@@ -81,10 +81,10 @@ password = UF.get_setting("password")
 visible = UF.get_setting("visible")
 speed_coef = float(UF.get_setting("speed_coef"))
 tweaking = float(UF.get_setting("tweaking"))/100.0
-
+bounds = [float(UF.get_setting("x1")), float(UF.get_setting("y1")), float(UF.get_setting("x2")), float(UF.get_setting("y2"))]
 stream = WVS.WebcamVideoStream()
 tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
-move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path, tweaking = tweaking)
+move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path, tweaking = tweaking, bounds = bounds)
 
 stream.start()
 tensor.start()

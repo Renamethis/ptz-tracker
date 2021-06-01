@@ -15,10 +15,9 @@ import logging
 
 class WebcamVideoStream:
   # 1.1. Initialization
-  def __init__(self, name="WebcamVideoStream"):
+  def __init__(self, name="WebcamVideoStream", GStreamer=True, Jetson=False):
     try:
       self.name = name
-
       # 1.1.1. Determining the path to the configuration file
       # add_try (count >= 3)
 
@@ -35,7 +34,14 @@ class WebcamVideoStream:
       # 1.1.3. Sturt function cv2.VideoCapture
 
       try:
-        self.stream = cv2.VideoCapture(self.mycam_rtsp)
+        if(GStreamer):
+            if(Jetson):
+                self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! rtph264depay ! h264parse ! omxh264dec ! nvvidconv ! appsink'
+            else:
+                self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! rtph264depay ! decodebin ! videoconvert ! appsink'
+            self.stream = cv2.VideoCapture(self.mycam_rtsp, cv2.CAP_GSTREAMER)
+        else:
+            self.stream = cv2.VideoCapture(self.mycam_rtsp, cv2.CAP_FFMPEG)
       except:
         init_logger.critical("Error with cv2.VideoCapture")
         init_logger.exception("Error!")

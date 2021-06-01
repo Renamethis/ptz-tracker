@@ -39,12 +39,5 @@ python3 setup.py install
 cd ..
 python3 -m pip install --upgrade onvif_zeep
 python3 -m pip install -r requirements_server.txt
-
-### OPENCV ###
-. ./build_opencv.sh
 ### ORB_SLAM ###
 . ./build_slam.sh
-### ZMQ ###
-. ./build_zeromq.sh
-### Protobuf, osmap ###
-. ./build_osmap.sh
