@@ -1,9 +1,3 @@
-import smtplib
-import traceback
-
-
-
-
 ################################
 # 1. Starting the virtual environment
 ################################
@@ -83,8 +77,8 @@ speed_coef = float(UF.get_setting("speed_coef"))
 tweaking = float(UF.get_setting("tweaking"))/100.0
 bounds = [float(UF.get_setting("x1")), float(UF.get_setting("y1")), float(UF.get_setting("x2")), float(UF.get_setting("y2"))]
 stream = WVS.WebcamVideoStream()
-tensor = T.Tensor(visible = visible,model_name = 'ssd_mobilenet_v2_body')
-move = M2.Move(length = length, hight = hight, speed_coef = speed_coef,  mycam_ip = ip, mycam_port = port, mycam_login = login, mycam_password = password, mycam_wsdl_path = wsdl_path, tweaking = tweaking, bounds = bounds)
+tensor = T.Tensor(visible)
+move = M2.Move(length, hight, speed_coef, ip, port, login, password, wsdl_path, tweaking, bounds)
 
 stream.start()
 tensor.start()
@@ -92,64 +86,48 @@ move.start()
 ping = P.Ping(mycam_ip = ip)
 ping.start()
 
-
-
-move.goto_home()
 next_time = 0
 
 while True:
-  img = stream.read()
-
-  if ping.read()  != 0:
-    stream.stop()
-    logger.warning("Camera conection lost. Reconnect...")
-    while ping.read() != 0 or not stream.check_connect() or stream.status():
-      sleep(1)
-
-
-    stream = WVS.WebcamVideoStream()
-    stream.start()
-    logger.info("Camera conection restored.")
-
-
     img = stream.read()
 
+    if ping.read()    != 0:
+        stream.stop()
+        logger.warning("Camera conection lost. Reconnect...")
+        while ping.read() != 0 or not stream.check_connect() or stream.status():
+            sleep(1)
 
-  if img is not None:
+        stream = WVS.WebcamVideoStream()
+        stream.start()
+        logger.info("Camera conection restored.")
 
-    img = cv2.resize(img, (length,hight))
-    tensor.set_image(img)
-    img = tensor.read()
-    #print tensor.get_tps()
+
+        img = stream.read()
 
     if img is not None:
-      scores   = tensor.read_scores()
-      image_np = tensor.read()
-      classes  = tensor.read_classes()
-      boxes    = tensor.read_boxes()
 
+        img = cv2.resize(img, (length,hight))
+        tensor.set_image(img)
+        img = tensor.read()
+        #print tensor.get_tps()
 
-      if (scores.any() and image_np is not None and classes is not None and boxes is not None):
-        scores[scores > 0.45] = 1
-        classes = classes*scores
-        persons   = np.where(classes == 1)[1]
-        #####print tensor.get_tps()
+        if img is not None:
+            scores = tensor.read_scores()
+            image_np = tensor.read()
+            classes = tensor.read_classes()
+            boxes = tensor.read_boxes()
 
-        if (str(persons) != '[]'):
+            if (scores.any() and image_np is not None and classes is not None and boxes is not None):
+                scores[scores > 0.45] = 1
+                classes = classes*scores
+                persons = np.where(classes == 1)[1]
 
-          person = persons[0]
-          l_h = [hight,length,hight,length]
-          box = boxes[0][person]
-          box = l_h*box
-          move.set_box(box)
-          #print box
-        else:
-          move.set_box(None)
-      if (visible == 'Yes'):
-        cv2.imshow('frame', img)
-
-  if cv2.waitKey(20) & 0xFF == ord('q'):
-    move.set_box(None)
-    sleep(1)
-    logger.info("Done!")
-    break
+                if (str(persons) != '[]'):
+                    person = persons[0]
+                    l_h = [hight, length, hight, length]
+                    box = boxes[0][person]
+                    box = l_h*box
+                    move.set_box(box)
+                    #print box
+                else:
+                    move.set_box(None)

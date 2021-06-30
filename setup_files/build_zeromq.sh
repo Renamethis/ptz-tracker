@@ -1,3 +1,4 @@
+#!/bin/bash
 # LIBZMQ
 git clone git://github.com/zeromq/libzmq.git
 cd libzmq

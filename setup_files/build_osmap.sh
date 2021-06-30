@@ -1,3 +1,5 @@
+#!/bin/bash
+cd ..
 sudo apt-get install autoconf automake libtool curl make g++ unzip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.5.0/protobuf-all-3.5.0.zip
 unzip protobuf-all-3.5.0.zip -d protobuf

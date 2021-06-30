@@ -16,3 +16,5 @@ classes/*.pyc
 conf/*
 log/*
 build/
+scripts/__pycache__/*
+classes/__pycache__/*

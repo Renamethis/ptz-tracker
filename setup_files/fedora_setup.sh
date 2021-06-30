@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 sudo yum install cmake
 sudo yum install python-devel numpy
 sudo yum install gcc gcc-c++

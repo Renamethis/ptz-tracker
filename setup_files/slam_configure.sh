@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 ### THiS SCRIPT PROVIDES CONFIGURING OF ORB_SLAM2 LIBRARY ###
 ### WARNING! RUN THIS SCRIPT ONLY ONCE ###
 include_add_files="LocalMapping.cc LoopClosing.cc Tracking.cc System.cc Viewer.cc"

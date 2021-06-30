@@ -1,6 +1,15 @@
 from onvif import ONVIFCamera
 import logging
+
+
 class Camera:
+    requests_labels = ['ContinuousMove',
+                       'GotoHomePosition',
+                       'SetHomePosition',
+                       'GetConfigurationOptions',
+                       'GetStatus']
+    requests = None
+
     def __init__(self, ip, port, login, password, wsdl_path, name='Camera'):
         self.name = name
         self.ip = ip
@@ -8,28 +17,54 @@ class Camera:
         self.login = login
         self.password = password
         self.wpath = wsdl_path
-        self.init_logger = logging.getLogger("Main.%s.init" % (self.name))
+        self.logger = logging.getLogger("Main.%s.init" % (self.name))
+        while(not self.connect()):
+            pass
+        self.requests = {k: self.ptz.create_type(k)
+                         for k in self.requests_labels}
+        self.status = self.getStatus()
+        self.requests['ContinuousMove'] = {
+            'ConfigurationToken': self.profile.PTZConfiguration.token,
+            'Velocity': self.status.Position,
+        }
+        self.requests['GotoHomePosition'].ProfileToken = self.profile.token
+        self.goHome()
 
     def getStreamUri(self):
-        self.request = self.media.create_type('GetStreamUri')
-        self.request.ProfileToken = self.profile.token
-        ans = self.media.GetStreamUri(self.request)
+        request = self.media.create_type('GetStreamUri')
+        request.StreamSetup = {'Stream': 'RTP-Unicast',
+                               'Transport': {'Protocol': 'RTSP'}}
+        ans = self.media.GetStreamUri(request)
         return ans['Uri']
+
     def move(self, x, y):
-        self.request = self.ptz.create_type('ContinuousMove')
-        self.request.ConfigurationToken = self.profile.PTZConfiguration.token
-        self.request.Velocity.PanTilt._x = x
-        self.request.Velocity.PanTilt._y = y
-        self.ptz.ContinuousMove(self.request)
+        try:
+            self.request.Velocity.PanTilt.x = x
+            self.request.Velocity.PanTilt.y = y
+            self.ptz.ContinuousMove(self.request)
+        except:
+            self.connect()
+            self.logger.info('Error with moving camera, reconnecting')
+            self.move(x, y)
+
     def connect(self, substream=1):
         try:
             self.cam = ONVIFCamera(self.ip, self.port, self.login, self.password, self.wpath)
-            self.init_logger.info("Successful conection ONVIFCamera")
+            self.logger.info('Successful conection ONVIFCamera')
         except:
-            self.init_logger.exception('Error with camera connection')
+            self.logger.exception('Error with camera connection')
             return False
         self.media = self.cam.create_media_service()
         k = 1 if substream else 0
         self.profile = self.media.GetProfiles()[k]
         self.ptz = self.cam.create_ptz_service()
         return True
+
+    def getStatus(self):
+        return self.ptz.GetStatus({'ProfileToken': self.profile.token})
+
+    def goHome(self):
+        self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+
+    def stop(self):
+        self.ptz.Stop({'ProfileToken': self.profile.token})
