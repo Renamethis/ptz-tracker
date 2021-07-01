@@ -1,3 +1,5 @@
+# Class for ONVIF
+
 from onvif import ONVIFCamera
 import logging
 
@@ -34,6 +36,7 @@ class Camera:
         request = self.media.create_type('GetStreamUri')
         request.StreamSetup = {'Stream': 'RTP-Unicast',
                                'Transport': {'Protocol': 'RTSP'}}
+        request.ProfileToken = self.profile.token
         ans = self.media.GetStreamUri(request)
         return ans['Uri']
 

@@ -1,31 +1,11 @@
+# Class for utility functions
 import os
-import sys
 import smtplib
 import base64
-from time import sleep
-from threading import Thread
 import configparser
 import numpy as np
 import logging
 import cv2
-
-def send_msg(msg,SUBJECT="Error"):
-    email = get_setting("email")
-    send_msg_logger = logging.getLogger("Main.functions.send_msg")
-    HOST = "smtp.gmail.com"
-    FROM = "tensorflow21@gmail.com"
-    BODY = "\r\n".join(("From: %s" % FROM, "To: %s" % email, "Subject: %s" % SUBJECT, "", msg))
-    try:
-        server = smtplib.SMTP(HOST, 587)
-    except:
-        send_msg_logger.critical("Problem with internet connection.")
-        send_msg_logger.exception("Error!")
-        exit(0)
-    server.starttls()
-    server.login(FROM, base64.b64decode('VGVuc29yNTUyMQ=='))
-    server.sendmail(FROM, [email], BODY)
-    server.quit()
-
 
 
 def get_pwd(dir=""):
@@ -40,11 +20,12 @@ def get_pwd(dir=""):
         pwd = string + dir
     return pwd
 
+
 def get_setting(get_setting = ""):
     get_setting_logger = logging.getLogger("Main.functions.get_setting")
     if get_setting != "":
         config = configparser.ConfigParser()
-        pwd = get_pwd("conf")
+        pwd = os.getcwd()
         config.read(pwd + "/settings.ini")
         try:
             setting = config.get("Settings",get_setting)
@@ -81,9 +62,7 @@ def init_tracker(stream, tensor, move, length, hight, speed_coef):
 
             if (str(persons) != '[]'):
                 classes = tensor.read_classes()
-                #print (persons_num, ': found person')
                 person = persons[0]
-                l_w = [hight,length,hight,length]
                 box = boxes[0][person]
                 if (box[1] > 0.05 and box[3] < 0.95):
                     frame_count = frame_count + 1

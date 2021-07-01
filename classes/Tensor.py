@@ -1,3 +1,4 @@
+# Class for tensorflow
 import traceback
 import sys
 import numpy as np
@@ -10,8 +11,9 @@ from threading import Thread
 
 
 class Tensor:
-    # 4.1. Initialization
-    def __init__(self, visible, length = 720, hight = 405, model_name = 'ssd_mobilenet_v2_body', name="Tensor"):
+    # Initialization
+    def __init__(self, length=720, hight=405, model_name=
+                 'ssd_mobilenet_v2_body', name="Tensor"):
         tf.disable_v2_behavior()
         self.name = name
         self.dellay = 0
@@ -20,7 +22,6 @@ class Tensor:
         self.new_image = np.zeros((hight, length, 3))
         self.old_image = np.zeros((hight, length, 3))
         self.stopped = False
-        self.visible = visible
         self.count = 0
 
         init_logger = logging.getLogger("Main.%s.init" % (self.name))
@@ -40,21 +41,22 @@ class Tensor:
                     od_graph_def.ParseFromString(serialized_graph)
                     tf.import_graph_def(od_graph_def, name='')
 
-
-            self.boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
-            self.scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
-            self.classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
-            self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
-            self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
+            self.boxes = self.detection_graph.get_tensor_by_name(
+                'detection_boxes:0')
+            self.scores = self.detection_graph.get_tensor_by_name(
+                'detection_scores:0')
+            self.classes = self.detection_graph.get_tensor_by_name(
+                'detection_classes:0')
+            self.num_detections = self.detection_graph.get_tensor_by_name(
+                'num_detections:0')
+            self.image_tensor = self.detection_graph.get_tensor_by_name(
+                'image_tensor:0')
         except:
             init_logger.critical("Error in %s.__init__" % (self.name))
             init_logger.exception("Error!")
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-            #UF.send_msg(msg=err_msg)
             sys.exit(0)
 
-    # 4.2. Start thread
+    # Start thread
     def start(self):
         self.stopped = False
         start_logger = logging.getLogger("Main.%s.start" % (self.name))
@@ -64,7 +66,7 @@ class Tensor:
         self.t.start()
         return self
 
-    # 4.3. Infinite image processing cycle
+    # Image processing cycle
     def update(self):
         try:
             update_logger = logging.getLogger("Main.%s.update" % (self.name))
@@ -86,33 +88,27 @@ class Tensor:
 
                             time_1 = time.time()
                             image_np_expanded = np.expand_dims(image, axis=0)
-                            boxes                         = self.detection_graph.get_tensor_by_name('detection_boxes:0')
-                            scores                        = self.detection_graph.get_tensor_by_name('detection_scores:0')
-                            classes                     = self.detection_graph.get_tensor_by_name('detection_classes:0')
-                            num_detections        = self.detection_graph.get_tensor_by_name('num_detections:0')
-                            self.image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
+                            boxes = self.detection_graph.get_tensor_by_name(
+                                'detection_boxes:0')
+                            scores = self.detection_graph.get_tensor_by_name(
+                                'detection_scores:0')
+                            classes = self.detection_graph.get_tensor_by_name(
+                                'detection_classes:0')
+                            num_detections = self.detection_graph.get_tensor_by_name(
+                                'num_detections:0')
+                            self.image_tensor = self.detection_graph.get_tensor_by_name(
+                                'image_tensor:0')
                             try:
-                                (self.boxes, self.scores, self.classes, self.num_detections) = sess.run(
-                                        [boxes, scores, classes, num_detections],
-                                        feed_dict={self.image_tensor: image_np_expanded})
+                                (self.boxes, self.scores, self.classes,
+                                    self.num_detections) = sess.run(
+                                        [boxes, scores, classes,
+                                            num_detections],
+                                        feed_dict={self.image_tensor:
+                                                   image_np_expanded})
                             except:
                                 update_logger.critical("Error with run tensor")
                                 update_logger.exception("Error!")
-                                exc_type, exc_value, exc_traceback = sys.exc_info()
-                                err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-                                #UF.send_msg(msg=err_msg)
 
-                            if (self.visible == 'Yes'):
-                                '''
-                                vis_util.visualize_boxes_and_labels_on_image_array(
-                                    image,
-                                    np.squeeze(self.boxes),
-                                    np.squeeze(self.classes).astype(np.int32),
-                                    np.squeeze(self.scores),
-                                    self.category_index,
-                                    use_normalized_coordinates=True,
-                                    line_thickness=8)
-                                '''
                             time_2 = time.time()
                             err = time_2 - time_1
                             dellay = dellay + err

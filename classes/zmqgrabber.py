@@ -1,7 +1,7 @@
+# Zeromq message grabber class
+
 import zmq
 from threading import Thread
-
-# CLASS FOR MESSAGE GRABBING FROM ZEROMQ socket
 
 
 class message_grabber(Thread):

@@ -1,15 +1,5 @@
 import os
-from os import path
 import sys
-#activate_this_file = "venv/bin/activate_this.py"
-#exec(compile(open(activate_this_file, "rb").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))
-pwd = os.getcwd()
-orb_pid = None
-sys.path.append(pwd+'/classes')
-config_path = pwd + '/conf/settings.ini'
-pid_path = pwd + '/log/pid'
-python_bin = "venv/bin/python"
-script_file = "scripts/tracker.py"
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -17,7 +7,16 @@ import configparser
 import signal
 import subprocess
 import time
+pwd = os.getcwd()
+orb_pid = None
+sys.path.append(pwd+'/classes')
+config_path = pwd + '/conf/settings.ini'
+pid_path = pwd + '/log/pid'
+python_bin = "venv/bin/python3.6"
+script_file = "scripts/tracker.py"
+
 import Utility_Functions as UF
+
 def check_pid(id):
 	try:
 		os.kill(id, 0)
@@ -25,6 +24,8 @@ def check_pid(id):
 		return False
 	else:
 		return True
+
+
 app = Flask(__name__)
 @app.route('/track', methods=['GET', 'POST'])
 def tracker_listener():

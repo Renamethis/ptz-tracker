@@ -1,3 +1,4 @@
+# Class for checking the connection to the camera
 import os
 import logging
 from time import sleep
@@ -18,20 +19,20 @@ class Ping:
         t.start()
         return self
 
-    # 3.3. Infinite loop of receiving frames from a stream
+    # Loop of receiving frames from a stream
     def update(self):
         update_logger = logging.getLogger("Main.Ping.start")
         update_logger.info("Process started")
-        while True:
+        while not self.stopped:
             if self.stopped:
                 return
             self.r = os.system("timeout 0.4 ping -c 1    " + self.mycam_ip + " > /dev/null 2>&1")
             sleep(1)
 
-    # 3.4. Get frame
+    # Get frame
     def read(self):
         return self.r
 
-    # 3.5. Stop frame
+    # Stop frame
     def stop(self):
         self.stopped = True

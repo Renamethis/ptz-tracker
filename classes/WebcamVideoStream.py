@@ -1,35 +1,27 @@
+# Class for receiving a rtsp stream
+
 import sys
 import cv2
-import configparser
 from threading import Thread
 import traceback
 import time
 import Utility_Functions as UF
 import logging
-################################
-# 1. The process of taking a frame from a stream
-################################
 
 
 class WebcamVideoStream:
-    # 1.1. Initialization
-    def __init__(self, name="WebcamVideoStream", GStreamer=True, Jetson=False):
+    # Initialization
+    def __init__(self, rtsp, name="WebcamVideoStream", GStreamer=True, Jetson=False):
         try:
             self.name = name
-            # 1.1.1. Determining the path to the configuration file
+            # Determining the path to the configuration file
             # add_try (count >= 3)
 
-
+            self.mycam_rtsp = rtsp
             init_logger = logging.getLogger("Main.%s.init" % (self.name))
 
-            # 1.1.2. Read configuration file (rtsp)
+            # Read configuration file (rtsp)
             # modify (receiving rtsp from camera)
-
-            self.mycam_rtsp = UF.get_setting("rtsp")
-            print(self.mycam_rtsp)
-            self.mycam_ip = UF.get_setting("ip")
-
-            # 1.1.3. Sturt function cv2.VideoCapture
 
             try:
                 if(GStreamer):
@@ -66,10 +58,9 @@ class WebcamVideoStream:
             init_logger.exception("Error!")
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-            #UF.send_msg(msg=err_msg)
             sys.exit(0)
 
-    # 3.2. Start thread
+    # Start thread
     def start(self):
         self.stopped = False
         start_logger = logging.getLogger("Main.%s.start" % (self.name))
@@ -79,7 +70,7 @@ class WebcamVideoStream:
         self.t.start()
         return self
 
-    # 3.3. Infinite loop of receiving frames from a stream
+    # Infinite loop of receiving frames from a stream
     def update(self):
         try:
             update_logger = logging.getLogger("Main.%s.update" % (self.name))
@@ -94,12 +85,11 @@ class WebcamVideoStream:
                     update_logger.info("%s stopped" % self.name)
                     return
                 (self.grabbed, self.frame) = stream.read()
-                #print self.frame
 
                 i = i + 1
                 if (i == 25):
                     time_2 = time.time()
-                    err =    err + time_2 - time_1 - 1
+                    err = err + time_2 - time_1 - 1
                     if err < 0:
                         err = 0
                     i = 0
@@ -112,6 +102,7 @@ class WebcamVideoStream:
             err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
             print(err_msg)
             sys.exit(0)
+
     def check_connect(self):
         try:
             check_stream = cv2.VideoCapture(self.mycam_rtsp)
@@ -127,7 +118,7 @@ class WebcamVideoStream:
     def status(self):
         return self.t.isAlive()
 
-    # 3.4. Get frame
+    # Get frame
     def read(self):
         return self.frame
 

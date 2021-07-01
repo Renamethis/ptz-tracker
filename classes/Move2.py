@@ -1,20 +1,17 @@
-import sys
+# Camera controll class
 from threading import Thread
-from onvif import ONVIFCamera
 import traceback
 from time import sleep
 import numpy as np
 import logging
 from zmqgrabber import message_grabber
 from OnvifInteraction import Camera
-################################
-# 3. The process of taking a frame from a stream
-################################
 
 
 class Move:
-    # 3.1. Initialization
-    def __init__(self, length, hight, speed_coef, ip, port, login, password, wsdl, tweaking, bounds, name="Move"):
+    # Initialization
+    def __init__(self, length, hight, speed_coef, ip, port, login, password,
+                 wsdl, tweaking, bounds, zone, name="Move"):
         self.name = name
         self.box = None
         self.tweaking = tweaking
@@ -27,6 +24,7 @@ class Move:
         self.speed_coef = speed_coef
         self.pause = False
         self.bounds = bounds
+        self.zone = zone
         self.__ddelay = 0.5
         self.logger = logging.getLogger("Main.%s" % (self.name))
         self.cam = Camera(ip, port, login, password, wsdl)
@@ -42,19 +40,17 @@ class Move:
         self.mt.start()
         return self
 
-    # 3.3. Infinite loop of receiving frames from a stream
+    # Loop of receiving frames from a stream
     def update(self):
         self.logger.info("Process started")
-        while True:
+        while not self.stopped:
             message = self.mt.get_message()
-            if(message is not None):
-                translation = self.mt.get_translation()
-                rotation = self.mt.get_rotation()
+            translation = self.mt.get_translation() if (message
+                                                        is not None) else None
+            rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:
-                self.ptz.Stop({'ProfileToken': self.token})
+                self.cam.stop()
                 sleep(self.__ddelay)
-            if self.stopped:
-                return
             box = self.box
             old_box = self.old_box
             if np.array_equal(box, old_box):
@@ -62,24 +58,22 @@ class Move:
             elif box is not None:
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
                 to_y = int(box[0])
-                if (to_x < self.length/3 - 40 or to_x > self.length/3 + 40):
+                if (to_x < self.length/3 - self.zone or to_x > self.length/3 + self.zone):
                     if to_x > self.length/3:
                         vec_x = float(to_x - self.length/3)/(self.length)
                     else:
                         vec_x = float(to_x - self.length/3)/(self.length)*2
                 else:
                     vec_x = 0
-                if (to_y < self.hight/5 - 40 or to_y > self.hight/5 + 40):
+                if (to_y < self.hight/5 - self.zone or to_y > self.hight/5 + self.zone):
                     vec_y = float(self.hight/5 - to_y)/(self.hight)
                 else:
                     vec_y = 0
                 self.count_frame = 0
                 vec_x = vec_x*self.speed_coef
                 vec_y = vec_y*self.speed_coef
-                if vec_x > 1:
-                    vec_x = 1
-                if vec_y > 1:
-                    vec_y = 1
+                vec_x = 1 if vec_x > 1 else vec_x
+                vec_y = 1 if vec_x > 1 else vec_y
                 if(vec_y < 0.05 and vec_x < 0.05):
                     self.cam.stop()
                 else:
@@ -91,10 +85,10 @@ class Move:
             elif box is None and old_box is not None:
                 if (self.count_frame < 20):
                     self.cam.move(vec_x, vec_y)
-                if (self.count_frame == 20):
+                elif (self.count_frame == 20):
                     self.cam.stop()
                     sleep(self.__ddelay)
-                if (self.count_frame == 60):
+                elif (self.count_frame == 60):
                     self.count_frame = 0
                     self.cam.goHome()
                     old_box = box

@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify
-from json import dumps, loads
+from json import dumps
 from requests import post, get
 api_key = 'c745cc1883a84f9bbe3252d865009a52'
 erudite_url = 'https://nvr.miem.hse.ru/api/erudite/'
 erudite_headers = {
-"accept" : "application/json",
-"Content-Type" : "application/json",
-"key": api_key
+    "accept": "application/json",
+    "Content-Type": "application/json",
+    "key": api_key
  }
 app = Flask(__name__)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def server():
     if request.method == 'POST':
@@ -17,32 +19,31 @@ def server():
             if(data['command'] == 'start' or data['command'] == 'stop'): # Запуск/Остановка трекера
                 # Запрос к базе данных erudite
                 response = get(erudite_url + 'equipment?room_name='
-                + data['room_name'], headers = erudite_headers)
+                               + data['room_name'], headers=erudite_headers)
                 if(response.content == None):
                     return error('Device is not exists', 10)
                 device = response.json()[0]
                 device_ip = device['ip']
                 device_port = device['port']
-                response = post('http://' + device_ip + ':' + str(device_port) + '/track',
-                data=dumps({'command':data['command']}))
+                response = post('http://' + device_ip + ':' +
+                                str(device_port) + '/track',
+                                data=dumps({'command': data['command']}))
                 print(response.json())
                 if(response.json()['status'] != 'Error'):
                     return answer('Ok', 'Command ' + data['command']
-                    + ' Successfully executed')
+                                  + ' Successfully executed')
                 else:
                     return error(response.json()['description'], 3)
             elif(data['command'] == 'create'): # Создание нового устройства
                 response = get(erudite_url + 'equipment?ip='
-                + data['device_ip'] + '&port=' + data['device_port'],
-                headers = erudite_headers)
-                if(response.content != None):
+                               + data['device_ip'] + '&port=' +
+                               data['device_port'], headers=erudite_headers)
+                if(response.content is not None):
                     return error('This devie already exists', 11)
-                equipment = response.json()
                 response = get(erudite_url + 'rooms?ruz_number=' +
-                data['room_name'], headers = erudite_headers)
-                if(response.json == None):
+                               data['room_name'], headers=erudite_headers)
+                if(response.json is None):
                     return error('Room is not exists', 12)
-                rooms = response.json()
                 camera_ip = data['camera_ip']
                 device_ip = data['device_ip']
                 device_port = data['device_port']
@@ -72,17 +73,23 @@ def server():
                 return error('Command doesnt exist', 0)
         except:
             return error('Data format is incorrect', 1)
+
+
 def error(desc, code): # Функция для возврата ошибки
-	return jsonify({
-		'status':'Error',
+    return jsonify({
+        'status': 'Error',
         'code': code,
-		'description': desc
-	}), 400
+        'description': desc
+    }), 400
+
+
 def answer(type, data=None): # Функция для возврата ответа от сервера
     return jsonify({
-    	'status':type,
-    	'information':data
-	}), 200
+        'status': type,
+        'information': data
+    }), 200
+
+
 def if_val(col, key, val):
     for record in col:
         try:
@@ -91,6 +98,7 @@ def if_val(col, key, val):
         except:
             pass
     return False
+
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0')
