@@ -26,7 +26,7 @@ class WebcamVideoStream:
             try:
                 if(GStreamer):
                         if(Jetson):
-                            self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! rtph264depay ! h264parse ! omxh264dec ! nvvidconv ! appsink'
+                            self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! queue ! rtph264depay ! queue ! h264parse ! omxh264dec ! nvvidconv ! video/x-raw,format=BGRx ! videoconvert ! video/x-raw,format=BGR ! appsink'
                         else:
                             self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! rtph264depay ! decodebin ! videoconvert ! appsink'
                         self.stream = cv2.VideoCapture(self.mycam_rtsp, cv2.CAP_GSTREAMER)

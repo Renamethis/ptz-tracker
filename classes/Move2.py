@@ -31,13 +31,13 @@ class Move:
 
     # 3.2. Start thread
     def start(self):
+        self.mt = message_grabber("tcp://*:5555")
+        self.mt.start()
         self.stopped = False
         self.logger.info("Process starting")
         self.t = Thread(target=self.update, name=self.name, args=())
         self.t.daemon = True
         self.t.start()
-        self.mt = message_grabber("tcp://*:5555")
-        self.mt.start()
         return self
 
     # Loop of receiving frames from a stream
@@ -45,9 +45,9 @@ class Move:
         self.logger.info("Process started")
         while not self.stopped:
             message = self.mt.get_message()
-            translation = self.mt.get_translation() if (message
-                                                        is not None) else None
-            rotation = self.mt.get_rotation() if message is not None else None
+            #translation = self.mt.get_translation() if (message
+#                                           is not None) else None
+            #rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:
                 self.cam.stop()
                 sleep(self.__ddelay)
@@ -57,7 +57,7 @@ class Move:
                 sleep(self.__ddelay)
             elif box is not None:
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
-                to_y = int(box[0])
+                to_y = int(abs(box[0]))
                 if (to_x < self.length/3 - self.zone or to_x > self.length/3 + self.zone):
                     if to_x > self.length/3:
                         vec_x = float(to_x - self.length/3)/(self.length)
@@ -93,9 +93,9 @@ class Move:
                     self.cam.goHome()
                     old_box = box
                     sleep(self.__ddelay)
-                if(not (rotation[0] > self.bounds[0] and rotation[0]
-                        < self.bounds[2] and rotation[1] > self.bounds[1]
-                        and rotation[1] < self.bounds[3])):
+#                if(not (rotation[0] > self.bounds[0] and rotation[0]
+ #                       < self.bounds[2] and rotation[1] > self.bounds[1]
+  #                      and rotation[1] < self.bounds[3])):
                     self.cam.stop()
                 sleep(self.tweaking)
                 self.count_frame = self.count_frame + 1

@@ -1,6 +1,7 @@
 # Class for ONVIF
 
 from onvif import ONVIFCamera
+
 import logging
 
 
@@ -25,11 +26,14 @@ class Camera:
         self.requests = {k: self.ptz.create_type(k)
                          for k in self.requests_labels}
         self.status = self.getStatus()
-        self.requests['ContinuousMove'] = {
-            'ConfigurationToken': self.profile.PTZConfiguration.token,
-            'Velocity': self.status.Position,
-        }
+        #self.requests['ContinuousMove'] = {
+          #  'ConfigurationToken': self.profile.PTZConfiguration.token,
+         #   'Velocity': self.status.Position,
+        #}
+        self.requests['ContinuousMove'].Velocity = self.status.Position
+        self.requests['ContinuousMove'].ProfileToken = self.profile.token
         self.requests['GotoHomePosition'].ProfileToken = self.profile.token
+        print(self.requests['ContinuousMove'])
         self.goHome()
 
     def getStreamUri(self):
@@ -41,14 +45,14 @@ class Camera:
         return ans['Uri']
 
     def move(self, x, y):
-        try:
-            self.request.Velocity.PanTilt.x = x
-            self.request.Velocity.PanTilt.y = y
-            self.ptz.ContinuousMove(self.request)
-        except:
-            self.connect()
-            self.logger.info('Error with moving camera, reconnecting')
-            self.move(x, y)
+    #    try:
+        self.requests['ContinuousMove'].Velocity.PanTilt.x = x
+        self.requests['ContinuousMove'].Velocity.PanTilt.y = y
+        self.ptz.ContinuousMove(self.requests['ContinuousMove'])
+     #   except:
+            #self.connect()
+            #self.logger.info('Error with moving camera, reconnecting')
+    #     self.move(x, y)
 
     def connect(self, substream=1):
         try:

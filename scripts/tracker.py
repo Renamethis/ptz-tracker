@@ -1,3 +1,4 @@
+
 # Main tracker script
 
 # Starting the virtual environment
@@ -74,18 +75,22 @@ move = M2.Move(length, hight, speed_coef, ip, port, login,
 stream = WVS.WebcamVideoStream(move.cam.getStreamUri(),
                                Jetson=(1 if (UF.get_setting('device')
                                        == 'Jetson') else 0))
+
 stream.start()
 tensor.start()
 move.start()
 ping = P.Ping(mycam_ip=ip)
 ping.start()
 
+tracker = cv2.TrackerCSRT_create()
+isTracking = False
+
 next_time = 0
 
 while True:
     img = stream.read()
 
-    if ping.read() != 0:
+    if False:
         stream.stop()
         logger.warning("Camera conection lost. Reconnect...")
         while ping.read() != 0 or not stream.check_connect() or stream.status():
@@ -101,9 +106,10 @@ while True:
     if img is not None:
 
         img = cv2.resize(img, (length, hight))
+        frame = img
         tensor.set_image(img)
         img = tensor.read()
-        if img is not None:
+        if img is not None and not isTracking:
             scores = tensor.read_scores()
             image_np = tensor.read()
             classes = tensor.read_classes()
@@ -117,7 +123,21 @@ while True:
                     person = persons[0]
                     l_h = [hight, length, hight, length]
                     box = boxes[0][person]
-                    box = l_h*box
+                    box = (l_h*box)
+#                    print(box)
                     move.set_box(box)
+                    #tracker.init(frame, box)
+                    #isTracking = True
                 else:
                     move.set_box(None)
+        elif isTracking:
+            print('Here it is')
+            (success, box) = tracker.update(frame)
+            if(success):
+                l_h = [hight, length, hight, length]
+               # box = (l_h*box).astype(int)
+                print(np.asarray(box))
+                move.set_box(np.asarray(box))
+            else:
+                move.set_box(None)
+                isTracking = False
