@@ -4,9 +4,9 @@
 # Starting the virtual environment
 import sys
 import os
-wsdl_path = os.path.abspath(os.getcwd()).split('/classes')[0] + '/wsdl'
 
 pwd = os.getcwd()
+wsdl_path = pwd + '/wsdl'
 sys.path.append(pwd+'/classes')
 
 pwd = os.getcwd()
@@ -38,7 +38,6 @@ import Ping as P
 
 # Create log file
 
-tf.disable_v2_behavior()
 pwd = UF.get_pwd("log")
 logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
@@ -50,10 +49,6 @@ pwd_recognition_queue = UF.get_pwd("recognition_queue")
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
-
-logger.info("__________________Program_started__________________")
-
-
 # Get parameters from settings
 
 ip = UF.get_setting("ip")
@@ -72,7 +67,8 @@ bounds = [float(UF.get_setting("x1")),
 tensor = T.Tensor(hight=hight, length=length)
 move = M2.Move(length, hight, speed_coef, ip, port, login,
                password, wsdl_path, tweaking, bounds, zone)
-stream = WVS.WebcamVideoStream(move.cam.getStreamUri(),
+rtsp_url = "rtsp://" + login + ":" + password + "@" + move.cam.getStreamUri().split('//')[1]
+stream = WVS.WebcamVideoStream(rtsp_url,
                                Jetson=(1 if (UF.get_setting('device')
                                        == 'Jetson') else 0))
 
@@ -82,11 +78,11 @@ move.start()
 ping = P.Ping(mycam_ip=ip)
 ping.start()
 
-tracker = cv2.TrackerCSRT_create()
+#tracker = cv2.TrackerCSRT_create()
 isTracking = False
 
 next_time = 0
-
+box_shape = None
 while True:
     img = stream.read()
 
@@ -95,8 +91,7 @@ while True:
         logger.warning("Camera conection lost. Reconnect...")
         while ping.read() != 0 or not stream.check_connect() or stream.status():
             sleep(1)
-
-        stream = WVS.WebcamVideoStream(move.cam.getStreamUri(),
+        stream = WVS.WebcamVideoStream(login + ":" + password + "@" + move.cam.getStreamUri(),
                                        Jetson=(1 if (UF.get_setting('device')
                                                == 'Jetson') else 0))
         stream.start()
@@ -110,34 +105,39 @@ while True:
         tensor.set_image(img)
         img = tensor.read()
         if img is not None and not isTracking:
-            scores = tensor.read_scores()
+            scores = tensor.read_scores().numpy()
             image_np = tensor.read()
-            classes = tensor.read_classes()
-            boxes = tensor.read_boxes()
-            if (scores.any() and image_np is not None and classes is not None and boxes is not None):
-                scores[scores > 0.45] = 1
-                classes = classes*scores
+            classes = tensor.read_classes().numpy()
+            boxes = tensor.read_boxes().numpy()
+            if (scores is not None and image_np is not None and classes is not None and boxes is not None):
+                score = np.where(scores > 0.5)
+                classes = classes
                 persons = np.where(classes == 1)[1]
-
-                if (str(persons) != '[]'):
+                if (len(scores[scores > 0.5]) != 0):
                     person = persons[0]
                     l_h = [hight, length, hight, length]
-                    box = boxes[0][person]
+                    box = boxes[score][0]
                     box = (l_h*box)
-#                    print(box)
                     move.set_box(box)
+                    box_shape = [int(box[2] - box[0]), int(box[3] - box[1])]
                     #tracker.init(frame, box)
                     #isTracking = True
                 else:
                     move.set_box(None)
-        elif isTracking:
-            print('Here it is')
+        '''elif isTracking:
             (success, box) = tracker.update(frame)
+            print(success)
             if(success):
                 l_h = [hight, length, hight, length]
                # box = (l_h*box).astype(int)
-                print(np.asarray(box))
+                #print(np.asarray(box))
+                shape = [int(box[2] - box[0]), int(box[3] - box[1])]
+                img = img[int(box[0]):int(box[2]), int(box[1]):int(box[3])]
+                cv2.imshow('BOX', img)
+                if(shape[0]/box_shape[0] < 0.7 and shape[1]/box_shape[1] < 0.7):
+                    isTracking = False
                 move.set_box(np.asarray(box))
             else:
                 move.set_box(None)
                 isTracking = False
+        '''

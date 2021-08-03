@@ -24,7 +24,6 @@ echo "Venv is ok!"
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python3 get-pip.py
 . ./venv/bin/activate
-git clone https://github.com/tensorflow/models.git
 git clone https://github.com/FalkTannhaeuser/python-onvif-zeep.git
 cd python-onvif-zeep
 python3 setup.py install

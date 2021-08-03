@@ -26,6 +26,7 @@ class Move:
         self.bounds = bounds
         self.zone = zone
         self.__ddelay = 0.5
+        self.isProcessing = True
         self.logger = logging.getLogger("Main.%s" % (self.name))
         self.cam = Camera(ip, port, login, password, wsdl)
 
@@ -45,9 +46,9 @@ class Move:
         self.logger.info("Process started")
         while not self.stopped:
             message = self.mt.get_message()
-            #translation = self.mt.get_translation() if (message
-#                                           is not None) else None
-            #rotation = self.mt.get_rotation() if message is not None else None
+            translation = self.mt.get_translation() if (message
+                                           is not None) else None
+            rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:
                 self.cam.stop()
                 sleep(self.__ddelay)
@@ -75,11 +76,18 @@ class Move:
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
                 if(vec_y < 0.05 and vec_x < 0.05):
+                    self.isProcessing = False
                     self.cam.stop()
                 else:
+                    isProcessing = True
                     self.logger.info('X: ' + str(vec_x)
                                      + ' Y: ' + str(vec_y))
-                    self.cam.move(vec_x, vec_y)
+                    if(message is not None and not (rotation[0] > self.bounds[0] and rotation[0]
+                         < self.bounds[2] and rotation[1] > self.bounds[1]
+                         and rotation[1] < self.bounds[3])):
+                         self.cam.stop()
+                    else:
+                        self.cam.move(vec_x, vec_y)
                 old_box = box
 
             elif box is None and old_box is not None:
@@ -93,10 +101,6 @@ class Move:
                     self.cam.goHome()
                     old_box = box
                     sleep(self.__ddelay)
-#                if(not (rotation[0] > self.bounds[0] and rotation[0]
- #                       < self.bounds[2] and rotation[1] > self.bounds[1]
-  #                      and rotation[1] < self.bounds[3])):
-                    self.cam.stop()
                 sleep(self.tweaking)
                 self.count_frame = self.count_frame + 1
             self.old_box = old_box

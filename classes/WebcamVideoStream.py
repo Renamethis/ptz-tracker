@@ -18,6 +18,7 @@ class WebcamVideoStream:
             # add_try (count >= 3)
 
             self.mycam_rtsp = rtsp
+            print(rtsp)
             init_logger = logging.getLogger("Main.%s.init" % (self.name))
 
             # Read configuration file (rtsp)
@@ -76,25 +77,12 @@ class WebcamVideoStream:
             update_logger = logging.getLogger("Main.%s.update" % (self.name))
             stream = self.stream
             update_logger.info("Process started")
-            i = 0
-            time_1 = time.time()
-            err = 0
-
             while True:
                 if self.stopped:
                     update_logger.info("%s stopped" % self.name)
                     return
                 (self.grabbed, self.frame) = stream.read()
 
-                i = i + 1
-                if (i == 25):
-                    time_2 = time.time()
-                    err = err + time_2 - time_1 - 1
-                    if err < 0:
-                        err = 0
-                    i = 0
-                    time_1 = time.time()
-                    update_logger.debug("Delay time: %f" % (err))
         except:
             update_logger.critical("Error in process")
             update_logger.exception("Error!")

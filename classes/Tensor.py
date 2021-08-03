@@ -5,16 +5,14 @@ import numpy as np
 import logging
 import time
 from time import sleep
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 import Utility_Functions as UF
 from threading import Thread
 
 
 class Tensor:
     # Initialization
-    def __init__(self, length=720, hight=405, model_name=
-                 'ssd_mobilenet_v2_body', name="Tensor"):
-        tf.disable_v2_behavior()
+    def __init__(self, length=720, hight=405, model_name="ssd_mobilenet", name="Tensor"):
         self.name = name
         self.dellay = 0
         self.flag = False
@@ -27,30 +25,16 @@ class Tensor:
         init_logger = logging.getLogger("Main.%s.init" % (self.name))
 
         try:
-            pwd = UF.get_pwd("detection_models")
+            pwd = UF.get_pwd("models")
             self.model_name = model_name
-            PATH_TO_FROZEN_GRAPH = pwd + '/' + self.model_name + '.pb'
-            PATH_TO_LABELS = pwd + '/mscoco_label_map.pbtxt'
+            PATH_TO_MODEL = pwd + '/' + model_name
+            PATH_TO_LABELS = pwd + '/label_map.pbtxt'
 
-
-            self.detection_graph = tf.Graph()
-            with self.detection_graph.as_default():
-                od_graph_def = tf.GraphDef()
-                with tf.gfile.GFile(PATH_TO_FROZEN_GRAPH, 'rb') as fid:
-                    serialized_graph = fid.read()
-                    od_graph_def.ParseFromString(serialized_graph)
-                    tf.import_graph_def(od_graph_def, name='')
-
-            self.boxes = self.detection_graph.get_tensor_by_name(
-                'detection_boxes:0')
-            self.scores = self.detection_graph.get_tensor_by_name(
-                'detection_scores:0')
-            self.classes = self.detection_graph.get_tensor_by_name(
-                'detection_classes:0')
-            self.num_detections = self.detection_graph.get_tensor_by_name(
-                'num_detections:0')
-            self.image_tensor = self.detection_graph.get_tensor_by_name(
-                'image_tensor:0')
+            self.detector = tf.saved_model.load(PATH_TO_MODEL)
+            self.boxes = None
+            self.scores = None
+            self.classes = None
+            self.num_detections = None
         except:
             init_logger.critical("Error in %s.__init__" % (self.name))
             init_logger.exception("Error!")
@@ -75,55 +59,27 @@ class Tensor:
             count = 0
             err = 0
             dellay = 0
-            with self.detection_graph.as_default():
-                with tf.Session(graph=self.detection_graph) as sess:
-                    while True:
-                        image = self.new_image
-                        if self.stopped:
-                            return
-                        if not np.array_equal(image,self.old_image) and image is not None:
-
-
-
-
-                            time_1 = time.time()
-                            image_np_expanded = np.expand_dims(image, axis=0)
-                            boxes = self.detection_graph.get_tensor_by_name(
-                                'detection_boxes:0')
-                            scores = self.detection_graph.get_tensor_by_name(
-                                'detection_scores:0')
-                            classes = self.detection_graph.get_tensor_by_name(
-                                'detection_classes:0')
-                            num_detections = self.detection_graph.get_tensor_by_name(
-                                'num_detections:0')
-                            self.image_tensor = self.detection_graph.get_tensor_by_name(
-                                'image_tensor:0')
-                            try:
-                                (self.boxes, self.scores, self.classes,
-                                    self.num_detections) = sess.run(
-                                        [boxes, scores, classes,
-                                            num_detections],
-                                        feed_dict={self.image_tensor:
-                                                   image_np_expanded})
-                            except:
-                                update_logger.critical("Error with run tensor")
-                                update_logger.exception("Error!")
-
-                            time_2 = time.time()
-                            err = time_2 - time_1
-                            dellay = dellay + err
-                            count = count + 1
-                            if count == 10:
-                                self.dellay = dellay
-                                # print dellay
-                                self.count = count
-                                dellay = 0
-                                count = 0
-
-                            self.flag = True
-                            self.old_image = image
-                        else:
-                            sleep(0.1)
+            while True:
+                image = self.new_image
+                if self.stopped:
+                    return
+                if not np.array_equal(image,self.old_image) and image is not None:
+                    try:
+                        tensor = tf.convert_to_tensor(image)
+                        tensor = tensor[tf.newaxis, ...]
+                        tensor = tensor[:, :, :, :3]
+                        detections = self.detector(tensor)
+                        self.boxes = detections['detection_boxes']
+                        self.scores = detections['detection_scores']
+                        self.classes = detections['detection_classes']
+                        self.num_detections = detections['num_detections']
+                    except:
+                        update_logger.critical("Error with run tensor")
+                        update_logger.exception("Error!")
+                    self.flag = True
+                    self.old_image = image
+                else:
+                    sleep(0.1)
         except:
             update_logger.critical("Error in process")
             update_logger.exception("Error!")
