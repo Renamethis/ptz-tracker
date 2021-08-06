@@ -8,7 +8,6 @@ ORB_SLAM2/
 cppzmq/
 libzmq/
 osmap/
-models/
 protobuf/
 orb_module/build/
 orb_module/map/*

@@ -42,9 +42,6 @@ pwd = UF.get_pwd("log")
 logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler(pwd+"/main.log")
-pwd_images_to_recognize = UF.get_pwd("images_to_recognize")
-pwd_recognition_queue = UF.get_pwd("recognition_queue")
-
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -110,16 +107,16 @@ while True:
             classes = tensor.read_classes().numpy()
             boxes = tensor.read_boxes().numpy()
             if (scores is not None and image_np is not None and classes is not None and boxes is not None):
-                score = np.where(scores > 0.5)
+                score = np.where(scores == max(scores))
                 classes = classes
-                persons = np.where(classes == 1)[1]
-                if (len(scores[scores > 0.5]) != 0):
-                    person = persons[0]
+                if (scores[score][0] > 0.6):
                     l_h = [hight, length, hight, length]
                     box = boxes[score][0]
                     box = (l_h*box)
                     move.set_box(box)
-                    box_shape = [int(box[2] - box[0]), int(box[3] - box[1])]
+                    img = img[int(box[0]):int(box[2]), int(box[1]):int(box[3])]
+                    cv2.imwrite('test.png', img)
+                    #box_shape = [int(box[2] - box[0]), int(box[3] - box[1])]
                     #tracker.init(frame, box)
                     #isTracking = True
                 else:

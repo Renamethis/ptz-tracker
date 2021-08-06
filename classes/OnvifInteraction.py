@@ -23,18 +23,18 @@ class Camera:
         self.logger = logging.getLogger("Main.%s.init" % (self.name))
         while(not self.connect()):
             pass
-        #self.requests = {k: self.ptz.create_type(k)
-        #                 for k in self.requests_labels}
-        #self.status = self.getStatus()
-        #self.requests['ContinuousMove'] = {
-          #  'ConfigurationToken': self.profile.PTZConfiguration.token,
-         #   'Velocity': self.status.Position,
-        #}
-        #self.requests['ContinuousMove'].Velocity = self.status.Position
-        #self.requests['ContinuousMove'].ProfileToken = self.profile.token
-        #self.requests['GotoHomePosition'].ProfileToken = self.profile.token
+        self.requests = {k: self.ptz.create_type(k)
+                         for k in self.requests_labels}
+        self.status = self.getStatus()
+        self.requests['ContinuousMove'] = {
+            'ConfigurationToken': self.profile.PTZConfiguration.token,
+            'Velocity': self.status.Position,
+        }
+        self.requests['ContinuousMove'].Velocity = self.status.Position
+        self.requests['ContinuousMove'].ProfileToken = self.profile.token
+        self.requests['GotoHomePosition'].ProfileToken = self.profile.token
         #print(self.requests['ContinuousMove'])
-        #self.goHome()
+        self.goHome()
 
     def getStreamUri(self):
         request = self.media.create_type('GetStreamUri')
@@ -46,14 +46,14 @@ class Camera:
 
     def move(self, x, y):
         pass
-    #    try:
-        #self.requests['ContinuousMove'].Velocity.PanTilt.x = x
-        #self.requests['ContinuousMove'].Velocity.PanTilt.y = y
-        #self.ptz.ContinuousMove(self.requests['ContinuousMove'])
-     #   except:
-            #self.connect()
-            #self.logger.info('Error with moving camera, reconnecting')
-    #     self.move(x, y)
+        try:
+            self.requests['ContinuousMove'].Velocity.PanTilt.x = x
+            self.requests['ContinuousMove'].Velocity.PanTilt.y = y
+            self.ptz.ContinuousMove(self.requests['ContinuousMove'])
+        except:
+            self.connect()
+            self.logger.info('Error with moving camera, reconnecting')
+            self.move(x, y)
 
     def connect(self, substream=1):
         try:
@@ -65,16 +65,14 @@ class Camera:
         self.media = self.cam.create_media_service()
         k = 1 if substream else 0
         self.profile = self.media.GetProfiles()[k]
-        #self.ptz = self.cam.create_ptz_service()
+        self.ptz = self.cam.create_ptz_service()
         return True
 
     def getStatus(self):
         return self.ptz.GetStatus({'ProfileToken': self.profile.token})
 
     def goHome(self):
-        pass
-        #self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+        self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
 
     def stop(self):
-        pass
-        #self.ptz.Stop({'ProfileToken': self.profile.token})
+        self.ptz.Stop({'ProfileToken': self.profile.token})

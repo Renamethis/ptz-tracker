@@ -1,7 +1,5 @@
 # Class for utility functions
 import os
-import smtplib
-import base64
 import configparser
 import numpy as np
 import logging
