@@ -45,7 +45,7 @@ then
 	echo 'device = Jetson' >> conf/settings.ini
 else
 	url="https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-x86_64.zip"
-	pip3 install -r requirements_server.txt
+	pip3 install -r requirements_cpu.txt
 	echo 'device = CPU' >> conf/settings.ini
 fi
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk

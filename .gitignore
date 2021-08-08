@@ -14,6 +14,7 @@ orb_module/map/*
 classes/*.pyc
 log/*
 build/
-scripts/__pycache__/*
-classes/__pycache__/*
+scripts/__pycache__
+classes/__pycache__
 wsdl/*
+detection_models/

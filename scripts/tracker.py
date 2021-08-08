@@ -108,13 +108,11 @@ while True:
             boxes = tensor.read_boxes().numpy()
             if (scores is not None and image_np is not None and classes is not None and boxes is not None):
                 score = np.where(scores == max(scores))
-                classes = classes
                 if (scores[score][0] > 0.6):
                     l_h = [hight, length, hight, length]
                     box = boxes[score][0]
                     box = (l_h*box)
                     move.set_box(box)
-                    img = img[int(box[0]):int(box[2]), int(box[1]):int(box[3])]
                     cv2.imwrite('test.png', img)
                     #box_shape = [int(box[2] - box[0]), int(box[3] - box[1])]
                     #tracker.init(frame, box)

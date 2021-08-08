@@ -26,14 +26,9 @@ class Camera:
         self.requests = {k: self.ptz.create_type(k)
                          for k in self.requests_labels}
         self.status = self.getStatus()
-        self.requests['ContinuousMove'] = {
-            'ConfigurationToken': self.profile.PTZConfiguration.token,
-            'Velocity': self.status.Position,
-        }
         self.requests['ContinuousMove'].Velocity = self.status.Position
         self.requests['ContinuousMove'].ProfileToken = self.profile.token
         self.requests['GotoHomePosition'].ProfileToken = self.profile.token
-        #print(self.requests['ContinuousMove'])
         self.goHome()
 
     def getStreamUri(self):
