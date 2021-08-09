@@ -51,19 +51,21 @@ logger.addHandler(fh)
 ip = UF.get_setting("ip")
 length = int(UF.get_setting("length"))
 hight = int(UF.get_setting("hight"))
+l_h = [hight, length, hight, length]
 port = UF.get_setting("port")
 login = UF.get_setting("login")
 password = UF.get_setting("password")
 speed_coef = float(UF.get_setting("speed_coef"))
 tweaking = float(UF.get_setting("tweaking"))/100.0
-zone = int(UF.get_setting("trackingzone"))
+tracking_box = (np.array([float(i) for i in UF.get_setting("box")
+                         .replace(" ", "").split(",")]) * l_h).astype(int)
 bounds = [float(UF.get_setting("x1")),
           float(UF.get_setting("y1")),
           float(UF.get_setting("x2")),
           float(UF.get_setting("y2"))]
 tensor = T.Tensor(hight=hight, length=length)
 move = M2.Move(length, hight, speed_coef, ip, port, login,
-               password, wsdl_path, tweaking, bounds, zone)
+               password, wsdl_path, tweaking, bounds, tracking_box)
 rtsp_url = "rtsp://" + login + ":" + password + "@" + move.cam.getStreamUri().split('//')[1]
 stream = WVS.WebcamVideoStream(rtsp_url,
                                Jetson=(1 if (UF.get_setting('device')
@@ -108,8 +110,8 @@ while True:
             boxes = tensor.read_boxes().numpy()
             if (scores is not None and image_np is not None and classes is not None and boxes is not None):
                 score = np.where(scores == max(scores))
-                if (scores[score][0] > 0.6):
-                    l_h = [hight, length, hight, length]
+                #print(scores)
+                if (scores[score][0] > 0.65):
                     box = boxes[score][0]
                     box = (l_h*box)
                     move.set_box(box)

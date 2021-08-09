@@ -11,7 +11,7 @@ from OnvifInteraction import Camera
 class Move:
     # Initialization
     def __init__(self, length, hight, speed_coef, ip, port, login, password,
-                 wsdl, tweaking, bounds, zone, name="Move"):
+                 wsdl, tweaking, bounds, tracking_box, name="Move"):
         self.name = name
         self.box = None
         self.tweaking = tweaking
@@ -24,7 +24,7 @@ class Move:
         self.speed_coef = speed_coef
         self.pause = False
         self.bounds = bounds
-        self.zone = zone
+        self.tbox = tracking_box
         self.__ddelay = 0.5
         self.isProcessing = True
         self.logger = logging.getLogger("Main.%s" % (self.name))
@@ -32,10 +32,10 @@ class Move:
 
     # 3.2. Start thread
     def start(self):
+        self.logger.info("Process starting")
         self.mt = message_grabber("tcp://*:5555")
         self.mt.start()
         self.stopped = False
-        self.logger.info("Process starting")
         self.t = Thread(target=self.update, name=self.name, args=())
         self.t.daemon = True
         self.t.start()
@@ -58,16 +58,19 @@ class Move:
                 sleep(self.__ddelay)
             elif box is not None:
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
-                to_y = int(abs(box[0]))
-                if (to_x < self.length/3 - self.zone or to_x > self.length/3 + self.zone):
-                    if to_x > self.length/3:
-                        vec_x = float(to_x - self.length/3)/(self.length)
+                to_y = int(abs(box[0] - box[2])/2.0 + box[0])
+                if (to_x < self.tbox[0] or to_x > self.tbox[2]):
+                    if to_x < self.tbox[0]:
+                        vec_x = float(to_x - self.tbox[0])/(self.length)
                     else:
-                        vec_x = float(to_x - self.length/3)/(self.length)*2
+                        vec_x = float(to_x - self.tbox[2])/(self.length)
                 else:
                     vec_x = 0
-                if (to_y < self.hight/5 - self.zone or to_y > self.hight/5 + self.zone):
-                    vec_y = float(self.hight/5 - to_y)/(self.hight)
+                if (to_y < self.tbox[1] or to_y > self.tbox[3]):
+                    if(to_y < self.tbox[1]):
+                        vec_y = float(self.tbox[1] - to_y)/(self.hight)
+                    else:
+                        vec_y = float(self.tbox[3] - to_y)/(self.hight)
                 else:
                     vec_y = 0
                 self.count_frame = 0

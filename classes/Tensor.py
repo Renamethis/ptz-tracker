@@ -79,7 +79,7 @@ class Tensor:
                     self.flag = True
                     self.old_image = image
                 else:
-                    sleep(0.1)
+                    sleep(0.05)
         except:
             update_logger.critical("Error in process")
             update_logger.exception("Error!")
@@ -130,4 +130,3 @@ class Tensor:
 
     def stop(self):
         self.stopped = True
-
