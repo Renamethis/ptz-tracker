@@ -1,4 +1,3 @@
-
 # Main tracker script
 
 # Starting the virtual environment
@@ -8,10 +7,6 @@ import os
 pwd = os.getcwd()
 wsdl_path = pwd + '/wsdl'
 sys.path.append(pwd+'/classes')
-
-pwd = os.getcwd()
-sys.path.append(pwd)
-sys.path.append(pwd+'/slim')
 
 # Loading the libraries
 
@@ -46,45 +41,54 @@ fh = logging.FileHandler(pwd+"/main.log")
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
+
 # Get parameters from settings
 
-ip = UF.get_setting("ip")
-length = int(UF.get_setting("length"))
-hight = int(UF.get_setting("hight"))
+ip = UF.get_setting("Onvif", "ip")
+port = UF.get_setting("Onvif", "port")
+login = UF.get_setting("Onvif", "login")
+password = UF.get_setting("Onvif", "password")
+speed_coef = float(UF.get_setting("Onvif", "speed_coef"))
+tweaking = float(UF.get_setting("Onvif", "tweaking"))/100.0
+bounds = [float(i) for i in UF.get_setting("Onvif", "bounds")
+          .replace(" ", "").split(",")]
+isAbsolute = bool(UF.get_setting("Onvif", "Absolute"))
+length = int(UF.get_setting("Processing", "length"))
+hight = int(UF.get_setting("Processing", "hight"))
 l_h = [hight, length, hight, length]
-port = UF.get_setting("port")
-login = UF.get_setting("login")
-password = UF.get_setting("password")
-speed_coef = float(UF.get_setting("speed_coef"))
-tweaking = float(UF.get_setting("tweaking"))/100.0
-tracking_box = (np.array([float(i) for i in UF.get_setting("box")
+tracking_box = (np.array([float(i) for i in UF.get_setting("Processing", "box")
                          .replace(" ", "").split(",")]) * l_h).astype(int)
-bounds = [float(UF.get_setting("x1")),
-          float(UF.get_setting("y1")),
-          float(UF.get_setting("x2")),
-          float(UF.get_setting("y2"))]
+limits = [float(i) for i in UF.get_setting("Processing", "limits")
+          .replace(" ", "").split(",")]
+# Initializing main classes
 tensor = T.Tensor(hight=hight, length=length)
 move = M2.Move(length, hight, speed_coef, ip, port, login,
-               password, wsdl_path, tweaking, bounds, tracking_box)
-rtsp_url = "rtsp://" + login + ":" + password + "@" + move.cam.getStreamUri().split('//')[1]
-stream = WVS.WebcamVideoStream(rtsp_url,
-                               Jetson=(1 if (UF.get_setting('device')
-                                       == 'Jetson') else 0))
+               password, wsdl_path, tweaking, limits, tracking_box, isAbsolute,
+               bounds)
+rtsp_url = "rtsp://" + login + ":" + password + "@" + \
+            move.cam.getStreamUri().split('//')[1]
+stream = WVS.WebcamVideoStream(rtsp_url, Jetson=(1 if (UF.get_setting(
+                               "Hardware", "device") == 'Jetson') else 0))
 
+# Starting all threads
+
+ping = P.Ping(mycam_ip=ip)
 stream.start()
 tensor.start()
 move.start()
-ping = P.Ping(mycam_ip=ip)
 ping.start()
 
+# Opencv object tracking tracking init
+
 #tracker = cv2.TrackerCSRT_create()
-isTracking = False
+#isTracking = False
+
+# Main loop
 
 next_time = 0
 box_shape = None
 while True:
     img = stream.read()
-
     if False:
         stream.stop()
         logger.warning("Camera conection lost. Reconnect...")
@@ -101,40 +105,39 @@ while True:
 
         img = cv2.resize(img, (length, hight))
         frame = img
+        cv2.imwrite('kek.png', img)
         tensor.set_image(img)
         img = tensor.read()
-        if img is not None and not isTracking:
+        if img is not None: #and not isTracking:
             scores = tensor.read_scores().numpy()
             image_np = tensor.read()
             classes = tensor.read_classes().numpy()
             boxes = tensor.read_boxes().numpy()
             if (scores is not None and image_np is not None and classes is not None and boxes is not None):
-                score = np.where(scores == max(scores))
-                #print(scores)
-                if (scores[score][0] > 0.65):
+                score = np.where(scores == np.max(scores))
+                if (scores[score][0] > 0.5):
                     box = boxes[score][0]
                     box = (l_h*box)
                     move.set_box(box)
-                    cv2.imwrite('test.png', img)
-                    #box_shape = [int(box[2] - box[0]), int(box[3] - box[1])]
+                    #tracking_box = [box[1], box[0], box[3], box[2]]
+                    #img = img[int(box[0]):int(box[2]), int(box[1]):int(box[3])]
+                    #cv2.imwrite('init_box.png', img)
                     #tracker.init(frame, box)
                     #isTracking = True
                 else:
                     move.set_box(None)
-        '''elif isTracking:
+'''
+        elif isTracking:
             (success, box) = tracker.update(frame)
             print(success)
             if(success):
-                l_h = [hight, length, hight, length]
                # box = (l_h*box).astype(int)
                 #print(np.asarray(box))
-                shape = [int(box[2] - box[0]), int(box[3] - box[1])]
                 img = img[int(box[0]):int(box[2]), int(box[1]):int(box[3])]
-                cv2.imshow('BOX', img)
-                if(shape[0]/box_shape[0] < 0.7 and shape[1]/box_shape[1] < 0.7):
-                    isTracking = False
+                cv2.imwrite('box.png', img)
+                #box = [box[1], box[0], box[3], box[2]]
                 move.set_box(np.asarray(box))
             else:
                 move.set_box(None)
                 isTracking = False
-        '''
+'''

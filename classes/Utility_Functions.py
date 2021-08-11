@@ -19,20 +19,20 @@ def get_pwd(dir=""):
     return pwd
 
 
-def get_setting(get_setting = ""):
-    get_setting_logger = logging.getLogger("Main.functions.get_setting")
-    if get_setting != "":
+def get_setting(section, setting):
+    logger = logging.getLogger("Main.functions.readcfg")
+    if setting:
         config = configparser.ConfigParser()
         pwd = os.getcwd()
         config.read(pwd + "/settings.ini")
         try:
-            setting = config.get("Settings",get_setting)
+            setting = config.get(section, setting)
         except:
-            get_setting_logger.warning("No option '%s' in section: 'Settings'" % (get_setting))
+            logger.warning("No option '%s' in section: 'Settings'" % (setting))
             return ""
         return setting
     else:
-        return ""
+        return None
 
 
 def init_tracker(stream, tensor, move, length, hight, speed_coef):

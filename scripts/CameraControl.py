@@ -85,8 +85,9 @@ status.Position.PanTilt.x = 0.0
 status.Position.PanTilt.y = 0.0
 request.Velocity = status.Position
 request.ProfileToken = profile.token
+request.Velocity.Zoom.x = 0
 ptz.ContinuousMove(request)
-speed = 0.7
+speed = 0.3
 strsplit = Uri.split('//')
 keys = [ord('d'), ord('a'), ord('w'), ord('s')]
 controls = [(speed, 0), (-speed, 0), (0, speed), (0, -speed)]
@@ -105,6 +106,9 @@ while rtsp_thread.get_frame() is None:
         pass
 while rtsp_thread.is_opened():
     frame = rtsp_thread.get_frame()
+    status = ptz.GetStatus({'ProfileToken': profile.token})['Position']
+    cv2.putText(frame, 'X: ' + str(status['PanTilt']['x']) + ' Y: ' + str(status['PanTilt']['y']),
+                            (500,620), cv2.FONT_HERSHEY_SIMPLEX,0.4, (255,0,255), 2)
     cv2.imshow('Coordinates', frame)
     request.Velocity.PanTilt.x = 0
     request.Velocity.PanTilt.y = 0

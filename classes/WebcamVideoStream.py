@@ -29,7 +29,7 @@ class WebcamVideoStream:
                         if(Jetson):
                             self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! queue ! rtph264depay ! queue ! h264parse ! omxh264dec ! nvvidconv ! video/x-raw,format=BGRx ! videoconvert ! video/x-raw,format=BGR ! appsink'
                         else:
-                            self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" ! rtph264depay ! decodebin ! videoconvert ! appsink'
+                            self.mycam_rtsp = 'rtspsrc location="' + self.mycam_rtsp + '" latency=0 ! rtph264depay ! queue ! decodebin ! queue ! videoconvert ! appsink'
                         self.stream = cv2.VideoCapture(self.mycam_rtsp, cv2.CAP_GSTREAMER)
                 else:
                     self.stream = cv2.VideoCapture(self.mycam_rtsp, cv2.CAP_FFMPEG)
@@ -38,7 +38,6 @@ class WebcamVideoStream:
                 init_logger.exception("Error!")
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-                #UF.send_msg(msg=err_msg)
                 sys.exit(0)
 
             if self.stream.isOpened() is False:

@@ -11,7 +11,8 @@ from OnvifInteraction import Camera
 class Move:
     # Initialization
     def __init__(self, length, hight, speed_coef, ip, port, login, password,
-                 wsdl, tweaking, bounds, tracking_box, name="Move"):
+                 wsdl, tweaking, bounds, tracking_box, isAbsolute, limits,
+                 name="Move"):
         self.name = name
         self.box = None
         self.tweaking = tweaking
@@ -25,12 +26,14 @@ class Move:
         self.pause = False
         self.bounds = bounds
         self.tbox = tracking_box
-        self.__ddelay = 0.5
+        self.__ddelay = 0.1
         self.isProcessing = True
         self.logger = logging.getLogger("Main.%s" % (self.name))
         self.cam = Camera(ip, port, login, password, wsdl)
+        self.isAbsolute = isAbsolute
+        self.AbsoluteLimits = limits
 
-    # 3.2. Start thread
+    # Start threads
     def start(self):
         self.logger.info("Process starting")
         self.mt = message_grabber("tcp://*:5555")
@@ -42,6 +45,7 @@ class Move:
         return self
 
     # Loop of receiving frames from a stream
+
     def update(self):
         self.logger.info("Process started")
         while not self.stopped:
@@ -78,13 +82,21 @@ class Move:
                 vec_y = vec_y*self.speed_coef
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
-                if(vec_y < 0.05 and vec_x < 0.05):
+                if(self.isAbsolute):
+                    point = self.cam.getAbsolute()
+                    if((point[0] < self.AbsoluteLimits[0] and vec_x < 0) or
+                       (point[0] > self.AbsoluteLimits[2] and vec_x > 0)):
+                        vec_x = 0
+                    if(point[1] < self.AbsoluteLimits[1] and vec_y > 0 or
+                       (point[1] > self.AbsoluteLimits[3] and vec_y < 0)):
+                        vec_y = 0
+                if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
                     self.isProcessing = False
                     self.cam.stop()
                 else:
-                    isProcessing = True
-                    self.logger.info('X: ' + str(vec_x)
-                                     + ' Y: ' + str(vec_y))
+                    self.isProcessing = True
+                    #self.logger.info('X: ' + str(vec_x)
+                    #                 + ' Y: ' + str(vec_y))
                     if(message is not None and not (rotation[0] > self.bounds[0] and rotation[0]
                          < self.bounds[2] and rotation[1] > self.bounds[1]
                          and rotation[1] < self.bounds[3])):
@@ -92,7 +104,6 @@ class Move:
                     else:
                         self.cam.move(vec_x, vec_y)
                 old_box = box
-
             elif box is None and old_box is not None:
                 if (self.count_frame < 20):
                     self.cam.move(vec_x, vec_y)
