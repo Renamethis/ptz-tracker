@@ -38,7 +38,7 @@ class Move:
         self.logger.info("Process starting")
         self.mt = message_grabber("tcp://*:5555")
         self.mt.start()
-        self.stopped = False
+        self.running = self.cam.running
         self.t = Thread(target=self.update, name=self.name, args=())
         self.t.daemon = True
         self.t.start()
@@ -48,7 +48,7 @@ class Move:
 
     def update(self):
         self.logger.info("Process started")
-        while not self.stopped:
+        while self.running:
             message = self.mt.get_message()
             translation = self.mt.get_translation() if (message
                                            is not None) else None
@@ -102,17 +102,17 @@ class Move:
                          and rotation[1] < self.bounds[3])):
                          self.cam.stop()
                     else:
-                        self.cam.move(vec_x, vec_y)
+                        self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
             elif box is None and old_box is not None:
                 if (self.count_frame < 20):
-                    self.cam.move(vec_x, vec_y)
+                    self.cam.ContinuousMove(vec_x, vec_y)
                 elif (self.count_frame == 20):
                     self.cam.stop()
                     sleep(self.__ddelay)
                 elif (self.count_frame == 60):
                     self.count_frame = 0
-                    self.cam.goHome()
+                    #self.cam.goHome()
                     old_box = box
                     sleep(self.__ddelay)
                 sleep(self.tweaking)
@@ -126,4 +126,4 @@ class Move:
         self.speed_coef = speed_coef
 
     def stop(self):
-        self.stopped = True
+        self.running = False

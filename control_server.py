@@ -16,11 +16,11 @@ def server():
     if request.method == 'POST':
         data = request.get_json(force=True)
         try:
-            if(data['command'] == 'start' or data['command'] == 'stop'): # Запуск/Остановка трекера
+            if(data['command'] == 'start' or data['command'] == 'stop' or data['command'] == 'autoset'): # Запуск/Остановка трекера
                 # Запрос к базе данных erudite
                 response = get(erudite_url + 'equipment?room_name='
                                + data['room_name'], headers=erudite_headers)
-                if(response.content == None):
+                if(response.content is None):
                     return error('Device is not exists', 10)
                 device = response.json()[0]
                 device_ip = device['ip']
@@ -45,25 +45,25 @@ def server():
                 if(response.json is None):
                     return error('Room is not exists', 12)
                 camera_ip = data['camera_ip']
+                camera_port = int(data['camera_port'])
                 device_ip = data['device_ip']
                 device_port = data['device_port']
-                if():
-                    response = post(erudite_url + 'equipment',
-                    headers = erudite_headers, data=dumps({
-                    'name' : data['name'],
-                    'type' : data['type'],
-                    'ip' : device_ip,
-                    'port' : device_port,
-                    'room_name' : data['room_name']
+                response = post(erudite_url + 'equipment',
+                headers = erudite_headers, data=dumps({
+                    'name': data['name'],
+                    'type': data['type'],
+                    'ip': device_ip,
+                    'port': device_port,
+                    'room_name': data['room_name']
+                }))
+                if(response.json()['message'] == 'Equipment added successfully'):
+                    response = post("https://" + device_ip + ":" + device_port + "/track", data=dumps({
+                        'command': 'create',
+                        'port': camera_port,
+                        'ip': camera_ip
                     }))
-                    if(response.json()['message'] == 'Equipment added successfully'):
-                        response = post("https://" + device_ip + ":" + device_port + "/track", data=dumps({
-                        'command':'set',
-                        'port':80,
-                        'ip':camera_ip
-                        }))
-                        if(response.json()['status'] == 'Error'):
-                            return error('Problem with device setting', 7)
+                    if(response.json()['status'] == 'Error'):
+                        return error('Problem with device setting', 7)
                     else:
                         return error('Problems with equipment updating', 6)
                 else:
@@ -90,15 +90,5 @@ def answer(type, data=None): # Функция для возврата ответ
     }), 200
 
 
-def if_val(col, key, val):
-    for record in col:
-        try:
-            if(record[key] == val):
-                return True
-        except:
-            pass
-    return False
-
-
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0')
+    app.run(host='0.0.0.0')

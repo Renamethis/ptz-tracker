@@ -25,7 +25,7 @@ class message_grabber(Thread):
         while self.__isRunning:
             self.__message = self.__socket.recv().decode("utf-8")
             self.__socket.send(b"Ok")
-            spl = self.__message.split("|");
+            spl = self.__message.split("|")
             self.__rotation = list(map(float, spl[0].split(" ")))
             self.__translation = list(map(float, spl[1].split(" ")))
 

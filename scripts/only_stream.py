@@ -25,8 +25,8 @@ try:
   ## add_try  - add validation
   ## modify   - it is possible to change
   ## add_func - add function
-  ## error    - error 
-  ### 
+  ## error    - error
+  ###
 
 
 
@@ -40,8 +40,8 @@ try:
   execfile(activate_this_file, dict(__file__=activate_this_file))
   import sys
   import os
-  os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/') 
-  os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/') 
+  os.system('cp -f utility_function/mobilenet_v1.py models/research/slim/nets/')
+  os.system('cp -f utility_function/visualization_utils.py models/research/object_detection/utils/')
   os.chdir('models/research')
   os.chdir('object_detection')
 
@@ -54,7 +54,6 @@ try:
   import numpy as np
   import math
   import cv2
-  print cv2.__version__
   import six.moves.urllib as urllib
   import tarfile
   import time
@@ -76,7 +75,7 @@ try:
   class WebcamVideoStream:
     # 3.1. Initialization
     def __init__(self, name="WebcamVideoStream"):
-      
+
       # 3.1.1. Determining the path to the configuration file
       # add_try (count >= 3)
 
@@ -99,7 +98,7 @@ try:
 
       # 3.1.3. Sturt function cv2.VideoCapture
       # modify (replace print with logging)
-      
+
       try:
         self.stream = cv2.VideoCapture(mycam_rtsp)
         #self.stream = cv2.VideoCapture("rtspsrc location=rtsp://192.168.15.45:554/2 ! decodebin ! videoconvert ! appsink max-buffers=1 drop=true")
@@ -158,26 +157,26 @@ try:
       self.stopped = True
 
 
-  
+
   def main():
     image_np_old = []
     stream = WebcamVideoStream()
     stream.start()
 
 
-    lenght_float = 720.0 
+    lenght_float = 720.0
     width_float = 576.0
     lenght = int(lenght_float)
     width = int(width_float)
 
-    
 
 
-    
+
+
     while True:
       image_np = stream.read()
       #print image_np
-      
+
       #image_np = cv2.resize(image_np, (720,405))
       cv2.imshow('object detection', image_np)
 
@@ -185,13 +184,12 @@ try:
         stream.stop()
         sys.exit(0)
 
-  
+
   main()
 
 except:
   exc_type, exc_value, exc_traceback = sys.exc_info()
   err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
   send_msg(msg=err_msg)
-  
-  #main()
 
+  #main()

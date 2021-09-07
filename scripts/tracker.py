@@ -33,6 +33,7 @@ import Ping as P
 
 # Create log file
 
+pid_path = pwd + '/log/pid'
 pwd = UF.get_pwd("log")
 logger = logging.getLogger("Main")
 logger.setLevel(logging.INFO)
@@ -87,14 +88,15 @@ ping.start()
 
 next_time = 0
 box_shape = None
-while True:
+while move.running and stream.running and tensor.running:
     img = stream.read()
     if False:
         stream.stop()
         logger.warning("Camera conection lost. Reconnect...")
         while ping.read() != 0 or not stream.check_connect() or stream.status():
             sleep(1)
-        stream = WVS.WebcamVideoStream(login + ":" + password + "@" + move.cam.getStreamUri(),
+        stream = WVS.WebcamVideoStream(login + ":" + password + "@" +
+                                       move.cam.getStreamUri(),
                                        Jetson=(1 if (UF.get_setting('device')
                                                == 'Jetson') else 0))
         stream.start()
@@ -110,10 +112,8 @@ while True:
         img = tensor.read()
         if img is not None: #and not isTracking:
             scores = tensor.read_scores().numpy()
-            image_np = tensor.read()
-            classes = tensor.read_classes().numpy()
             boxes = tensor.read_boxes().numpy()
-            if (scores is not None and image_np is not None and classes is not None and boxes is not None):
+            if (scores is not None and boxes is not None):
                 score = np.where(scores == np.max(scores))
                 if (scores[score][0] > 0.5):
                     box = boxes[score][0]
@@ -141,3 +141,9 @@ while True:
                 move.set_box(None)
                 isTracking = False
 '''
+stream.stop()
+tensor.stop()
+ping.stop()
+move.stop()
+with open(pid_path, 'w') as pid_file:
+    pid_file.write('')

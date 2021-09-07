@@ -4,10 +4,20 @@ from onvif import ONVIFCamera
 
 import logging
 import sys
+from enum import Enum, auto
+from threading import Thread
+ZOOM = 0.5
+
+
+class RequestType(Enum):
+    Absolute = auto()
+    Continuous = auto()
+    Relative = auto()
 
 
 class Camera:
     requests_labels = ['ContinuousMove',
+                       'AbsoluteMove',
                        'GotoHomePosition',
                        'SetHomePosition',
                        'GetConfigurationOptions',
@@ -15,29 +25,35 @@ class Camera:
     requests = None
     ATTEMPTS = 10
 
-    def __init__(self, ip, port, login, password, wsdl_path, name='Camera'):
+    def __init__(self, ip, port, login, password, wsdl_path, name='ONVIF'):
+        self.type = None
         self.name = name
         self.ip = ip
         self.port = port
         self.login = login
         self.password = password
         self.wpath = wsdl_path
-        self.logger = logging.getLogger("Main.%s.init" % (self.name))
+        self.logger = logging.getLogger("Main.%s" % (self.name))
         i = 0
         while(not self.connect() and i < self.ATTEMPTS):
             self.logger.warning("Can't connect to camera, trying to reconnect")
             i += 1
         if(i == self.ATTEMPTS):
             self.logger.exception('Error with camera connection')
-            sys.exit(0)
+            self.running = False
         self.requests = {k: self.ptz.create_type(k)
                          for k in self.requests_labels}
-        self.status = self.getStatus()
+        self.status = self.ptz.GetStatus({'ProfileToken': self.profile.token})
+        for request in self.requests:
+            self.requests[request].ProfileToken = self.profile.token
+        self.requests['AbsoluteMove'].Position = self.status.Position
         self.requests['ContinuousMove'].Velocity = self.status.Position
-        self.requests['ContinuousMove'].ProfileToken = self.profile.token
-        self.requests['ContinuousMove'].Velocity.Zoom.x = 0
-        self.requests['GotoHomePosition'].ProfileToken = self.profile.token
         self.goHome()
+        self.running = True
+        self.logger.info("Process starting")
+        self.thread = Thread(target=self.ptzThread, name=self.name, args=())
+        self.thread.start()
+        self.AbsoluteMove(0, 0, ZOOM)
 
     def getStreamUri(self):
         request = self.media.create_type('GetStreamUri')
@@ -47,19 +63,41 @@ class Camera:
         ans = self.media.GetStreamUri(request)
         return ans['Uri']
 
-    def move(self, x, y):
-        try:
-            self.requests['ContinuousMove'].Velocity.PanTilt.x = x
-            self.requests['ContinuousMove'].Velocity.PanTilt.y = y
-            self.ptz.ContinuousMove(self.requests['ContinuousMove'])
-        except:
-            self.connect()
-            self.logger.exception('Error with moving camera, reconnecting')
-            self.move(x, y)
+    def ptzThread(self):
+        self.logger.info("Process started")
+        while self.running:
+            try:
+                if(self.type is not None):
+                    if(self.type == RequestType.Continuous):
+                        self.ptz.ContinuousMove(self.requests['ContinuousMove'])
+                    elif(self.type == RequestType.Absolute):
+                        self.ptz.AbsoluteMove(self.requests['AbsoluteMove'])
+                    elif(self.type == RequestType.Relative):
+                        self.ptz.RelativeMove(self.requests['RelativeMove'])
+                    self.type = None
+                else:
+                    self.status = self.ptz.GetStatus({'ProfileToken':
+                                                      self.profile.token})
+            except:
+                self.connect()
+                self.logger.exception('Error with moving camera, reconnecting')
+
+    def ContinuousMove(self, x, y, zoom=0.0):
+        self.requests['ContinuousMove'].Velocity.PanTilt.x = x
+        self.requests['ContinuousMove'].Velocity.PanTilt.y = y
+        self.requests['ContinuousMove'].Velocity.Zoom.x = zoom
+        self.type = RequestType.Continuous
+
+    def AbsoluteMove(self, x, y, zoom=0.0):
+        self.requests['AbsoluteMove'].Position.PanTilt.x = x
+        self.requests['AbsoluteMove'].Position.PanTilt.y = y
+        self.requests['AbsoluteMove'].Position.Zoom.x = zoom
+        self.type = RequestType.Absolute
 
     def connect(self, substream=1):
         try:
-            self.cam = ONVIFCamera(self.ip, self.port, self.login, self.password, self.wpath)
+            self.cam = ONVIFCamera(self.ip, self.port, self.login,
+                                   self.password, self.wpath)
             self.logger.info('Successful conection ONVIFCamera')
         except:
             self.logger.exception('Error with camera connection')
@@ -70,14 +108,11 @@ class Camera:
         self.ptz = self.cam.create_ptz_service()
         return True
 
-    def getStatus(self):
-        return self.ptz.GetStatus({'ProfileToken': self.profile.token})
-
     def goHome(self):
-        pass
-        #self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+        self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+
     def getAbsolute(self):
-        points = self.getStatus()['Position']['PanTilt']
+        points = self.status['Position']['PanTilt']
         return [points['x'], points['y']]
 
     def stop(self):

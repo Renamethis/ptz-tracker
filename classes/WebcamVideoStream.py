@@ -13,6 +13,7 @@ class WebcamVideoStream:
     # Initialization
     def __init__(self, rtsp, name="WebcamVideoStream", GStreamer=True, Jetson=False):
         try:
+            self.running = True
             self.name = name
             # Determining the path to the configuration file
             # add_try (count >= 3)
@@ -38,7 +39,7 @@ class WebcamVideoStream:
                 init_logger.exception("Error!")
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-                sys.exit(0)
+                self.running = False
 
             if self.stream.isOpened() is False:
 
@@ -46,7 +47,7 @@ class WebcamVideoStream:
                 init_logger.critical(err_msg)
                 init_logger.info("Check rtsp in settings file")
                 #UF.send_msg(msg=err_msg)
-                sys.exit(0)
+                self.running = False
             else:
                 init_logger.info("Process get rtsp stream.")
 
@@ -58,7 +59,7 @@ class WebcamVideoStream:
             init_logger.exception("Error!")
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
-            sys.exit(0)
+            self.running = False
 
     # Start thread
     def start(self):
@@ -88,7 +89,7 @@ class WebcamVideoStream:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
             print(err_msg)
-            sys.exit(0)
+            self.running = False
 
     def check_connect(self):
         try:

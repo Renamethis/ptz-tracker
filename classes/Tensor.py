@@ -12,7 +12,9 @@ from threading import Thread
 
 class Tensor:
     # Initialization
-    def __init__(self, length=720, hight=405, model_name="ssd_mobilenet", name="Tensor"):
+    def __init__(self, length=720, hight=405,
+                 model_name="ssd_mobilenet", name="Tensor"):
+        self.running = True
         self.name = name
         self.dellay = 0
         self.flag = False
@@ -38,7 +40,7 @@ class Tensor:
         except:
             init_logger.critical("Error in %s.__init__" % (self.name))
             init_logger.exception("Error!")
-            sys.exit(0)
+            self.running = False
 
     # Start thread
     def start(self):
@@ -86,7 +88,7 @@ class Tensor:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = str(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
             print(err_msg)
-            sys.exit(0)
+            self.running = False
 
     def set_image(self, image):
         self.new_image = image
