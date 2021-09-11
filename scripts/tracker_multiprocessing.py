@@ -41,7 +41,7 @@ class Tracker:
         # Initializing loger
         self.logger = logging.getLogger("Main")
         self.logger.setLevel(logging.INFO)
-        fh = logging.FileHandler(pwd+"log/main.log")
+        fh = logging.FileHandler(pwd + "log/main.log")
         formatter = logging.Formatter('%(asctime)s - %(name)s - ' +
                                       '%(levelname)s - %(message)s')
         fh.setFormatter(formatter)

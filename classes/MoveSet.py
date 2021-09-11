@@ -1,6 +1,6 @@
 import numpy as np
 from enum import Flag, auto
-from OnvifInteraction import Camera
+from classes.OnvifInteraction import Camera
 from threading import Thread
 import logging
 
@@ -12,36 +12,44 @@ class Position(Flag):
     TOP = auto()
 
 
+TOTALFRAMES = 100
+
+
 class MoveSet:
     contours = None
     box = None
 
     def __init__(self, speed, ip, port, login, password, wsdl, Shape,
-                 Colors, Bounds, tracking_box):
+                 Bounds, tracking_box):
         self.name = "MoveSet"
-        self.LIGHT_GREEN = Colors[0]
-        self.DARK_GREEN = Colors[1]
+        self.ip = ip
+        self.port = port
+        self.login = login
+        self.password = password
+        self.wsdl = wsdl
         self.LEFT = Bounds[0]
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]
         self.UP = Bounds[3]
         self.WIDTH = Shape[1]
         self.HEIGHT = Shape[0]
-        self.isProcessing = True
-        self.cam = Camera(ip, port, login, password, wsdl)
         self.tbox = tracking_box
         self.speed_coef = speed
         self.logger = logging.getLogger("Main.%s" % (self.name))
+        self.frames = 0
 
     def start(self):
         self.logger.info("Process starting")
+        self.cam = Camera(self.ip, self.port, self.login,
+                          self.password, self.wsdl)
+        self.running = self.cam.running
         self.thread = Thread(target=self.process, name=self.name, args=())
         self.thread.daemon = True
         self.thread.start()
 
     def process(self):
         self.logger.info("Process started")
-        while self.isProcessing:
+        while self.running:
             if(self.box is not None and self.contours is not None):
                 box = self.box
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
@@ -65,7 +73,9 @@ class MoveSet:
                     vec_x = 0
                     vec_y = 0
                     self.cam.stop()
-                if(vec_x == 0 and vec_y == 0):
+                if(vec_x == 0 and vec_y == 0 and self.frames != TOTALFRAMES):
+                    self.frames += 1
+                elif(vec_x == 0 and vec_y == 0):
                     pos = Position.NO
                     for con in self.contours:
                         pointsx = con[:, 0, 1]
@@ -80,7 +90,6 @@ class MoveSet:
                             pos = pos | Position.LEFT
                         elif(medy < self.BOT):
                             pos = pos | Position.TOP
-                    print(pos)
                     if(pos == Position.LEFT | Position.RIGHT or
                        pos == Position.LEFT | Position.RIGHT | Position.TOP):
                         self.cam.ContinuousMove(0, 0, self.speed_coef*0.1)
@@ -93,10 +102,11 @@ class MoveSet:
                     else:
                         self.cam.ContinuousMove(0, 0)
                         self.cam.stop()
-                        self.isProcessing = False
+                        self.running = False
                     if(pos != Position.NO):
                         self.logger.info("Object found on" + str(pos))
                 else:
+                    self.frames = 0
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
                 self.cam.stop()
@@ -111,4 +121,9 @@ class MoveSet:
         self.box = box
 
     def stop(self):
-        self.isProcessing = False
+        self.cam.stop_thread()
+        self.running = False
+
+    def get_rtsp(self):
+        return "rtsp://" + self.login + ":" + self.password + "@" + \
+                   self.cam.getStreamUri().split('//')[1]

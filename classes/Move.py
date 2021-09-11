@@ -1,19 +1,23 @@
 # Camera controll class
 from threading import Thread
-import traceback
 from time import sleep
 import numpy as np
 import logging
-from zmqgrabber import message_grabber
-from OnvifInteraction import Camera
+from classes.zmqgrabber import message_grabber
+from classes.OnvifInteraction import Camera
 
 
 class Move:
     # Initialization
     def __init__(self, length, hight, speed_coef, ip, port, login, password,
-                 wsdl, tweaking, bounds, tracking_box, isAbsolute, limits,
+                 wsdl, tweaking, bounds, tracking_box, isAbsolute,
                  name="Move"):
         self.name = name
+        self.ip = ip
+        self.port = port
+        self.login = login
+        self.password = password
+        self.wsdl = wsdl
         self.box = None
         self.tweaking = tweaking
         self.old_box = None
@@ -27,14 +31,15 @@ class Move:
         self.bounds = bounds
         self.tbox = tracking_box
         self.__ddelay = 0.1
-        self.isProcessing = True
         self.logger = logging.getLogger("Main.%s" % (self.name))
-        self.cam = Camera(ip, port, login, password, wsdl)
         self.isAbsolute = isAbsolute
-        self.AbsoluteLimits = limits
+        self.spaceLimits = bounds
+        self.isAimed = False
 
     # Start threads
     def start(self):
+        self.cam = Camera(self.ip, self.port, self.login, self.password,
+                          self.wsdl, self.isAbsolute)
         self.logger.info("Process starting")
         self.mt = message_grabber("tcp://*:5555")
         self.mt.start()
@@ -50,8 +55,6 @@ class Move:
         self.logger.info("Process started")
         while self.running:
             message = self.mt.get_message()
-            translation = self.mt.get_translation() if (message
-                                           is not None) else None
             rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:
                 self.cam.stop()
@@ -82,27 +85,22 @@ class Move:
                 vec_y = vec_y*self.speed_coef
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
-                if(self.isAbsolute):
-                    point = self.cam.getAbsolute()
-                    if((point[0] < self.AbsoluteLimits[0] and vec_x < 0) or
-                       (point[0] > self.AbsoluteLimits[2] and vec_x > 0)):
+                if(self.isAbsolute or message is not None):
+                    point = self.cam.getAbsolute() if self.isAbsolute else rotation
+                    if((point[0] < self.spaceLimits[0] and vec_x < 0) or
+                       (point[0] > self.spaceLimits[2] and vec_x > 0)):
                         vec_x = 0
-                    if(point[1] < self.AbsoluteLimits[1] and vec_y > 0 or
-                       (point[1] > self.AbsoluteLimits[3] and vec_y < 0)):
+                    if(point[1] < self.spaceLimits[1] and vec_y > 0 or
+                       (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
                 if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
-                    self.isProcessing = False
+                    self.isAimed = True
                     self.cam.stop()
                 else:
-                    self.isProcessing = True
-                    #self.logger.info('X: ' + str(vec_x)
+                    # self.logger.info('X: ' + str(vec_x)
                     #                 + ' Y: ' + str(vec_y))
-                    if(message is not None and not (rotation[0] > self.bounds[0] and rotation[0]
-                         < self.bounds[2] and rotation[1] > self.bounds[1]
-                         and rotation[1] < self.bounds[3])):
-                         self.cam.stop()
-                    else:
-                        self.cam.ContinuousMove(vec_x, vec_y)
+                    self.isAimed = False
+                    self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
             elif box is None and old_box is not None:
                 if (self.count_frame < 20):
@@ -112,7 +110,7 @@ class Move:
                     sleep(self.__ddelay)
                 elif (self.count_frame == 60):
                     self.count_frame = 0
-                    #self.cam.goHome()
+                    # self.cam.goHome()
                     old_box = box
                     sleep(self.__ddelay)
                 sleep(self.tweaking)
@@ -126,4 +124,9 @@ class Move:
         self.speed_coef = speed_coef
 
     def stop(self):
+        self.cam.stop_thread()
         self.running = False
+
+    def get_rtsp(self):
+        return "rtsp://" + self.login + ":" + self.password + "@" + \
+                   self.cam.getStreamUri().split('//')[1]

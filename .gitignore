@@ -12,7 +12,6 @@ protobuf/
 orb_module/build/
 orb_module/map/*
 classes/*.pyc
-log/*
 build/
 scripts/__pycache__
 classes/__pycache__

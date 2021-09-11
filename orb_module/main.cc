@@ -72,7 +72,7 @@ int main(int argc, char **argv)
         string rpl = string(static_cast<char*>(reply.data()), reply.size());
         if(rpl != std::string("Ok")) {
           cout << "Problem with getting reply from tracker" << endl;
-          return 0;
+          break;
         }
       }
       if((char)waitKey(1) == 27) {

@@ -27,7 +27,7 @@ class Ping:
             if self.stopped:
                 return
             self.r = os.system("timeout 0.4 ping -c 1    " + self.mycam_ip + " > /dev/null 2>&1")
-            sleep(1)
+            sleep(5)
 
     # Get frame
     def read(self):
