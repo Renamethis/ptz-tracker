@@ -7,12 +7,12 @@ import logging
 
 class VideoStream:
     # Initialization
-    def __init__(self, name="VideoStream", GStreamer=True, Jetson=False):
+    def __init__(self, GStreamer=True, device="CPU", name="VideoStream"):
         self.name = name
-        self.logger = logging.getLogger("Main.%s.init" % (self.name))
+        self.logger = logging.getLogger("Main.%s" % (self.name))
         self.frame = None
         if(GStreamer):
-            if(Jetson):
+            if(device == "Jetson"):
                 self.rtsp_url = 'rtspsrc location="{rtsp_url}" ! queue' + \
                     '! rtph264depay ! queue ! h264parse ! omxh264dec !' + \
                     ' nvvidconv ! video/x-raw,format=BGRx !' + \
@@ -37,18 +37,18 @@ class VideoStream:
         self.t.start()
         return self
 
-    # Infinite loop of receiving frames from a stream
+    # Main loop of receiving frames from rtsp-stream
     def update(self):
         self.logger.info("Process started")
-        while self.running:
+        while self.running and self.stream.isOpened():
             (self.grabbed, self.frame) = self.stream.read()
-
-    def status(self):
-        return self.t.isAlive()
+        self.running = False
+        self.logger.info("Process stopped")
 
     # Get frame
     def read(self):
         return self.frame
 
+    # Stop thread
     def stop(self):
         self.running = False

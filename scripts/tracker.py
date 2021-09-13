@@ -41,7 +41,7 @@ class Tracker:
         # Initializing loger
         self.logger = logging.getLogger("Main")
         self.logger.setLevel(logging.INFO)
-        fh = logging.FileHandler(pwd+"/log/main.log")
+        fh = logging.FileHandler(pwd+"/main.log")
         formatter = logging.Formatter('%(asctime)s - %(name)s - ' +
                                       '%(levelname)s - %(message)s')
         fh.setFormatter(formatter)
@@ -50,13 +50,15 @@ class Tracker:
         self.Config = configparser.ConfigParser()
         self.Config.read(config_path)
         # Get parameters from settings
+        # ONVIF settings
         ip = self.__get_setting("Onvif", "ip")
         port = self.__get_setting("Onvif", "port")
         login = self.__get_setting("Onvif", "login")
         password = self.__get_setting("Onvif", "password")
         speed = float(self.__get_setting("Onvif", "speed"))
-        tweaking = float(self.__get_setting("Onvif", "tweaking"))/100.0
+        tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
         isAbsolute = bool(self.__get_setting("Onvif", "Absolute"))
+        # Image processing settings
         bounds = [float(i) for i in self.__get_setting("Processing", "bounds")
                                         .replace(" ", "").split(",")]
         self.width = int(self.__get_setting("Processing", "width"))
@@ -65,27 +67,28 @@ class Tracker:
         tracking_box = (np.array([float(i) for i in self.__get_setting(
             "Processing", "box").replace(" ", "")
                 .split(",")]) * self.l_h).astype(int)
+        # AutoSet settings
         self.COLOR_LIGHT = np.array([int(i) for i in self.
-                                     __get_setting("AutoSet", "COLOR_LIGHT")
+                                     __get_setting("AutoSet", "color_light")
                                     .replace(" ", "").split(",")])
         self.COLOR_DARK = np.array([int(i) for i in self.
-                                    __get_setting("AutoSet", "COLOR_DARK")
+                                    __get_setting("AutoSet", "color_dark")
                                    .replace(" ", "").split(",")])
         self.scope = (np.array([float(i) for i in
                                self.__get_setting("AutoSet", "scope").
                                replace(" ",
                                        "").split(",")]) * self.l_h).astype(int)
+        # Hardware settings
+        device = self.__get_setting("Hardware", "device")
         # Initializing classes
-        self.tensor = Tensor(hight=self.height, length=self.width)
+        self.tensor = Tensor(self.height, self.width)
         self.move = Move(self.width, self.height, speed, ip, port,
                          login, password, wsdl_path, tweaking,
                          tracking_box, isAbsolute, bounds)
         self.moveset = MoveSet(speed, ip, port, login, password, wsdl_path,
                                [self.height, self.width],
                                self.scope, tracking_box)
-        self.stream = VideoStream(Jetson=(1 if (self.__get_setting(
-                                                "Hardware", "device")
-                                                == 'Jetson') else 0))
+        self.stream = VideoStream(device)
 
     def __get_setting(self, section, setting):
         try:
@@ -96,14 +99,15 @@ class Tracker:
             sys.exit(1)
         except configparser.NoSectionError:
             self.logger.critical("Section " + section + " not found")
-            sys.exit(1)
+            sys.exit(2)
 
     # Main loop function
     def update(self):
         self.logger.info("Tracker started")
-        while self.stream.running and self.tensor.running and \
-            ((self.mode == Mode.Tracking and self.move.running) or
-             (self.mode == Mode.AutoSet and self.moveset.running)):
+        while self.running:
+            self.running = self.stream.running and self.tensor.running and \
+                ((self.mode == Mode.Tracking and self.move.running) or
+                    (self.mode == Mode.AutoSet and self.moveset.running))
             img = self.stream.read()
             if img is not None:
                 img = cv2.resize(img, (self.width, self.height))
@@ -123,37 +127,21 @@ class Tracker:
                                 self.status = Status.Aimed if \
                                     self.move.isAimed else Status.Moving
                             elif(self.mode == Mode.AutoSet):
-                                image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                                img = 0*np.zeros((self.height, self.width),
-                                                 dtype=np.uint8)
-                                hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-                                mask = cv2.inRange(hsv, self.COLOR_DARK,
-                                                   self.COLOR_LIGHT)
-                                mask = cv2.bitwise_not(mask)
-                                pixels = np.argwhere(mask == 255)
-                                pixels = pixels[np.array(list(map(self.__check,
-                                                                  pixels)))]
-                                for pixel in pixels:
-                                    img[pixel[0]][pixel[1]] = 255
-                                _, contours, hierarchy = \
-                                    cv2.findContours(img,
-                                                     cv2.RETR_TREE,
-                                                     cv2.CHAIN_APPROX_SIMPLE)
                                 self.status = Status.Moving
                                 self.moveset.set_box(box)
-                                self.moveset.set_con(contours)
+                                self.moveset.set_con(self.__get_contours(img))
                         else:
                             self.status = Status.NoPerson
                             self.move.set_box(None)
                             self.moveset.set_box(None)
-        self.stop()
+        self.logger.info("Tracker stopped")
 
     # Start tracker function
     def start_tracker(self):
-        self.running = True
         self.status = Status.Starting
         self.logger.info("Tracker starting...")
-        self.move.start()
+        if(not self.move.start()):
+            return self.move.running
         self.stream.start(self.move.get_rtsp())
         self.tensor.start()
         self.mode = Mode.Tracking
@@ -165,15 +153,16 @@ class Tracker:
 
     # Start autoset function
     def start_autoset(self):
-        self.running = True
         self.status = Status.Starting
         self.logger.info("Tracker starting...")
-        self.moveset.start()
+        if(not self.moveset.start()):
+            return self.moveset.running
         self.stream.start(self.moveset.get_rtsp())
         self.tensor.start()
         self.mode = Mode.AutoSet
         self.main = Thread(target=self.update, name=self.name)
         self.main.start()
+        self.running = True
         return self.running and self.moveset.running and \
             self.stream.running and self.tensor.running
 
@@ -185,7 +174,6 @@ class Tracker:
             self.move.stop()
         elif(self.mode == Mode.AutoSet):
             self.moveset.stop()
-        self.running = False
         self.status = Status.Stopped
 
     # Pixels coordinates checking function
@@ -194,3 +182,18 @@ class Tracker:
            or pixel[0] <= self.scope[1]):
             return True
         return False
+
+    # Find contours on greenscreen
+    def __get_contours(self, image):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        img = 0*np.zeros((self.height, self.width), dtype=np.uint8)
+        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        mask = cv2.inRange(hsv, self.COLOR_DARK, self.COLOR_LIGHT)
+        mask = cv2.bitwise_not(mask)
+        pixels = np.argwhere(mask == 255)
+        pixels = pixels[np.array(list(map(self.__check, pixels)))]
+        for pixel in pixels:
+            img[pixel[0]][pixel[1]] = 255
+        _, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_SIMPLE)
+        return contours

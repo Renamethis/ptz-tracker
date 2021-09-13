@@ -1,3 +1,4 @@
+# Camera control class for autoset
 import numpy as np
 from enum import Flag, auto
 from classes.OnvifInteraction import Camera
@@ -5,6 +6,7 @@ from threading import Thread
 import logging
 
 
+# Enum class for object positions on greenscreen
 class Position(Flag):
     NO = 0
     RIGHT = auto()
@@ -19,6 +21,7 @@ class MoveSet:
     contours = None
     box = None
 
+    # Initialization
     def __init__(self, speed, ip, port, login, password, wsdl, Shape,
                  Bounds, tracking_box):
         self.name = "MoveSet"
@@ -38,15 +41,21 @@ class MoveSet:
         self.logger = logging.getLogger("Main.%s" % (self.name))
         self.frames = 0
 
+    # Start threads
     def start(self):
         self.logger.info("Process starting")
-        self.cam = Camera(self.ip, self.port, self.login,
-                          self.password, self.wsdl)
-        self.running = self.cam.running
+        self.cam = Camera(self.ip, self.port, self.login, self.password,
+                          self.wsdl)
+        if(not self.cam.connect()):
+            return False
+        self.cam.start()
+        self.running = True
         self.thread = Thread(target=self.process, name=self.name, args=())
         self.thread.daemon = True
         self.thread.start()
+        return True
 
+    # Main loop
     def process(self):
         self.logger.info("Process started")
         while self.running:
@@ -110,20 +119,22 @@ class MoveSet:
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
                 self.cam.stop()
+        self.logger.info("Process stopped")
 
+    # Set greenscreen contours
     def set_con(self, contours):
         self.contours = contours
 
-    def set_image(self, image):
-        self.image = image
-
+    # Set person box
     def set_box(self, box):
         self.box = box
 
+    # Stop threads
     def stop(self):
         self.cam.stop_thread()
         self.running = False
 
+    # Return rtsp_url from Camera object
     def get_rtsp(self):
         return "rtsp://" + self.login + ":" + self.password + "@" + \
                    self.cam.getStreamUri().split('//')[1]

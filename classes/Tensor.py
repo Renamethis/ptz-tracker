@@ -9,18 +9,13 @@ from threading import Thread
 
 class Tensor:
     # Initialization
-    def __init__(self, length=720, hight=405,
+    def __init__(self, width=720, height=405,
                  model_name="ssd_mobilenet", name="Tensor"):
         self.name = name
-        self.dellay = 0
         self.flag = False
-        self.arr = []
-        self.new_image = np.zeros((hight, length, 3))
-        self.old_image = np.zeros((hight, length, 3))
-        self.stopped = False
-        self.count = 0
-
-        self.logger = logging.getLogger("Main.%s.init" % (self.name))
+        self.new_image = np.zeros((height, width, 3))
+        self.old_image = np.zeros((height, width, 3))
+        self.logger = logging.getLogger("Main.%s" % (self.name))
         self.logger.info("Model loading starting")
         try:
             self.model_name = model_name
@@ -45,9 +40,8 @@ class Tensor:
         self.t = Thread(target=self.update, name=self.name, args=())
         self.t.daemon = True
         self.t.start()
-        return self
 
-    # Image processing cycle
+    # Main loop for tensorflow detection
     def update(self):
         self.logger.info("Process started")
         while self.running:
@@ -66,27 +60,33 @@ class Tensor:
             else:
                 self.flag = False
                 sleep(0.05)
+        self.logger.info("Process stopped")
 
+    # Set image for tensorflow processing
     def set_image(self, image):
         self.new_image = image
 
+    # Return boxes after detection
     def read_boxes(self):
         if self.flag:
             return self.boxes
         else:
             return None
 
+    # Return scores after detection
     def read_scores(self):
         if self.flag:
             return self.scores
         else:
             return None
 
+    # Return classes after detection
     def read_classes(self):
         if self.flag:
             return self.classes
         else:
             return None
 
+    # Stop thread
     def stop(self):
-        self.stopped = True
+        self.running = False

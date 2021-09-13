@@ -17,4 +17,3 @@ scripts/__pycache__
 classes/__pycache__
 wsdl/*
 detection_models/
-log/*

@@ -24,6 +24,7 @@ class Camera:
     requests = None
     ATTEMPTS = 10
 
+    # Initialization
     def __init__(self, ip, port, login, password, wsdl_path,
                  isAbsolute=False, name='ONVIF'):
         self.type = None
@@ -34,35 +35,22 @@ class Camera:
         self.password = password
         self.wpath = wsdl_path
         self.logger = logging.getLogger("Main.%s" % (self.name))
-        self.logger.info("Process starting")
         self.isAbsolute = isAbsolute
-        i = 0
-        while(not self.connect() and i < self.ATTEMPTS):
-            self.logger.warning("Can't connect to camera, trying to reconnect")
-            i += 1
-        if(i == self.ATTEMPTS):
-            self.logger.exception('Error with camera connection')
-            self.running = False
-        self.requests = {k: self.ptz.create_type(k)
-                         for k in self.requests_labels}
-        self.status = self.ptz.GetStatus({'ProfileToken': self.profile.token})
-        for request in self.requests:
-            self.requests[request].ProfileToken = self.profile.token
-        self.requests['AbsoluteMove'].Position = self.status.Position
-        self.requests['ContinuousMove'].Velocity = self.status.Position
-        self.goHome()
-        self.running = True
-        self.thread = Thread(target=self.ptzThread, name=self.name, args=())
-        self.thread.start()
 
+    # Return url of rtsp-stream
     def getStreamUri(self):
-        request = self.media.create_type('GetStreamUri')
-        request.StreamSetup = {'Stream': 'RTP-Unicast',
-                               'Transport': {'Protocol': 'RTSP'}}
-        request.ProfileToken = self.profile.token
-        ans = self.media.GetStreamUri(request)
+        try:
+            request = self.media.create_type('GetStreamUri')
+            request.StreamSetup = {'Stream': 'RTP-Unicast',
+                                   'Transport': {'Protocol': 'RTSP'}}
+            request.ProfileToken = self.profile.token
+            ans = self.media.GetStreamUri(request)
+        except onvif.exceptions.ONVIFError:
+            self.logger.exception('Error sending request')
+            return None
         return ans['Uri']
 
+    # PTZ thread for moving Camera and getting status
     def ptzThread(self):
         self.logger.info("Process started")
         while self.running:
@@ -79,44 +67,74 @@ class Camera:
                     self.status = self.ptz.GetStatus({'ProfileToken':
                                                       self.profile.token})
             except onvif.exceptions.ONVIFError:
-                self.connect()
-                self.logger.exception('Error with moving camera, reconnecting')
+                self.logger.exception('Error sending request, reconnecting')
+                self.running = self.cam.connect()
+        self.logger.info("Process stopped")
 
+    # Move camera by vertical and horizontal speed
     def ContinuousMove(self, x, y, zoom=0.0):
         self.requests['ContinuousMove'].Velocity.PanTilt.x = x
         self.requests['ContinuousMove'].Velocity.PanTilt.y = y
         self.requests['ContinuousMove'].Velocity.Zoom.x = zoom
         self.type = MoveType.Continuous
 
+    # Move camera by absolute coordinates
     def AbsoluteMove(self, x, y, zoom=0.0):
         self.requests['AbsoluteMove'].Position.PanTilt.x = x
         self.requests['AbsoluteMove'].Position.PanTilt.y = y
         self.requests['AbsoluteMove'].Position.Zoom.x = zoom
         self.type = MoveType.Absolute
 
+    # Connect camera
     def connect(self, substream=1):
+        self.logger.info("Connecting to the camera")
         try:
             self.cam = onvif.ONVIFCamera(self.ip, self.port, self.login,
                                          self.password, self.wpath)
-            self.logger.info('Successful conection ONVIFCamera')
+            self.media = self.cam.create_media_service()
+            k = 1 if substream else 0
+            self.profile = self.media.GetProfiles()[k]
+            self.ptz = self.cam.create_ptz_service()
+            self.requests = {k: self.ptz.create_type(k)
+                             for k in self.requests_labels}
+            self.status = self.ptz.GetStatus({'ProfileToken': self.profile.token})
+            for request in self.requests:
+                self.requests[request].ProfileToken = self.profile.token
+            self.requests['AbsoluteMove'].Position = self.status.Position
+            self.requests['ContinuousMove'].Velocity = self.status.Position
+            self.goHome()
+            self.logger.info('Successfully connected to the cameraa')
         except onvif.exceptions.ONVIFError:
-            self.logger.exception('Error with camera connection')
+            self.logger.critical('Error with camera connection')
             return False
-        self.media = self.cam.create_media_service()
-        k = 1 if substream else 0
-        self.profile = self.media.GetProfiles()[k]
-        self.ptz = self.cam.create_ptz_service()
         return True
 
-    def goHome(self):
-        self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+    # Start threads
+    def start(self):
+        self.logger.info("Process starting")
+        self.running = True
+        self.thread = Thread(target=self.ptzThread, name=self.name, args=())
+        self.thread.start()
 
+    # Set camera to home position
+    def goHome(self):
+        try:
+            self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
+        except onvif.exceptions.ONVIFError:
+            self.logger.exception('Error sending request')
+
+    # Return absolute coordinates from status
     def getAbsolute(self):
         points = self.status['Position']['PanTilt']
         return [points['x'], points['y']]
 
+    # Stop camera
     def stop(self):
-        self.ptz.Stop({'ProfileToken': self.profile.token})
+        try:
+            self.ptz.Stop({'ProfileToken': self.profile.token})
+        except onvif.exceptions.ONVIFError:
+            self.logger.exception('Error sending request')
 
+    # Stop ptz thread
     def stop_thread(self):
         self.running = False

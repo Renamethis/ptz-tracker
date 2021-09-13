@@ -11,11 +11,9 @@ from scripts.tracker import Tracker
 pwd = os.getcwd()
 orb_pid = None
 sys.path.append(pwd+'/classes')
-config_path = pwd + '/conf/settings.ini'
-python_bin = "venv/bin/python3.8"
-tracking_file = "scripts/tracker.py"
-autoset_file = "scripts/auto_set.py"
+config_path = pwd + '/settings.ini'
 orb_path = 'ORB_SLAM2/orb_module/build/orb_module'
+sections = ['Onvif', 'Processing', 'AutoSet', 'Hardware']
 tracker = Tracker()
 
 app = Flask(__name__)
@@ -51,28 +49,34 @@ def tracker_listener():
         elif data['command'] == 'autoset':
             if(not tracker.running):
                 if(not tracker.start_autoset()):
-                    return error('Error with autoset staring,' +
+                    return error('Error with autoset staring, ' +
                                  'check logs to get more information')
             else:
                 return error('Tracker already running')
             return answer('Autoset sucessfully started')
-        elif data['command'] == 'create':
-            port = data['port']
-            ip = data['ip']
-            rtsp = "rtsp://" + ip + ':554'
-            config = configparser.ConfigParser()
-            config.read(config_path)
-            config.set('Settings', 'ip', ip)
-            config.set('Settings', 'rtsp', rtsp)
-            config.set('Settings', 'port', port)
-            config.set('Settings', 'login', 'admin')
-            config.set('Settings', 'password', 'Supervisor')
-            with open(config_path, "w") as config_file:
-                config.write(config_file)
+        elif data['command'] == 'set':
+            Config = configparser.ConfigParser()
+            Config.read(config_path)
+            keys = list(data.keys())
+            keys.remove('command')
+            flag = False
+            for key in keys:
+                for sec in sections:
+                    items = [item[0] for item in Config.items(sec)]
+                    if(key in items):
+                        Config.set(sec, key, data[key])
+                        flag = True
+                        break
+                if(not flag):
+                    return error('Invalid parameter(s)')
+                flag = True
+            cfile = open(config_path, 'w')
+            Config.write(cfile)
+            cfile.close()
             return answer('Data set up successfully')
         elif data['command'] == 'status':
             status = str(tracker.status).split('.')[1]
-            return answer("Status of tracking", data={'status': status})
+            return answer(status)
         else:
             return error('Bad command')
     else:
