@@ -18,7 +18,7 @@ while True:
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, COLOR_DARK, COLOR_LIGHT)
     mask = cv2.bitwise_not(mask)
-    cv2.imshow('kek', mask)
+    cv2.imshow('mask', mask)
     if(cv2.waitKey(1) & 0xFF == ord('q')):
         break
 cv2.destroyAllWindows()

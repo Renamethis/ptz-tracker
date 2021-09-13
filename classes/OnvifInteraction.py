@@ -5,7 +5,7 @@ import onvif
 import logging
 from enum import Enum, auto
 from threading import Thread
-ZOOM = 0.0
+ZOOM = 0.5
 
 
 class MoveType(Enum):
@@ -115,6 +115,7 @@ class Camera:
         self.running = True
         self.thread = Thread(target=self.ptzThread, name=self.name, args=())
         self.thread.start()
+        self.AbsoluteMove(0, 0, 0.5)
 
     # Set camera to home position
     def goHome(self):

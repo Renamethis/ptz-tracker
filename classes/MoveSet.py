@@ -4,6 +4,7 @@ from enum import Flag, auto
 from classes.OnvifInteraction import Camera
 from threading import Thread
 import logging
+import time
 
 
 # Enum class for object positions on greenscreen
@@ -45,7 +46,7 @@ class MoveSet:
     def start(self):
         self.logger.info("Process starting")
         self.cam = Camera(self.ip, self.port, self.login, self.password,
-                          self.wsdl)
+                          self.wsdl, True)
         if(not self.cam.connect()):
             return False
         self.cam.start()
@@ -58,6 +59,7 @@ class MoveSet:
     # Main loop
     def process(self):
         self.logger.info("Process started")
+        time.sleep(5)
         while self.running:
             if(self.box is not None and self.contours is not None):
                 box = self.box

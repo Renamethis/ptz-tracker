@@ -105,9 +105,6 @@ class Tracker:
     def update(self):
         self.logger.info("Tracker started")
         while self.running:
-            self.running = self.stream.running and self.tensor.running and \
-                ((self.mode == Mode.Tracking and self.move.running) or
-                    (self.mode == Mode.AutoSet and self.moveset.running))
             img = self.stream.read()
             if img is not None:
                 img = cv2.resize(img, (self.width, self.height))
@@ -134,6 +131,9 @@ class Tracker:
                             self.status = Status.NoPerson
                             self.move.set_box(None)
                             self.moveset.set_box(None)
+            self.running = self.stream.running and self.tensor.running and \
+                ((self.mode == Mode.Tracking and self.move.running) or
+                    (self.mode == Mode.AutoSet and self.moveset.running))
         self.logger.info("Tracker stopped")
 
     # Start tracker function
@@ -142,12 +142,12 @@ class Tracker:
         self.logger.info("Tracker starting...")
         if(not self.move.start()):
             return self.move.running
+        self.running = True
         self.stream.start(self.move.get_rtsp())
         self.tensor.start()
         self.mode = Mode.Tracking
         self.main = Thread(target=self.update, name=self.name)
         self.main.start()
-        self.running = True
         return self.running and self.move.running and \
             self.stream.running and self.tensor.running
 
@@ -157,12 +157,12 @@ class Tracker:
         self.logger.info("Tracker starting...")
         if(not self.moveset.start()):
             return self.moveset.running
+        self.running = True
         self.stream.start(self.moveset.get_rtsp())
         self.tensor.start()
         self.mode = Mode.AutoSet
         self.main = Thread(target=self.update, name=self.name)
         self.main.start()
-        self.running = True
         return self.running and self.moveset.running and \
             self.stream.running and self.tensor.running
 
