@@ -83,8 +83,8 @@ class Tracker:
         # Initializing classes
         self.tensor = Tensor(self.height, self.width)
         self.move = Move(self.width, self.height, speed, ip, port,
-                         login, password, wsdl_path, tweaking,
-                         tracking_box, isAbsolute, bounds)
+                         login, password, wsdl_path, tweaking, bounds,
+                         tracking_box, isAbsolute)
         self.moveset = MoveSet(speed, ip, port, login, password, wsdl_path,
                                [self.height, self.width],
                                self.scope, tracking_box)

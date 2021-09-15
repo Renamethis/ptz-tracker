@@ -138,4 +138,5 @@ class Camera:
 
     # Stop ptz thread
     def stop_thread(self):
+        self.stop()
         self.running = False

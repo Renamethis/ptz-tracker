@@ -9,7 +9,7 @@ from classes.OnvifInteraction import Camera
 
 class Move:
     # Initialization
-    def __init__(self, length, hight, speed_coef, ip, port, login, password,
+    def __init__(self, width, height, speed, ip, port, login, password,
                  wsdl, tweaking, bounds, tracking_box, isAbsolute,
                  name="Move"):
         self.name = name
@@ -21,12 +21,12 @@ class Move:
         self.box = None
         self.tweaking = tweaking
         self.old_box = None
-        self.length = length
-        self.hight = hight
+        self.length = width
+        self.hight = height
         self.old_vec_x = 0
         self.old_vec_y = 0
         self.count_frame = 0
-        self.speed_coef = speed_coef
+        self.speed_coef = speed
         self.pause = False
         self.bounds = bounds
         self.tbox = tracking_box
@@ -83,7 +83,6 @@ class Move:
                         vec_y = float(self.tbox[3] - to_y)/(self.hight)
                 else:
                     vec_y = 0
-                self.count_frame = 0
                 vec_x = vec_x*self.speed_coef
                 vec_y = vec_y*self.speed_coef
                 vec_x = 1 if vec_x > 1 else vec_x
@@ -106,6 +105,7 @@ class Move:
                     self.isAimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
+                self.count_frame = 0
             elif box is None and old_box is not None:
                 if (self.count_frame < 20):
                     self.cam.ContinuousMove(vec_x, vec_y)
@@ -114,7 +114,7 @@ class Move:
                     sleep(self.__ddelay)
                 elif (self.count_frame == 60):
                     self.count_frame = 0
-                    # self.cam.goHome()
+                    self.cam.goHome()
                     old_box = box
                     sleep(self.__ddelay)
                 sleep(self.tweaking)
