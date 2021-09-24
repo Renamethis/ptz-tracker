@@ -39,12 +39,14 @@ def tracker_listener():
                 orb_slam = subprocess.Popen([orb_path, voc_path, cam_cal, rtsp_url])
                 orb_pid = orb_slam.pid
             '''
-            return answer('Tracker successfully started')
+            return answer('OK', data={'information':
+                                      'Tracker successfully started'})
         elif data['command'] == 'stop':
             if(tracker.running):
                 tracker.stop()
             else:
-                return error('Tracker not launched')
+                return error('OK', data={'information':
+                                         'Tracker not launched'})
             return answer('Tracker stopped')
         elif data['command'] == 'autoset':
             if(not tracker.running):
@@ -53,7 +55,8 @@ def tracker_listener():
                                  'check logs to get more information')
             else:
                 return error('Tracker already running')
-            return answer('Autoset sucessfully started')
+            return answer('OK', data={'information':
+                                      'Autoset sucessfully started'})
         elif data['command'] == 'set':
             if(tracker.running):
                 return error('You cant change parameters' +
@@ -77,10 +80,11 @@ def tracker_listener():
             Config.write(cfile)
             cfile.close()
             tracker.update_data()
-            return answer('Data set up successfully')
+            return answer('OK', data={'information':
+                                      'Data successfully set up'})
         elif data['command'] == 'status':
             status = str(tracker.status).split('.')[1]
-            return answer(status)
+            return answer('OK', data={'status': status})
         else:
             return error('Bad command')
     else:

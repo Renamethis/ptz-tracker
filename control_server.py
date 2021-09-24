@@ -47,7 +47,7 @@ def server():
                                 str(device_port) + '/track',
                                 data=dumps(body))
                 if(response.json()['status'] != 'Error'):
-                    return answer('Ok', 'Command ' + data['command']
+                    return answer(response.json()['status'], 'Command ' + data['command']
                                   + ' Successfully executed')
                 else:
                     return error(response.json()['description'],
