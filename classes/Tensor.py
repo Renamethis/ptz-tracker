@@ -9,14 +9,13 @@ from threading import Thread
 
 class Tensor:
     # Initialization
-    def __init__(self, width=720, height=405,
-                 model_name="ssd_mobilenet", name="Tensor"):
+    def __init__(self, model_name="ssd_mobilenet", name="Tensor"):
         self.name = name
         self.flag = False
-        self.new_image = np.zeros((height, width, 3))
-        self.old_image = np.zeros((height, width, 3))
         self.logger = logging.getLogger("Main.%s" % (self.name))
         self.logger.info("Model loading starting")
+        self.new_image = None
+        self.old_image = None
         try:
             self.model_name = model_name
             PATH_TO_MODEL = "models/" + model_name

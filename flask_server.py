@@ -55,6 +55,9 @@ def tracker_listener():
                 return error('Tracker already running')
             return answer('Autoset sucessfully started')
         elif data['command'] == 'set':
+            if(tracker.running):
+                return error('You cant change parameters' +
+                             'while tracker is running')
             Config = configparser.ConfigParser()
             Config.read(config_path)
             keys = list(data.keys())
@@ -73,6 +76,7 @@ def tracker_listener():
             cfile = open(config_path, 'w')
             Config.write(cfile)
             cfile.close()
+            tracker.update_data()
             return answer('Data set up successfully')
         elif data['command'] == 'status':
             status = str(tracker.status).split('.')[1]

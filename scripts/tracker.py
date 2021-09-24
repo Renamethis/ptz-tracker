@@ -31,12 +31,12 @@ class Status(Enum):
 class Tracker:
     # Init function
     def __init__(self):
-        # Injtializing variables
+        # Initializing variables
         self.name = "MAIN"
         self.running = False
         self.status = Status.Stopped
         pwd = os.getcwd()
-        wsdl_path = pwd + '/wsdl'
+        self.wsdl_path = pwd + '/wsdl'
         config_path = pwd + '/settings.ini'
         # Initializing loger
         self.logger = logging.getLogger("Main")
@@ -50,45 +50,8 @@ class Tracker:
         self.Config = configparser.ConfigParser()
         self.Config.read(config_path)
         # Get parameters from settings
-        # ONVIF settings
-        ip = self.__get_setting("Onvif", "ip")
-        port = self.__get_setting("Onvif", "port")
-        login = self.__get_setting("Onvif", "login")
-        password = self.__get_setting("Onvif", "password")
-        speed = float(self.__get_setting("Onvif", "speed"))
-        tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
-        isAbsolute = bool(self.__get_setting("Onvif", "Absolute"))
-        # Image processing settings
-        bounds = [float(i) for i in self.__get_setting("Processing", "bounds")
-                                        .replace(" ", "").split(",")]
-        self.width = int(self.__get_setting("Processing", "width"))
-        self.height = int(self.__get_setting("Processing", "height"))
-        self.l_h = [self.height, self.width, self.height, self.width]
-        tracking_box = (np.array([float(i) for i in self.__get_setting(
-            "Processing", "box").replace(" ", "")
-                .split(",")]) * self.l_h).astype(int)
-        # AutoSet settings
-        self.COLOR_LIGHT = np.array([int(i) for i in self.
-                                     __get_setting("AutoSet", "color_light")
-                                    .replace(" ", "").split(",")])
-        self.COLOR_DARK = np.array([int(i) for i in self.
-                                    __get_setting("AutoSet", "color_dark")
-                                   .replace(" ", "").split(",")])
-        self.scope = (np.array([float(i) for i in
-                               self.__get_setting("AutoSet", "scope").
-                               replace(" ",
-                                       "").split(",")]) * self.l_h).astype(int)
-        # Hardware settings
-        device = self.__get_setting("Hardware", "device")
-        # Initializing classes
-        self.tensor = Tensor(self.height, self.width)
-        self.move = Move(self.width, self.height, speed, ip, port,
-                         login, password, wsdl_path, tweaking, bounds,
-                         tracking_box, isAbsolute)
-        self.moveset = MoveSet(speed, ip, port, login, password, wsdl_path,
-                               [self.height, self.width],
-                               self.scope, tracking_box)
-        self.stream = VideoStream(device)
+        self.update_data()
+        self.tensor = Tensor()
 
     def __get_setting(self, section, setting):
         try:
@@ -197,3 +160,49 @@ class Tracker:
         _, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,
                                                   cv2.CHAIN_APPROX_SIMPLE)
         return contours
+
+    def update_data(self):
+        # ONVIF settings
+        ip = self.__get_setting("Onvif", "ip")
+        port = self.__get_setting("Onvif", "port")
+        login = self.__get_setting("Onvif", "login")
+        password = self.__get_setting("Onvif", "password")
+        speed = float(self.__get_setting("Onvif", "speed"))
+        tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
+        isAbsolute = bool(self.__get_setting("Onvif", "Absolute"))
+        # Image processing settings
+        bounds = [float(i) for i in self.__get_setting("Processing", "bounds")
+                                        .replace(" ", "").split(",")]
+        self.width = int(self.__get_setting("Processing", "width"))
+        self.height = int(self.__get_setting("Processing", "height"))
+        self.l_h = [self.height, self.width, self.height, self.width]
+        tracking_box = (np.array([float(i) for i in self.__get_setting(
+            "Processing", "box").replace(" ", "")
+                .split(",")]) * self.l_h).astype(int)
+        # AutoSet settings
+        self.COLOR_LIGHT = np.array([int(i) for i in self.
+                                     __get_setting("AutoSet", "color_light")
+                                    .replace(" ", "").split(",")])
+        self.COLOR_DARK = np.array([int(i) for i in self.
+                                    __get_setting("AutoSet", "color_dark")
+                                   .replace(" ", "").split(",")])
+        self.scope = (np.array([float(i) for i in
+                               self.__get_setting("AutoSet", "scope").
+                               replace(" ",
+                                       "").split(",")]) * self.l_h).astype(int)
+        # Hardware settings
+        device = self.__get_setting("Hardware", "device")
+        try:
+            del self.move
+            del self.moveset
+            del self.stream
+        except AttributeError:
+            pass
+        self.move = Move(self.width, self.height, speed, ip, port,
+                         login, password, self.wsdl_path, tweaking, bounds,
+                         tracking_box, isAbsolute)
+        self.moveset = MoveSet(speed, ip, port, login, password, self.wsdl_path,
+                               [self.height, self.width],
+                               self.scope, tracking_box)
+        self.stream = VideoStream(device)
+        self.logger.info("Data updated")

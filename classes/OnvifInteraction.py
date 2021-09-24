@@ -46,7 +46,7 @@ class Camera:
             request.ProfileToken = self.profile.token
             ans = self.media.GetStreamUri(request)
         except onvif.exceptions.ONVIFError:
-            self.logger.exception('Error sending request')
+            self.logger.exception('Error getting rtsp-url')
             return None
         return ans['Uri']
 
@@ -68,7 +68,7 @@ class Camera:
                                                       self.profile.token})
             except onvif.exceptions.ONVIFError:
                 self.logger.exception('Error sending request, reconnecting')
-                self.running = self.cam.connect()
+                self.running = self.connect()
         self.logger.info("Process stopped")
 
     # Move camera by vertical and horizontal speed
@@ -115,7 +115,6 @@ class Camera:
         self.running = True
         self.thread = Thread(target=self.ptzThread, name=self.name, args=())
         self.thread.start()
-        self.AbsoluteMove(0, 0, 0.5)
 
     # Set camera to home position
     def goHome(self):
@@ -123,6 +122,7 @@ class Camera:
             self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
         except onvif.exceptions.ONVIFError:
             self.logger.exception('Error sending request')
+            self.running = self.connect()
 
     # Return absolute coordinates from status
     def getAbsolute(self):
@@ -135,6 +135,7 @@ class Camera:
             self.ptz.Stop({'ProfileToken': self.profile.token})
         except onvif.exceptions.ONVIFError:
             self.logger.exception('Error sending request')
+            self.running = self.connect()
 
     # Stop ptz thread
     def stop_thread(self):
