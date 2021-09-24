@@ -196,6 +196,7 @@ class Tracker:
             del self.move
             del self.moveset
             del self.stream
+            self.logger.info("Data updated")
         except AttributeError:
             pass
         self.move = Move(self.width, self.height, speed, ip, port,
@@ -204,5 +205,4 @@ class Tracker:
         self.moveset = MoveSet(speed, ip, port, login, password, self.wsdl_path,
                                [self.height, self.width],
                                self.scope, tracking_box)
-        self.stream = VideoStream(device)
-        self.logger.info("Data updated")
+        self.stream = VideoStream(device=device)

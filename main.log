@@ -606,3 +606,6 @@
 2021-09-24 14:24:42,852 - Main.Tensor - INFO - Process stopped
 2021-09-24 14:24:42,915 - Main.ONVIF - INFO - Process stopped
 2021-09-24 14:24:42,959 - Main.Move - INFO - Process stopped
+2021-09-24 17:46:55,311 - Main - INFO - Data updated
+2021-09-24 17:46:55,311 - Main.Tensor - INFO - Model loading starting
+2021-09-24 17:47:03,108 - Main.Tensor - INFO - Model loading completed
