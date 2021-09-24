@@ -44,9 +44,10 @@ def tracker_listener():
         elif data['command'] == 'stop':
             if(tracker.running):
                 tracker.stop()
+                return answer('OK', data={'information':
+                                          'Tracker sucessfully stopped'})
             else:
-                return error('OK', data={'information':
-                                         'Tracker not launched'})
+                return error('Tracker is not running')
             return answer('Tracker stopped')
         elif data['command'] == 'autoset':
             if(not tracker.running):
