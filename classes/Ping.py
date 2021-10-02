@@ -4,6 +4,7 @@ import logging
 from time import sleep
 from threading import Thread
 
+
 class Ping:
     def __init__(self, mycam_ip, name="Ping"):
         self.name = name
@@ -12,17 +13,16 @@ class Ping:
         self.r = os.system("timeout 0.4 ping -c 1    " + self.mycam_ip + " > /dev/null 2>&1")
 
     def start(self):
-        start_logger = logging.getLogger("Main.Ping.start")
-        start_logger.info("Process starting")
-        t = Thread(target=self.update, name=self.name, args=())
+        self.__logger = logging.getLogger("Main.Ping.start")
+        self.__logger.info("Process starting")
+        t = Thread(target=self.__update, name=self.name, args=())
         t.daemon = True
         t.start()
         return self
 
     # Loop of receiving frames from a stream
-    def update(self):
-        update_logger = logging.getLogger("Main.Ping.start")
-        update_logger.info("Process started")
+    def __update(self):
+        self.__logger.info("Process started")
         while not self.stopped:
             if self.stopped:
                 return

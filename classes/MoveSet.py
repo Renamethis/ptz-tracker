@@ -39,26 +39,26 @@ class MoveSet:
         self.HEIGHT = Shape[0]
         self.tbox = tracking_box
         self.speed_coef = speed
-        self.logger = logging.getLogger("Main.%s" % (self.name))
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frames = 0
 
     # Start threads
     def start(self):
-        self.logger.info("Process starting")
+        self.__logger.info("Process starting")
         self.cam = Camera(self.ip, self.port, self.login, self.password,
                           self.wsdl, True)
         if(not self.cam.connect()):
             return False
         self.cam.start()
         self.running = True
-        self.thread = Thread(target=self.process, name=self.name, args=())
-        self.thread.daemon = True
-        self.thread.start()
+        self.__thread = Thread(target=self.__update, name=self.name, args=())
+        self.__thread.daemon = True
+        self.__thread.start()
         return True
 
     # Main loop
-    def process(self):
-        self.logger.info("Process started")
+    def __update(self):
+        self.__logger.info("Process started")
         time.sleep(5)
         while self.running:
             if(self.box is not None and self.contours is not None):
@@ -115,13 +115,13 @@ class MoveSet:
                         self.cam.stop()
                         self.running = False
                     if(pos != Position.NO):
-                        self.logger.info("Object found on" + str(pos))
+                        self.__logger.info("Object found on" + str(pos))
                 else:
                     self.frames = 0
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
                 self.cam.stop()
-        self.logger.info("Process stopped")
+        self.__logger.info("Process stopped")
 
     # Set greenscreen contours
     def set_con(self, contours):

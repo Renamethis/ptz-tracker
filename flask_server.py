@@ -4,7 +4,6 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 import configparser
-# import classes.Utility_Functions as UF
 from scripts.tracker import Tracker
 
 
@@ -49,6 +48,11 @@ def tracker_listener():
             else:
                 return error('Tracker is not running')
             return answer('Tracker stopped')
+        elif data['command'] == 'log':
+            if(tracker.running):
+                return answer('OK', data={'log': tracker.get_status_log()})
+            else:
+                return error('Tracker is not running')
         elif data['command'] == 'autoset':
             if(not tracker.running):
                 if(not tracker.start_autoset()):

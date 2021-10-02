@@ -50,3 +50,4 @@ Werkzeug==1.0.1
 wrapt==1.12.1
 zeep==4.0.0
 zipp==3.4.0
+scipy==1.6.3

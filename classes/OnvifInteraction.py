@@ -34,7 +34,7 @@ class Camera:
         self.login = login
         self.password = password
         self.wpath = wsdl_path
-        self.logger = logging.getLogger("Main.%s" % (self.name))
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.isAbsolute = isAbsolute
 
     # Return url of rtsp-stream
@@ -46,13 +46,13 @@ class Camera:
             request.ProfileToken = self.profile.token
             ans = self.media.GetStreamUri(request)
         except onvif.exceptions.ONVIFError:
-            self.logger.exception('Error getting rtsp-url')
+            self.__logger.exception('Error getting rtsp-url')
             return None
         return ans['Uri']
 
     # PTZ thread for moving Camera and getting status
-    def ptzThread(self):
-        self.logger.info("Process started")
+    def __ptz_thread(self):
+        self.__logger.info("Process started")
         while self.running:
             try:
                 if(self.type is not None):
@@ -67,9 +67,9 @@ class Camera:
                     self.status = self.ptz.GetStatus({'ProfileToken':
                                                       self.profile.token})
             except onvif.exceptions.ONVIFError:
-                self.logger.exception('Error sending request, reconnecting')
+                self.__logger.exception('Error sending request, reconnecting')
                 self.running = self.connect()
-        self.logger.info("Process stopped")
+        self.__logger.info("Process stopped")
 
     # Move camera by vertical and horizontal speed
     def ContinuousMove(self, x, y, zoom=0.0):
@@ -87,7 +87,7 @@ class Camera:
 
     # Connect camera
     def connect(self, substream=1):
-        self.logger.info("Connecting to the camera")
+        self.__logger.info("Connecting to the camera")
         try:
             self.cam = onvif.ONVIFCamera(self.ip, self.port, self.login,
                                          self.password, self.wpath)
@@ -97,31 +97,33 @@ class Camera:
             self.ptz = self.cam.create_ptz_service()
             self.requests = {k: self.ptz.create_type(k)
                              for k in self.requests_labels}
-            self.status = self.ptz.GetStatus({'ProfileToken': self.profile.token})
+            self.status = self.ptz.GetStatus({'ProfileToken':
+                                              self.profile.token})
             for request in self.requests:
                 self.requests[request].ProfileToken = self.profile.token
             self.requests['AbsoluteMove'].Position = self.status.Position
             self.requests['ContinuousMove'].Velocity = self.status.Position
             self.goHome()
-            self.logger.info('Successfully connected to the cameraa')
+            self.__logger.info('Successfully connected to the camera')
         except onvif.exceptions.ONVIFError:
-            self.logger.critical('Error with camera connection')
+            self.__logger.critical('Error with camera connection')
             return False
         return True
 
     # Start threads
     def start(self):
-        self.logger.info("Process starting")
+        self.__logger.info("Process starting")
         self.running = True
-        self.thread = Thread(target=self.ptzThread, name=self.name, args=())
-        self.thread.start()
+        self.__thread = Thread(target=self.__ptz_thread,
+                               name=self.name, args=())
+        self.__thread.start()
 
     # Set camera to home position
     def goHome(self):
         try:
             self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
         except onvif.exceptions.ONVIFError:
-            self.logger.exception('Error sending request')
+            self.__logger.exception('Error sending request')
             self.running = self.connect()
 
     # Return absolute coordinates from status
@@ -134,7 +136,7 @@ class Camera:
         try:
             self.ptz.Stop({'ProfileToken': self.profile.token})
         except onvif.exceptions.ONVIFError:
-            self.logger.exception('Error sending request')
+            self.__logger.exception('Error sending request')
             self.running = self.connect()
 
     # Stop ptz thread

@@ -21,8 +21,8 @@ class Move:
         self.box = None
         self.tweaking = tweaking
         self.old_box = None
-        self.length = width
-        self.hight = height
+        self.width = width
+        self.height = height
         self.old_vec_x = 0
         self.old_vec_y = 0
         self.count_frame = 0
@@ -31,15 +31,16 @@ class Move:
         self.bounds = bounds
         self.tbox = tracking_box
         self.__ddelay = 0.1
-        self.logger = logging.getLogger("Main.%s" % (self.name))
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.isAbsolute = isAbsolute
         self.spaceLimits = bounds
         self.isAimed = False
         self.running = False
+        print(self.tbox)
 
     # Start threads
     def start(self):
-        self.logger.info("Process starting")
+        self.__logger.info("Process starting")
         self.cam = Camera(self.ip, self.port, self.login, self.password,
                           self.wsdl, self.isAbsolute)
         if(not self.cam.connect()):
@@ -48,14 +49,14 @@ class Move:
         self.mt = message_grabber("tcp://*:5555")
         self.mt.start()
         self.running = True
-        self.t = Thread(target=self.update, name=self.name, args=())
-        self.t.daemon = True
-        self.t.start()
+        self.__thread = Thread(target=self.__update, name=self.name, args=())
+        self.__thread.daemon = True
+        self.__thread.start()
         return True
 
     # Main loop for move processing
-    def update(self):
-        self.logger.info("Process started")
+    def __update(self):
+        self.__logger.info("Process started")
         while self.running:
             message = self.mt.get_message()
             rotation = self.mt.get_rotation() if message is not None else None
@@ -68,19 +69,16 @@ class Move:
                 sleep(self.__ddelay)
             elif box is not None:
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
-                to_y = int(abs(box[0] - box[2])/2.0 + box[0])
+                to_y = int(box[0])
                 if (to_x < self.tbox[0] or to_x > self.tbox[2]):
                     if to_x < self.tbox[0]:
-                        vec_x = float(to_x - self.tbox[0])/(self.length)
+                        vec_x = float(to_x - self.tbox[0])/(self.width)
                     else:
-                        vec_x = float(to_x - self.tbox[2])/(self.length)
+                        vec_x = float(to_x - self.tbox[2])/(self.width)
                 else:
                     vec_x = 0
-                if (to_y < self.tbox[1] or to_y > self.tbox[3]):
-                    if(to_y < self.tbox[1]):
-                        vec_y = float(self.tbox[1] - to_y)/(self.hight)
-                    else:
-                        vec_y = float(self.tbox[3] - to_y)/(self.hight)
+                if (to_y > self.tbox[1] + 40 or to_y < self.tbox[1] - 40):
+                    vec_y = float(self.tbox[1] - to_y)/(self.height)
                 else:
                     vec_y = 0
                 vec_x = vec_x*self.speed_coef
@@ -120,7 +118,7 @@ class Move:
                 sleep(self.tweaking)
                 self.count_frame = self.count_frame + 1
             self.old_box = old_box
-        self.logger.info("Process stopped")
+        self.__logger.info("Process stopped")
 
     # Set person box
     def set_box(self, box):

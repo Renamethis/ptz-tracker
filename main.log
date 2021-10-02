@@ -609,3 +609,1004 @@
 2021-09-24 17:46:55,311 - Main - INFO - Data updated
 2021-09-24 17:46:55,311 - Main.Tensor - INFO - Model loading starting
 2021-09-24 17:47:03,108 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:37:08,992 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:37:17,010 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:38:05,238 - Main - INFO - Tracker starting...
+2021-09-30 00:38:05,238 - Main.Move - INFO - Process starting
+2021-09-30 00:38:05,238 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:38:06,023 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:38:06,024 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:38:06,025 - Main.ONVIF - INFO - Process started
+2021-09-30 00:38:06,033 - Main.Move - INFO - Process started
+2021-09-30 00:38:06,130 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:38:06,550 - Main.VideoStream - INFO - Process started
+2021-09-30 00:38:06,550 - Main.Tensor - INFO - Process starting
+2021-09-30 00:38:06,552 - Main.Tensor - INFO - Process started
+2021-09-30 00:38:06,552 - Main - INFO - Tracker started
+2021-09-30 00:38:59,490 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:39:07,149 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:39:32,537 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:39:40,163 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:39:42,420 - Main - INFO - Tracker starting...
+2021-09-30 00:39:42,420 - Main.Move - INFO - Process starting
+2021-09-30 00:39:42,421 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:39:43,134 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:39:43,135 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:39:43,135 - Main.ONVIF - INFO - Process started
+2021-09-30 00:39:43,138 - Main.Move - INFO - Process started
+2021-09-30 00:39:43,221 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:39:43,680 - Main.VideoStream - INFO - Process started
+2021-09-30 00:39:43,680 - Main.Tensor - INFO - Process starting
+2021-09-30 00:39:43,681 - Main.Tensor - INFO - Process started
+2021-09-30 00:39:43,681 - Main - INFO - Tracker started
+2021-09-30 00:40:31,729 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:40:39,304 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:40:42,421 - Main - INFO - Tracker starting...
+2021-09-30 00:40:42,421 - Main.Move - INFO - Process starting
+2021-09-30 00:40:42,421 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:40:43,161 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:40:43,161 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:40:43,162 - Main.ONVIF - INFO - Process started
+2021-09-30 00:40:43,165 - Main.Move - INFO - Process started
+2021-09-30 00:40:43,244 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:40:43,702 - Main.VideoStream - INFO - Process started
+2021-09-30 00:40:43,703 - Main.Tensor - INFO - Process starting
+2021-09-30 00:40:43,703 - Main.Tensor - INFO - Process started
+2021-09-30 00:40:43,703 - Main - INFO - Tracker started
+2021-09-30 00:41:23,940 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:41:31,859 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:41:52,441 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:42:00,114 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:42:08,495 - Main - INFO - Tracker starting...
+2021-09-30 00:42:08,495 - Main.Move - INFO - Process starting
+2021-09-30 00:42:08,495 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:42:09,811 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:42:09,811 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:42:09,812 - Main.ONVIF - INFO - Process started
+2021-09-30 00:42:09,814 - Main.Move - INFO - Process started
+2021-09-30 00:42:09,893 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:42:10,272 - Main.VideoStream - INFO - Process started
+2021-09-30 00:42:10,272 - Main.Tensor - INFO - Process starting
+2021-09-30 00:42:10,273 - Main.Tensor - INFO - Process started
+2021-09-30 00:42:10,273 - Main - INFO - Tracker started
+2021-09-30 00:42:34,776 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:42:42,461 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:42:43,209 - Main - INFO - Tracker starting...
+2021-09-30 00:42:43,209 - Main.Move - INFO - Process starting
+2021-09-30 00:42:43,209 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:42:43,945 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:42:43,946 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:42:43,946 - Main.ONVIF - INFO - Process started
+2021-09-30 00:42:43,948 - Main.Move - INFO - Process started
+2021-09-30 00:42:44,037 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:42:44,419 - Main.VideoStream - INFO - Process started
+2021-09-30 00:42:44,419 - Main.Tensor - INFO - Process starting
+2021-09-30 00:42:44,419 - Main.Tensor - INFO - Process started
+2021-09-30 00:42:44,420 - Main - INFO - Tracker started
+2021-09-30 00:43:03,499 - Main.Tensor - INFO - Model loading starting
+2021-09-30 00:43:11,180 - Main.Tensor - INFO - Model loading completed
+2021-09-30 00:43:12,742 - Main - INFO - Tracker starting...
+2021-09-30 00:43:12,743 - Main.Move - INFO - Process starting
+2021-09-30 00:43:12,743 - Main.ONVIF - INFO - Connecting to the camera
+2021-09-30 00:43:13,482 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-09-30 00:43:13,483 - Main.ONVIF - INFO - Process starting
+2021-09-30 00:43:13,483 - Main.ONVIF - INFO - Process started
+2021-09-30 00:43:13,486 - Main.Move - INFO - Process started
+2021-09-30 00:43:13,487 - Main - INFO - {"2021-09-30 00:43:13": "Starting"}
+2021-09-30 00:43:13,572 - Main.VideoStream - INFO - Process starting
+2021-09-30 00:43:13,962 - Main.VideoStream - INFO - Process started
+2021-09-30 00:43:13,962 - Main.Tensor - INFO - Process starting
+2021-09-30 00:43:13,963 - Main.Tensor - INFO - Process started
+2021-09-30 00:43:13,963 - Main - INFO - Tracker started
+2021-09-30 00:43:17,495 - Main - INFO - {"2021-09-30 00:43:13": "Starting", "2021-09-30 00:43:17": "NoPerson"}
+2021-10-01 22:53:27,719 - Main.Tensor - INFO - Model loading starting
+2021-10-01 22:53:35,015 - Main.Tensor - INFO - Model loading completed
+2021-10-01 22:53:53,561 - Main - INFO - Tracker starting...
+2021-10-01 22:53:53,561 - Main.Move - INFO - Process starting
+2021-10-01 22:53:53,562 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 22:53:54,341 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 22:53:54,342 - Main.ONVIF - INFO - Process starting
+2021-10-01 22:53:54,343 - Main.ONVIF - INFO - Process started
+2021-10-01 22:53:54,348 - Main.Move - INFO - Process started
+2021-10-01 22:53:54,350 - Main - INFO - {"2021-10-01 22:53:54": "Starting"}
+2021-10-01 22:53:54,430 - Main.VideoStream - INFO - Process starting
+2021-10-01 22:53:54,865 - Main.VideoStream - INFO - Process started
+2021-10-01 22:53:54,865 - Main.Tensor - INFO - Process starting
+2021-10-01 22:53:54,866 - Main.Tensor - INFO - Process started
+2021-10-01 22:53:54,866 - Main - INFO - Tracker started
+2021-10-01 22:53:58,356 - Main - INFO - {"2021-10-01 22:53:54": "Starting", "2021-10-01 22:53:58": "Moving"}
+2021-10-01 22:55:33,907 - Main.Tensor - INFO - Model loading starting
+2021-10-01 22:55:41,328 - Main.Tensor - INFO - Model loading completed
+2021-10-01 22:55:42,948 - Main - INFO - Tracker starting...
+2021-10-01 22:55:42,948 - Main.Move - INFO - Process starting
+2021-10-01 22:55:42,948 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 22:55:43,714 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 22:55:43,715 - Main.ONVIF - INFO - Process starting
+2021-10-01 22:55:43,715 - Main.ONVIF - INFO - Process started
+2021-10-01 22:55:43,722 - Main.Move - INFO - Process started
+2021-10-01 22:55:43,723 - Main - INFO - {"2021-10-01 22:55:43": "Starting"}
+2021-10-01 22:55:43,863 - Main.VideoStream - INFO - Process starting
+2021-10-01 22:55:44,268 - Main.VideoStream - INFO - Process started
+2021-10-01 22:55:44,268 - Main.Tensor - INFO - Process starting
+2021-10-01 22:55:44,268 - Main.Tensor - INFO - Process started
+2021-10-01 22:55:44,268 - Main - INFO - Tracker started
+2021-10-01 22:56:14,269 - Main.Tensor - INFO - Model loading starting
+2021-10-01 22:56:21,294 - Main.Tensor - INFO - Model loading completed
+2021-10-01 22:56:24,587 - Main - INFO - Tracker starting...
+2021-10-01 22:56:24,587 - Main.Move - INFO - Process starting
+2021-10-01 22:56:24,587 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 22:56:25,379 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 22:56:25,379 - Main.ONVIF - INFO - Process starting
+2021-10-01 22:56:25,380 - Main.ONVIF - INFO - Process started
+2021-10-01 22:56:25,382 - Main.Move - INFO - Process started
+2021-10-01 22:56:25,383 - Main - INFO - {"2021-10-01 22:56:25": "Starting"}
+2021-10-01 22:56:25,477 - Main.VideoStream - INFO - Process starting
+2021-10-01 22:56:25,820 - Main.VideoStream - INFO - Process started
+2021-10-01 22:56:25,820 - Main.Tensor - INFO - Process starting
+2021-10-01 22:56:25,820 - Main.Tensor - INFO - Process started
+2021-10-01 22:56:25,820 - Main - INFO - Tracker started
+2021-10-01 22:57:17,989 - Main.Tensor - INFO - Model loading starting
+2021-10-01 22:57:25,284 - Main.Tensor - INFO - Model loading completed
+2021-10-01 22:57:27,247 - Main - INFO - Tracker starting...
+2021-10-01 22:57:27,247 - Main.Move - INFO - Process starting
+2021-10-01 22:57:27,247 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 22:57:28,310 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 22:57:28,310 - Main.ONVIF - INFO - Process starting
+2021-10-01 22:57:28,311 - Main.ONVIF - INFO - Process started
+2021-10-01 22:57:28,316 - Main.Move - INFO - Process started
+2021-10-01 22:57:28,316 - Main - INFO - {"2021-10-01 22:57:28": "Starting"}
+2021-10-01 22:57:28,474 - Main.VideoStream - INFO - Process starting
+2021-10-01 22:57:29,182 - Main.VideoStream - INFO - Process started
+2021-10-01 22:57:29,182 - Main.Tensor - INFO - Process starting
+2021-10-01 22:57:29,182 - Main.Tensor - INFO - Process started
+2021-10-01 22:57:29,183 - Main - INFO - Tracker started
+2021-10-01 22:58:37,273 - Main.Tensor - INFO - Model loading starting
+2021-10-01 22:58:44,385 - Main.Tensor - INFO - Model loading completed
+2021-10-01 22:58:46,407 - Main - INFO - Tracker starting...
+2021-10-01 22:58:46,408 - Main.Move - INFO - Process starting
+2021-10-01 22:58:46,408 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 22:58:47,659 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 22:58:47,659 - Main.ONVIF - INFO - Process starting
+2021-10-01 22:58:47,660 - Main.ONVIF - INFO - Process started
+2021-10-01 22:58:47,662 - Main.Move - INFO - Process started
+2021-10-01 22:58:47,663 - Main - INFO - {"2021-10-01 22:58:47": "Starting"}
+2021-10-01 22:58:47,739 - Main.VideoStream - INFO - Process starting
+2021-10-01 22:58:48,091 - Main.VideoStream - INFO - Process started
+2021-10-01 22:58:48,091 - Main.Tensor - INFO - Process starting
+2021-10-01 22:58:48,091 - Main.Tensor - INFO - Process started
+2021-10-01 22:58:48,092 - Main - INFO - Tracker started
+2021-10-01 23:10:53,410 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:11:00,627 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:11:03,211 - Main - INFO - Tracker starting...
+2021-10-01 23:11:03,212 - Main.Move - INFO - Process starting
+2021-10-01 23:11:03,213 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:11:03,875 - Main.ONVIF - INFO - Successfully connected to the cameraa
+2021-10-01 23:11:03,875 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:11:03,876 - Main.ONVIF - INFO - Process started
+2021-10-01 23:11:03,881 - Main.Move - INFO - Process started
+2021-10-01 23:11:03,881 - Main - INFO - {"2021-10-01 23:11:03": "Starting"}
+2021-10-01 23:11:03,955 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:11:04,323 - Main.VideoStream - INFO - Process started
+2021-10-01 23:11:04,323 - Main.Tensor - INFO - Process starting
+2021-10-01 23:11:04,324 - Main.Tensor - INFO - Process started
+2021-10-01 23:11:04,324 - Main - INFO - Tracker started
+2021-10-01 23:11:39,707 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:11:46,979 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:11:49,802 - Main - INFO - Tracker starting...
+2021-10-01 23:11:49,803 - Main.Move - INFO - Process starting
+2021-10-01 23:11:49,803 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:11:50,517 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:11:50,518 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:11:50,518 - Main.ONVIF - INFO - Process started
+2021-10-01 23:11:50,521 - Main.Move - INFO - Process started
+2021-10-01 23:11:50,524 - Main - INFO - {"2021-10-01 23:11:50": "Starting"}
+2021-10-01 23:11:50,599 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:11:50,987 - Main.VideoStream - INFO - Process started
+2021-10-01 23:11:50,987 - Main.Tensor - INFO - Process starting
+2021-10-01 23:11:50,988 - Main.Tensor - INFO - Process started
+2021-10-01 23:11:50,988 - Main - INFO - Tracker started
+2021-10-01 23:11:59,589 - Main - INFO - Tracker stopped
+2021-10-01 23:11:59,614 - Main.VideoStream - INFO - Process stopped
+2021-10-01 23:11:59,675 - Main.Tensor - INFO - Process stopped
+2021-10-01 23:11:59,686 - Main.ONVIF - INFO - Process stopped
+2021-10-01 23:11:59,751 - Main.Move - INFO - Process stopped
+2021-10-01 23:38:51,418 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:38:58,848 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:39:36,325 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:39:43,545 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:40:40,922 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:40:48,225 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:40:56,866 - Main - INFO - Tracker starting...
+2021-10-01 23:40:56,866 - Main.Move - INFO - Process starting
+2021-10-01 23:40:56,866 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:40:57,620 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:40:57,620 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:40:57,621 - Main.ONVIF - INFO - Process started
+2021-10-01 23:40:57,627 - Main.Move - INFO - Process started
+2021-10-01 23:40:57,723 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:40:58,133 - Main.VideoStream - INFO - Process started
+2021-10-01 23:40:58,134 - Main.Tensor - INFO - Process starting
+2021-10-01 23:40:58,134 - Main.Tensor - INFO - Process started
+2021-10-01 23:40:58,134 - Main - INFO - Tracker started
+2021-10-01 23:41:18,032 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:41:25,385 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:41:27,081 - Main - INFO - Tracker starting...
+2021-10-01 23:41:27,081 - Main.Move - INFO - Process starting
+2021-10-01 23:41:27,082 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:41:27,806 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:41:27,806 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:41:27,807 - Main.ONVIF - INFO - Process started
+2021-10-01 23:41:27,813 - Main.Move - INFO - Process started
+2021-10-01 23:41:27,895 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:41:28,240 - Main.VideoStream - INFO - Process started
+2021-10-01 23:41:28,240 - Main.Tensor - INFO - Process starting
+2021-10-01 23:41:28,240 - Main.Tensor - INFO - Process started
+2021-10-01 23:41:28,240 - Main - INFO - Tracker started
+2021-10-01 23:41:59,001 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:42:06,207 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:42:09,155 - Main - INFO - Tracker starting...
+2021-10-01 23:42:09,155 - Main.Move - INFO - Process starting
+2021-10-01 23:42:09,155 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:42:09,864 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:42:09,864 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:42:09,865 - Main.ONVIF - INFO - Process started
+2021-10-01 23:42:09,867 - Main.Move - INFO - Process started
+2021-10-01 23:42:09,954 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:42:10,289 - Main.VideoStream - INFO - Process started
+2021-10-01 23:42:10,289 - Main.Tensor - INFO - Process starting
+2021-10-01 23:42:10,289 - Main.Tensor - INFO - Process started
+2021-10-01 23:42:10,289 - Main - INFO - Tracker started
+2021-10-01 23:44:15,404 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:44:22,615 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:44:30,100 - Main - INFO - Tracker starting...
+2021-10-01 23:44:30,100 - Main.Move - INFO - Process starting
+2021-10-01 23:44:30,100 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:44:30,811 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:44:30,812 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:44:30,812 - Main.ONVIF - INFO - Process started
+2021-10-01 23:44:30,818 - Main.Move - INFO - Process started
+2021-10-01 23:44:30,908 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:44:31,291 - Main.VideoStream - INFO - Process started
+2021-10-01 23:44:31,291 - Main.Tensor - INFO - Process starting
+2021-10-01 23:44:31,292 - Main.Tensor - INFO - Process started
+2021-10-01 23:44:31,292 - Main - INFO - Tracker started
+2021-10-01 23:44:57,003 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:45:04,275 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:45:16,001 - Main - INFO - Tracker starting...
+2021-10-01 23:45:16,001 - Main.Move - INFO - Process starting
+2021-10-01 23:45:16,002 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:45:16,754 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:45:16,754 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:45:16,754 - Main.ONVIF - INFO - Process started
+2021-10-01 23:45:16,760 - Main.Move - INFO - Process started
+2021-10-01 23:45:16,761 - Main - INFO - {"2021-10-01 23:45:16": "Starting"}
+2021-10-01 23:45:16,837 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:45:17,180 - Main.VideoStream - INFO - Process started
+2021-10-01 23:45:17,180 - Main.Tensor - INFO - Process starting
+2021-10-01 23:45:17,180 - Main.Tensor - INFO - Process started
+2021-10-01 23:45:17,181 - Main - INFO - Tracker started
+2021-10-01 23:45:18,766 - Main - INFO - {"2021-10-01 23:45:18": "Starting"}
+2021-10-01 23:45:20,769 - Main - INFO - {"2021-10-01 23:45:20": "Starting"}
+2021-10-01 23:45:22,773 - Main - INFO - {"2021-10-01 23:45:22": "Starting"}
+2021-10-01 23:45:24,776 - Main - INFO - {"2021-10-01 23:45:24": "Starting"}
+2021-10-01 23:45:26,779 - Main - INFO - {"2021-10-01 23:45:26": "Starting"}
+2021-10-01 23:45:28,781 - Main - INFO - {"2021-10-01 23:45:28": "Starting"}
+2021-10-01 23:45:30,783 - Main - INFO - {"2021-10-01 23:45:30": "Starting"}
+2021-10-01 23:46:39,142 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:46:46,364 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:46:48,336 - Main - INFO - Tracker starting...
+2021-10-01 23:46:48,337 - Main.Move - INFO - Process starting
+2021-10-01 23:46:48,337 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:46:49,075 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:46:49,075 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:46:49,076 - Main.ONVIF - INFO - Process started
+2021-10-01 23:46:49,082 - Main.Move - INFO - Process started
+2021-10-01 23:46:49,082 - Main - INFO - {"2021-10-01 23:46:49": "Starting"}
+2021-10-01 23:46:49,174 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:46:49,574 - Main.VideoStream - INFO - Process started
+2021-10-01 23:46:49,575 - Main.Tensor - INFO - Process starting
+2021-10-01 23:46:49,575 - Main.Tensor - INFO - Process started
+2021-10-01 23:46:49,575 - Main - INFO - Tracker started
+2021-10-01 23:47:11,156 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:47:18,323 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:47:22,205 - Main - INFO - Tracker starting...
+2021-10-01 23:47:22,205 - Main.Move - INFO - Process starting
+2021-10-01 23:47:22,206 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:47:22,972 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:47:22,972 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:47:22,973 - Main.ONVIF - INFO - Process started
+2021-10-01 23:47:22,981 - Main.Move - INFO - Process started
+2021-10-01 23:47:22,982 - Main - INFO - {"2021-10-01 23:47:22": "Starting"}
+2021-10-01 23:47:23,075 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:47:23,403 - Main.VideoStream - INFO - Process started
+2021-10-01 23:47:23,403 - Main.Tensor - INFO - Process starting
+2021-10-01 23:47:23,403 - Main.Tensor - INFO - Process started
+2021-10-01 23:47:23,404 - Main - INFO - Tracker started
+2021-10-01 23:47:48,130 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:47:55,290 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:47:59,426 - Main - INFO - Tracker starting...
+2021-10-01 23:47:59,426 - Main.Move - INFO - Process starting
+2021-10-01 23:47:59,426 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:48:00,211 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:48:00,211 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:48:00,212 - Main.ONVIF - INFO - Process started
+2021-10-01 23:48:00,217 - Main.Move - INFO - Process started
+2021-10-01 23:48:00,218 - Main - INFO - {"2021-10-01 23:48:00": "Starting"}
+2021-10-01 23:48:00,302 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:48:00,661 - Main.VideoStream - INFO - Process started
+2021-10-01 23:48:00,661 - Main.Tensor - INFO - Process starting
+2021-10-01 23:48:00,661 - Main.Tensor - INFO - Process started
+2021-10-01 23:48:00,661 - Main - INFO - Tracker started
+2021-10-01 23:48:51,969 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:48:59,372 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:49:06,696 - Main - INFO - Tracker starting...
+2021-10-01 23:49:06,697 - Main.Move - INFO - Process starting
+2021-10-01 23:49:06,697 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:49:07,417 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:49:07,418 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:49:07,418 - Main.ONVIF - INFO - Process started
+2021-10-01 23:49:07,425 - Main.Move - INFO - Process started
+2021-10-01 23:49:07,427 - Main - INFO - {"2021-10-01 23:49:07": "Starting"}
+2021-10-01 23:49:07,553 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:49:07,993 - Main.VideoStream - INFO - Process started
+2021-10-01 23:49:07,993 - Main.Tensor - INFO - Process starting
+2021-10-01 23:49:07,993 - Main.Tensor - INFO - Process started
+2021-10-01 23:49:07,994 - Main - INFO - Tracker started
+2021-10-01 23:50:06,621 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:50:13,766 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:50:20,269 - Main - INFO - Tracker starting...
+2021-10-01 23:50:20,269 - Main.Move - INFO - Process starting
+2021-10-01 23:50:20,270 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:50:21,053 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:50:21,053 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:50:21,054 - Main.ONVIF - INFO - Process started
+2021-10-01 23:50:21,062 - Main.Move - INFO - Process started
+2021-10-01 23:50:21,063 - Main - INFO - {"2021-10-01 23:50:21": "Starting"}
+2021-10-01 23:50:21,158 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:50:21,541 - Main.VideoStream - INFO - Process started
+2021-10-01 23:50:21,541 - Main.Tensor - INFO - Process starting
+2021-10-01 23:50:21,542 - Main.Tensor - INFO - Process started
+2021-10-01 23:50:21,542 - Main - INFO - Tracker started
+2021-10-01 23:51:17,830 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:51:25,539 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:51:27,144 - Main - INFO - Tracker starting...
+2021-10-01 23:51:27,145 - Main.Move - INFO - Process starting
+2021-10-01 23:51:27,145 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:51:27,921 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:51:27,921 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:51:27,922 - Main.ONVIF - INFO - Process started
+2021-10-01 23:51:27,923 - Main.Move - INFO - Process started
+2021-10-01 23:51:27,924 - Main - INFO - {"2021-10-01 23:51:27": "Starting"}
+2021-10-01 23:51:28,011 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:51:28,411 - Main.VideoStream - INFO - Process started
+2021-10-01 23:51:28,411 - Main.Tensor - INFO - Process starting
+2021-10-01 23:51:28,412 - Main.Tensor - INFO - Process started
+2021-10-01 23:51:28,412 - Main - INFO - Tracker started
+2021-10-01 23:52:02,684 - Main.Tensor - INFO - Model loading starting
+2021-10-01 23:52:09,832 - Main.Tensor - INFO - Model loading completed
+2021-10-01 23:52:14,638 - Main - INFO - Tracker starting...
+2021-10-01 23:52:14,638 - Main.Move - INFO - Process starting
+2021-10-01 23:52:14,638 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-01 23:52:15,356 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-01 23:52:15,356 - Main.ONVIF - INFO - Process starting
+2021-10-01 23:52:15,356 - Main.ONVIF - INFO - Process started
+2021-10-01 23:52:15,359 - Main.Move - INFO - Process started
+2021-10-01 23:52:15,359 - Main - INFO - {"2021-10-01 23:52:15": "Starting"}
+2021-10-01 23:52:15,452 - Main.VideoStream - INFO - Process starting
+2021-10-01 23:52:15,798 - Main.VideoStream - INFO - Process started
+2021-10-01 23:52:15,798 - Main.Tensor - INFO - Process starting
+2021-10-01 23:52:15,798 - Main.Tensor - INFO - Process started
+2021-10-01 23:52:15,799 - Main - INFO - Tracker started
+2021-10-01 23:52:25,370 - Main - INFO - {"2021-10-01 23:52:15": "Starting", "2021-10-01 23:52:25": "NoPerson"}
+2021-10-02 00:30:32,960 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:02:18,818 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:02:26,620 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:02:40,307 - Main - INFO - Tracker starting...
+2021-10-02 12:02:40,308 - Main.Move - INFO - Process starting
+2021-10-02 12:02:40,308 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:02:41,069 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:02:41,069 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:02:41,070 - Main.ONVIF - INFO - Process started
+2021-10-02 12:02:41,080 - Main.Move - INFO - Process started
+2021-10-02 12:02:41,162 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:02:41,787 - Main.VideoStream - INFO - Process started
+2021-10-02 12:02:41,787 - Main.Tensor - INFO - Process starting
+2021-10-02 12:02:41,788 - Main.Tensor - INFO - Process started
+2021-10-02 12:02:41,788 - Main - INFO - Tracker started
+2021-10-02 12:11:17,718 - Main.VideoStream - INFO - Process stopped
+2021-10-02 12:11:17,719 - Main - INFO - Tracker stopped
+2021-10-02 12:11:17,831 - Main.Move - INFO - Process stopped
+2021-10-02 12:11:17,841 - Main.Tensor - INFO - Process stopped
+2021-10-02 12:11:17,862 - Main.ONVIF - INFO - Process stopped
+2021-10-02 12:11:38,999 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:11:47,159 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:12:42,289 - Main - INFO - Tracker starting...
+2021-10-02 12:12:42,290 - Main.Move - INFO - Process starting
+2021-10-02 12:12:42,291 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:12:42,964 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:12:42,965 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:12:42,965 - Main.ONVIF - INFO - Process started
+2021-10-02 12:12:42,975 - Main.Move - INFO - Process started
+2021-10-02 12:12:43,056 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:12:43,452 - Main.VideoStream - INFO - Process started
+2021-10-02 12:12:43,452 - Main.Tensor - INFO - Process starting
+2021-10-02 12:12:43,452 - Main.Tensor - INFO - Process started
+2021-10-02 12:12:43,452 - Main - INFO - Tracker started
+2021-10-02 12:13:46,467 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:13:54,203 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:13:55,626 - Main - INFO - Tracker starting...
+2021-10-02 12:13:55,626 - Main.Move - INFO - Process starting
+2021-10-02 12:13:55,626 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:13:56,285 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:13:56,285 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:13:56,286 - Main.ONVIF - INFO - Process started
+2021-10-02 12:13:56,292 - Main.Move - INFO - Process started
+2021-10-02 12:13:56,366 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:13:56,724 - Main.VideoStream - INFO - Process started
+2021-10-02 12:13:56,724 - Main.Tensor - INFO - Process starting
+2021-10-02 12:13:56,724 - Main.Tensor - INFO - Process started
+2021-10-02 12:13:56,725 - Main - INFO - Tracker started
+2021-10-02 12:15:22,052 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:15:29,947 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:15:32,411 - Main - INFO - Tracker starting...
+2021-10-02 12:15:32,411 - Main.Move - INFO - Process starting
+2021-10-02 12:15:32,412 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:15:34,130 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:15:34,130 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:15:34,131 - Main.ONVIF - INFO - Process started
+2021-10-02 12:15:34,137 - Main.Move - INFO - Process started
+2021-10-02 12:15:34,321 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:15:34,819 - Main.VideoStream - INFO - Process started
+2021-10-02 12:15:34,819 - Main.Tensor - INFO - Process starting
+2021-10-02 12:15:34,819 - Main.Tensor - INFO - Process started
+2021-10-02 12:15:34,819 - Main - INFO - Tracker started
+2021-10-02 12:16:16,389 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:16:24,310 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:16:27,608 - Main - INFO - Tracker starting...
+2021-10-02 12:16:27,608 - Main.Move - INFO - Process starting
+2021-10-02 12:16:27,609 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:16:28,309 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:16:28,309 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:16:28,310 - Main.ONVIF - INFO - Process started
+2021-10-02 12:16:28,311 - Main.Move - INFO - Process started
+2021-10-02 12:16:28,390 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:16:28,778 - Main.VideoStream - INFO - Process started
+2021-10-02 12:16:28,778 - Main.Tensor - INFO - Process starting
+2021-10-02 12:16:28,779 - Main.Tensor - INFO - Process started
+2021-10-02 12:16:28,779 - Main - INFO - Tracker started
+2021-10-02 12:22:31,644 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:22:39,211 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:23:40,580 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:23:48,121 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:23:49,714 - Main - INFO - Tracker starting...
+2021-10-02 12:23:49,715 - Main.Move - INFO - Process starting
+2021-10-02 12:23:49,715 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:23:51,227 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:23:51,227 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:23:51,228 - Main.ONVIF - INFO - Process started
+2021-10-02 12:23:51,234 - Main.Move - INFO - Process started
+2021-10-02 12:23:51,593 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:23:52,441 - Main.VideoStream - INFO - Process started
+2021-10-02 12:23:52,441 - Main.Tensor - INFO - Process starting
+2021-10-02 12:23:52,441 - Main.Tensor - INFO - Process started
+2021-10-02 12:23:52,441 - Main - INFO - Tracker started
+2021-10-02 12:24:30,676 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:24:38,503 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:24:42,966 - Main - INFO - Tracker starting...
+2021-10-02 12:24:42,966 - Main.Move - INFO - Process starting
+2021-10-02 12:24:42,967 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:24:44,587 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:24:44,588 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:24:44,588 - Main.ONVIF - INFO - Process started
+2021-10-02 12:24:44,595 - Main.Move - INFO - Process started
+2021-10-02 12:24:44,685 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:24:45,044 - Main.VideoStream - INFO - Process started
+2021-10-02 12:24:45,044 - Main.Tensor - INFO - Process starting
+2021-10-02 12:24:45,044 - Main.Tensor - INFO - Process started
+2021-10-02 12:24:45,044 - Main - INFO - Tracker started
+2021-10-02 12:25:46,189 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:25:53,873 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:26:10,336 - Main - INFO - Tracker starting...
+2021-10-02 12:26:10,336 - Main.Move - INFO - Process starting
+2021-10-02 12:26:10,337 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:26:11,132 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:26:11,132 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:26:11,133 - Main.ONVIF - INFO - Process started
+2021-10-02 12:26:11,141 - Main.Move - INFO - Process started
+2021-10-02 12:26:11,242 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:26:11,653 - Main.VideoStream - INFO - Process started
+2021-10-02 12:26:11,654 - Main.Tensor - INFO - Process starting
+2021-10-02 12:26:11,654 - Main.Tensor - INFO - Process started
+2021-10-02 12:26:11,654 - Main - INFO - Tracker started
+2021-10-02 12:26:41,447 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:26:49,084 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:27:24,736 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:27:32,319 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:27:34,285 - Main - INFO - Tracker starting...
+2021-10-02 12:27:34,285 - Main.Move - INFO - Process starting
+2021-10-02 12:27:34,285 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:27:35,210 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:27:35,210 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:27:35,211 - Main.ONVIF - INFO - Process started
+2021-10-02 12:27:35,217 - Main.Move - INFO - Process started
+2021-10-02 12:27:35,519 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:27:36,096 - Main.VideoStream - INFO - Process started
+2021-10-02 12:27:36,096 - Main.Tensor - INFO - Process starting
+2021-10-02 12:27:36,097 - Main.Tensor - INFO - Process started
+2021-10-02 12:27:36,097 - Main - INFO - Tracker started
+2021-10-02 12:27:53,830 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:28:01,525 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:28:03,765 - Main - INFO - Tracker starting...
+2021-10-02 12:28:03,765 - Main.Move - INFO - Process starting
+2021-10-02 12:28:03,765 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:28:05,018 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:28:05,019 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:28:05,020 - Main.ONVIF - INFO - Process started
+2021-10-02 12:28:05,022 - Main.Move - INFO - Process started
+2021-10-02 12:28:05,142 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:28:05,729 - Main.VideoStream - INFO - Process started
+2021-10-02 12:28:05,730 - Main.Tensor - INFO - Process starting
+2021-10-02 12:28:05,730 - Main.Tensor - INFO - Process started
+2021-10-02 12:28:05,730 - Main - INFO - Tracker started
+2021-10-02 12:29:17,021 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:29:24,657 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:29:26,502 - Main - INFO - Tracker starting...
+2021-10-02 12:29:26,503 - Main.Move - INFO - Process starting
+2021-10-02 12:29:26,503 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:29:27,244 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:29:27,244 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:29:27,245 - Main.ONVIF - INFO - Process started
+2021-10-02 12:29:27,250 - Main.Move - INFO - Process started
+2021-10-02 12:29:27,340 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:29:27,687 - Main.VideoStream - INFO - Process started
+2021-10-02 12:29:27,687 - Main.Tensor - INFO - Process starting
+2021-10-02 12:29:27,688 - Main.Tensor - INFO - Process started
+2021-10-02 12:29:27,688 - Main - INFO - Tracker started
+2021-10-02 12:30:45,516 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:30:53,201 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:30:58,627 - Main - INFO - Tracker starting...
+2021-10-02 12:30:58,627 - Main.Move - INFO - Process starting
+2021-10-02 12:30:58,628 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:30:59,825 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:30:59,825 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:30:59,826 - Main.ONVIF - INFO - Process started
+2021-10-02 12:30:59,831 - Main.Move - INFO - Process started
+2021-10-02 12:30:59,925 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:31:00,264 - Main.VideoStream - INFO - Process started
+2021-10-02 12:31:00,264 - Main.Tensor - INFO - Process starting
+2021-10-02 12:31:00,264 - Main.Tensor - INFO - Process started
+2021-10-02 12:31:00,264 - Main - INFO - Tracker started
+2021-10-02 12:34:18,913 - Main - INFO - Tracker stopped
+2021-10-02 12:34:18,948 - Main.VideoStream - INFO - Process stopped
+2021-10-02 12:34:18,956 - Main.Tensor - INFO - Process stopped
+2021-10-02 12:34:19,140 - Main.ONVIF - INFO - Process stopped
+2021-10-02 12:34:19,523 - Main.Move - INFO - Process stopped
+2021-10-02 12:35:16,834 - Main - INFO - Tracker starting...
+2021-10-02 12:35:16,835 - Main.Move - INFO - Process starting
+2021-10-02 12:35:16,836 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:35:17,793 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:35:17,794 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:35:17,794 - Main.ONVIF - INFO - Process started
+2021-10-02 12:35:17,798 - Main.Move - INFO - Process started
+2021-10-02 12:35:17,892 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:35:18,326 - Main.VideoStream - INFO - Process started
+2021-10-02 12:35:18,327 - Main.Tensor - INFO - Process starting
+2021-10-02 12:35:18,332 - Main.Tensor - INFO - Process started
+2021-10-02 12:35:18,340 - Main - INFO - Tracker started
+2021-10-02 12:35:49,317 - Main.VideoStream - INFO - Process stopped
+2021-10-02 12:35:49,346 - Main.Tensor - INFO - Process stopped
+2021-10-02 12:35:49,394 - Main.ONVIF - INFO - Process stopped
+2021-10-02 12:35:49,468 - Main.Move - INFO - Process stopped
+2021-10-02 12:35:54,948 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:36:02,582 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:36:04,421 - Main - INFO - Tracker starting...
+2021-10-02 12:36:04,421 - Main.Move - INFO - Process starting
+2021-10-02 12:36:04,421 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:36:05,132 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:36:05,133 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:36:05,133 - Main.ONVIF - INFO - Process started
+2021-10-02 12:36:05,138 - Main.Move - INFO - Process started
+2021-10-02 12:36:05,235 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:36:05,638 - Main.VideoStream - INFO - Process started
+2021-10-02 12:36:05,638 - Main.Tensor - INFO - Process starting
+2021-10-02 12:36:05,638 - Main.Tensor - INFO - Process started
+2021-10-02 12:36:05,639 - Main - INFO - Tracker started
+2021-10-02 12:36:41,749 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:36:49,498 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:36:51,009 - Main - INFO - Tracker starting...
+2021-10-02 12:36:51,010 - Main.Move - INFO - Process starting
+2021-10-02 12:36:51,010 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:36:51,705 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:36:51,705 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:36:51,706 - Main.ONVIF - INFO - Process started
+2021-10-02 12:36:51,712 - Main.Move - INFO - Process started
+2021-10-02 12:36:51,811 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:36:52,141 - Main.VideoStream - INFO - Process started
+2021-10-02 12:36:52,142 - Main.Tensor - INFO - Process starting
+2021-10-02 12:36:52,142 - Main.Tensor - INFO - Process started
+2021-10-02 12:36:52,143 - Main - INFO - Tracker started
+2021-10-02 12:37:28,319 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:37:36,182 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:37:47,057 - Main - INFO - Tracker starting...
+2021-10-02 12:37:47,058 - Main.Move - INFO - Process starting
+2021-10-02 12:37:47,058 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:37:47,767 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:37:47,767 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:37:47,768 - Main.ONVIF - INFO - Process started
+2021-10-02 12:37:47,774 - Main.Move - INFO - Process started
+2021-10-02 12:37:47,871 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:37:48,312 - Main.VideoStream - INFO - Process started
+2021-10-02 12:37:48,313 - Main.Tensor - INFO - Process starting
+2021-10-02 12:37:48,313 - Main.Tensor - INFO - Process started
+2021-10-02 12:37:48,313 - Main - INFO - Tracker started
+2021-10-02 12:40:07,753 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:40:15,404 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:40:31,574 - Main - INFO - Tracker starting...
+2021-10-02 12:40:31,574 - Main.Move - INFO - Process starting
+2021-10-02 12:40:31,575 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:40:33,585 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:40:33,585 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:40:33,586 - Main.ONVIF - INFO - Process started
+2021-10-02 12:40:33,596 - Main.Move - INFO - Process started
+2021-10-02 12:40:33,951 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:40:34,664 - Main.VideoStream - INFO - Process started
+2021-10-02 12:40:34,664 - Main.Tensor - INFO - Process starting
+2021-10-02 12:40:34,665 - Main.Tensor - INFO - Process started
+2021-10-02 12:40:34,665 - Main - INFO - Tracker started
+2021-10-02 12:41:39,522 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:41:47,210 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:41:53,197 - Main - INFO - Tracker starting...
+2021-10-02 12:41:53,198 - Main.Move - INFO - Process starting
+2021-10-02 12:41:53,198 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:41:53,908 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:41:53,908 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:41:53,909 - Main.ONVIF - INFO - Process started
+2021-10-02 12:41:53,916 - Main.Move - INFO - Process started
+2021-10-02 12:41:54,025 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:41:54,437 - Main.VideoStream - INFO - Process started
+2021-10-02 12:41:54,437 - Main.Tensor - INFO - Process starting
+2021-10-02 12:41:54,437 - Main.Tensor - INFO - Process started
+2021-10-02 12:41:54,438 - Main - INFO - Tracker started
+2021-10-02 12:42:59,369 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:43:07,045 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:43:09,151 - Main - INFO - Tracker starting...
+2021-10-02 12:43:09,151 - Main.Move - INFO - Process starting
+2021-10-02 12:43:09,151 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:43:09,817 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:43:09,818 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:43:09,818 - Main.ONVIF - INFO - Process started
+2021-10-02 12:43:09,821 - Main.Move - INFO - Process started
+2021-10-02 12:43:09,918 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:43:10,283 - Main.VideoStream - INFO - Process started
+2021-10-02 12:43:10,284 - Main.Tensor - INFO - Process starting
+2021-10-02 12:43:10,284 - Main.Tensor - INFO - Process started
+2021-10-02 12:43:10,284 - Main - INFO - Tracker started
+2021-10-02 12:43:54,698 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:44:02,189 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:44:03,994 - Main - INFO - Tracker starting...
+2021-10-02 12:44:03,995 - Main.Move - INFO - Process starting
+2021-10-02 12:44:03,995 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:44:04,712 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:44:04,712 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:44:04,713 - Main.ONVIF - INFO - Process started
+2021-10-02 12:44:04,716 - Main.Move - INFO - Process started
+2021-10-02 12:44:04,811 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:44:05,179 - Main.VideoStream - INFO - Process started
+2021-10-02 12:44:05,179 - Main.Tensor - INFO - Process starting
+2021-10-02 12:44:05,179 - Main.Tensor - INFO - Process started
+2021-10-02 12:44:05,179 - Main - INFO - Tracker started
+2021-10-02 12:44:44,614 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:44:52,225 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:44:53,788 - Main - INFO - Tracker starting...
+2021-10-02 12:44:53,789 - Main.Move - INFO - Process starting
+2021-10-02 12:44:53,789 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:44:54,584 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:44:54,584 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:44:54,585 - Main.ONVIF - INFO - Process started
+2021-10-02 12:44:54,588 - Main.Move - INFO - Process started
+2021-10-02 12:44:54,675 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:44:55,115 - Main.VideoStream - INFO - Process started
+2021-10-02 12:44:55,115 - Main.Tensor - INFO - Process starting
+2021-10-02 12:44:55,115 - Main.Tensor - INFO - Process started
+2021-10-02 12:44:55,116 - Main - INFO - Tracker started
+2021-10-02 12:45:43,963 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:45:51,839 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:45:54,694 - Main - INFO - Tracker starting...
+2021-10-02 12:45:54,694 - Main.Move - INFO - Process starting
+2021-10-02 12:45:54,694 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:45:56,254 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:45:56,254 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:45:56,255 - Main.ONVIF - INFO - Process started
+2021-10-02 12:45:56,262 - Main.Move - INFO - Process started
+2021-10-02 12:45:56,988 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:45:58,352 - Main.VideoStream - INFO - Process started
+2021-10-02 12:45:58,352 - Main.Tensor - INFO - Process starting
+2021-10-02 12:45:58,352 - Main.Tensor - INFO - Process started
+2021-10-02 12:45:58,353 - Main - INFO - Tracker started
+2021-10-02 12:46:41,739 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:46:49,288 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:46:51,344 - Main - INFO - Tracker starting...
+2021-10-02 12:46:51,344 - Main.Move - INFO - Process starting
+2021-10-02 12:46:51,345 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:46:51,998 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:46:51,998 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:46:51,998 - Main.ONVIF - INFO - Process started
+2021-10-02 12:46:52,001 - Main.Move - INFO - Process started
+2021-10-02 12:46:52,075 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:46:52,456 - Main.VideoStream - INFO - Process started
+2021-10-02 12:46:52,456 - Main.Tensor - INFO - Process starting
+2021-10-02 12:46:52,456 - Main.Tensor - INFO - Process started
+2021-10-02 12:46:52,457 - Main - INFO - Tracker started
+2021-10-02 12:48:40,268 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:48:47,968 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:48:49,864 - Main - INFO - Tracker starting...
+2021-10-02 12:48:49,865 - Main.Move - INFO - Process starting
+2021-10-02 12:48:49,865 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:48:51,232 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:48:51,232 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:48:51,233 - Main.ONVIF - INFO - Process started
+2021-10-02 12:48:51,238 - Main.Move - INFO - Process started
+2021-10-02 12:48:51,594 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:48:52,252 - Main.VideoStream - INFO - Process started
+2021-10-02 12:48:52,252 - Main.Tensor - INFO - Process starting
+2021-10-02 12:48:52,253 - Main.Tensor - INFO - Process started
+2021-10-02 12:48:52,253 - Main - INFO - Tracker started
+2021-10-02 12:49:36,594 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:49:44,210 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:50:00,865 - Main - INFO - Tracker starting...
+2021-10-02 12:50:00,865 - Main.Move - INFO - Process starting
+2021-10-02 12:50:00,865 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:50:01,532 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:50:01,532 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:50:01,532 - Main.ONVIF - INFO - Process started
+2021-10-02 12:50:01,534 - Main.Move - INFO - Process started
+2021-10-02 12:50:01,609 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:50:01,962 - Main.VideoStream - INFO - Process started
+2021-10-02 12:50:01,962 - Main.Tensor - INFO - Process starting
+2021-10-02 12:50:01,962 - Main.Tensor - INFO - Process started
+2021-10-02 12:50:01,963 - Main - INFO - Tracker started
+2021-10-02 12:51:09,193 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:51:16,657 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:51:19,108 - Main - INFO - Tracker starting...
+2021-10-02 12:51:19,108 - Main.Move - INFO - Process starting
+2021-10-02 12:51:19,109 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:51:20,804 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:51:20,805 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:51:20,805 - Main.ONVIF - INFO - Process started
+2021-10-02 12:51:20,807 - Main.Move - INFO - Process started
+2021-10-02 12:51:20,996 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:51:21,662 - Main.VideoStream - INFO - Process started
+2021-10-02 12:51:21,662 - Main.Tensor - INFO - Process starting
+2021-10-02 12:51:21,663 - Main.Tensor - INFO - Process started
+2021-10-02 12:51:21,663 - Main - INFO - Tracker started
+2021-10-02 12:52:04,638 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:52:12,116 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:52:14,278 - Main - INFO - Tracker starting...
+2021-10-02 12:52:14,278 - Main.Move - INFO - Process starting
+2021-10-02 12:52:14,278 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:52:15,056 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:52:15,056 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:52:15,057 - Main.ONVIF - INFO - Process started
+2021-10-02 12:52:15,060 - Main.Move - INFO - Process started
+2021-10-02 12:52:15,138 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:52:15,516 - Main.VideoStream - INFO - Process started
+2021-10-02 12:52:15,517 - Main.Tensor - INFO - Process starting
+2021-10-02 12:52:15,517 - Main.Tensor - INFO - Process started
+2021-10-02 12:52:15,517 - Main - INFO - Tracker started
+2021-10-02 12:53:13,937 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:53:21,848 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:53:32,061 - Main - INFO - Tracker starting...
+2021-10-02 12:53:32,062 - Main.Move - INFO - Process starting
+2021-10-02 12:53:32,062 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:53:32,738 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:53:32,739 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:53:32,740 - Main.ONVIF - INFO - Process started
+2021-10-02 12:53:32,745 - Main.Move - INFO - Process started
+2021-10-02 12:53:32,836 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:53:33,225 - Main.VideoStream - INFO - Process started
+2021-10-02 12:53:33,225 - Main.Tensor - INFO - Process starting
+2021-10-02 12:53:33,225 - Main.Tensor - INFO - Process started
+2021-10-02 12:53:33,225 - Main - INFO - Tracker started
+2021-10-02 12:54:22,957 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:54:30,480 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:54:32,889 - Main - INFO - Tracker starting...
+2021-10-02 12:54:32,889 - Main.Move - INFO - Process starting
+2021-10-02 12:54:32,890 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:54:33,654 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:54:33,655 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:54:33,655 - Main.ONVIF - INFO - Process started
+2021-10-02 12:54:33,658 - Main.Move - INFO - Process started
+2021-10-02 12:54:33,736 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:54:34,047 - Main.VideoStream - INFO - Process started
+2021-10-02 12:54:34,048 - Main.Tensor - INFO - Process starting
+2021-10-02 12:54:34,048 - Main.Tensor - INFO - Process started
+2021-10-02 12:54:34,048 - Main - INFO - Tracker started
+2021-10-02 12:55:35,756 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:55:43,460 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:55:43,645 - Main - INFO - Tracker starting...
+2021-10-02 12:55:43,645 - Main.Move - INFO - Process starting
+2021-10-02 12:55:43,646 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:55:44,295 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:55:44,295 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:55:44,295 - Main.ONVIF - INFO - Process started
+2021-10-02 12:55:44,298 - Main.Move - INFO - Process started
+2021-10-02 12:55:44,407 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:55:44,826 - Main.VideoStream - INFO - Process started
+2021-10-02 12:55:44,826 - Main.Tensor - INFO - Process starting
+2021-10-02 12:55:44,826 - Main.Tensor - INFO - Process started
+2021-10-02 12:55:44,826 - Main - INFO - Tracker started
+2021-10-02 12:56:09,958 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:56:17,749 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:56:19,463 - Main - INFO - Tracker starting...
+2021-10-02 12:56:19,463 - Main.Move - INFO - Process starting
+2021-10-02 12:56:19,464 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:56:20,647 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:56:20,647 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:56:20,647 - Main.ONVIF - INFO - Process started
+2021-10-02 12:56:20,650 - Main.Move - INFO - Process started
+2021-10-02 12:56:20,824 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:56:21,476 - Main.VideoStream - INFO - Process started
+2021-10-02 12:56:21,476 - Main.Tensor - INFO - Process starting
+2021-10-02 12:56:21,476 - Main.Tensor - INFO - Process started
+2021-10-02 12:56:21,476 - Main - INFO - Tracker started
+2021-10-02 12:56:37,963 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:56:45,483 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:56:47,580 - Main - INFO - Tracker starting...
+2021-10-02 12:56:47,580 - Main.Move - INFO - Process starting
+2021-10-02 12:56:47,581 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:56:49,141 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:56:49,142 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:56:49,142 - Main.ONVIF - INFO - Process started
+2021-10-02 12:56:49,146 - Main.Move - INFO - Process started
+2021-10-02 12:56:49,333 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:56:49,768 - Main.VideoStream - INFO - Process started
+2021-10-02 12:56:49,768 - Main.Tensor - INFO - Process starting
+2021-10-02 12:56:49,768 - Main.Tensor - INFO - Process started
+2021-10-02 12:56:49,768 - Main - INFO - Tracker started
+2021-10-02 12:57:18,396 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:57:26,108 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:57:27,682 - Main - INFO - Tracker starting...
+2021-10-02 12:57:27,683 - Main.Move - INFO - Process starting
+2021-10-02 12:57:27,683 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:57:28,362 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:57:28,362 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:57:28,363 - Main.ONVIF - INFO - Process started
+2021-10-02 12:57:28,366 - Main.Move - INFO - Process started
+2021-10-02 12:57:28,445 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:57:28,756 - Main.VideoStream - INFO - Process started
+2021-10-02 12:57:28,756 - Main.Tensor - INFO - Process starting
+2021-10-02 12:57:28,757 - Main.Tensor - INFO - Process started
+2021-10-02 12:57:28,757 - Main - INFO - Tracker started
+2021-10-02 12:58:45,258 - Main.Tensor - INFO - Model loading starting
+2021-10-02 12:58:53,013 - Main.Tensor - INFO - Model loading completed
+2021-10-02 12:58:53,021 - Main - INFO - Tracker starting...
+2021-10-02 12:58:53,021 - Main.Move - INFO - Process starting
+2021-10-02 12:58:53,021 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 12:58:54,622 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 12:58:54,622 - Main.ONVIF - INFO - Process starting
+2021-10-02 12:58:54,623 - Main.ONVIF - INFO - Process started
+2021-10-02 12:58:54,625 - Main.Move - INFO - Process started
+2021-10-02 12:58:54,701 - Main.VideoStream - INFO - Process starting
+2021-10-02 12:58:55,128 - Main.VideoStream - INFO - Process started
+2021-10-02 12:58:55,129 - Main.Tensor - INFO - Process starting
+2021-10-02 12:58:55,129 - Main.Tensor - INFO - Process started
+2021-10-02 12:58:55,129 - Main - INFO - Tracker started
+2021-10-02 15:14:06,775 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:14:14,201 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:14:32,726 - Main - INFO - Tracker starting...
+2021-10-02 15:14:32,726 - Main.Move - INFO - Process starting
+2021-10-02 15:14:32,727 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:14:33,476 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:14:33,476 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:14:33,477 - Main.ONVIF - INFO - Process started
+2021-10-02 15:14:33,481 - Main.Move - INFO - Process started
+2021-10-02 15:14:33,873 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:14:34,258 - Main.VideoStream - INFO - Process started
+2021-10-02 15:14:34,258 - Main.Tensor - INFO - Process starting
+2021-10-02 15:14:34,258 - Main.Tensor - INFO - Process started
+2021-10-02 15:14:34,258 - Main - INFO - Tracker started
+2021-10-02 15:15:16,056 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:15:23,660 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:15:25,859 - Main - INFO - Tracker starting...
+2021-10-02 15:15:25,859 - Main.Move - INFO - Process starting
+2021-10-02 15:15:25,859 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:15:26,765 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:15:26,766 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:15:26,766 - Main.ONVIF - INFO - Process started
+2021-10-02 15:15:26,767 - Main.Move - INFO - Process started
+2021-10-02 15:15:26,853 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:15:27,196 - Main.VideoStream - INFO - Process started
+2021-10-02 15:15:27,196 - Main.Tensor - INFO - Process starting
+2021-10-02 15:15:27,197 - Main.Tensor - INFO - Process started
+2021-10-02 15:15:27,197 - Main - INFO - Tracker started
+2021-10-02 15:17:12,218 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:17:19,608 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:17:22,269 - Main - INFO - Tracker starting...
+2021-10-02 15:17:22,270 - Main.Move - INFO - Process starting
+2021-10-02 15:17:22,270 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:17:23,042 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:17:23,043 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:17:23,043 - Main.ONVIF - INFO - Process started
+2021-10-02 15:17:23,047 - Main.Move - INFO - Process started
+2021-10-02 15:17:23,144 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:17:23,515 - Main.VideoStream - INFO - Process started
+2021-10-02 15:17:23,515 - Main.Tensor - INFO - Process starting
+2021-10-02 15:17:23,515 - Main.Tensor - INFO - Process started
+2021-10-02 15:17:23,515 - Main - INFO - Tracker started
+2021-10-02 15:17:56,622 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:18:04,055 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:18:06,110 - Main - INFO - Tracker starting...
+2021-10-02 15:18:06,111 - Main.Move - INFO - Process starting
+2021-10-02 15:18:06,111 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:18:06,825 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:18:06,826 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:18:06,826 - Main.ONVIF - INFO - Process started
+2021-10-02 15:18:06,829 - Main.Move - INFO - Process started
+2021-10-02 15:18:06,927 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:18:07,260 - Main.VideoStream - INFO - Process started
+2021-10-02 15:18:07,260 - Main.Tensor - INFO - Process starting
+2021-10-02 15:18:07,260 - Main.Tensor - INFO - Process started
+2021-10-02 15:18:07,261 - Main - INFO - Tracker started
+2021-10-02 15:18:26,003 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:18:33,510 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:18:38,747 - Main - INFO - Tracker starting...
+2021-10-02 15:18:38,747 - Main.Move - INFO - Process starting
+2021-10-02 15:18:38,748 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:18:39,402 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:18:39,402 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:18:39,403 - Main.ONVIF - INFO - Process started
+2021-10-02 15:18:39,406 - Main.Move - INFO - Process started
+2021-10-02 15:18:39,482 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:18:39,863 - Main.VideoStream - INFO - Process started
+2021-10-02 15:18:39,864 - Main.Tensor - INFO - Process starting
+2021-10-02 15:18:39,864 - Main.Tensor - INFO - Process started
+2021-10-02 15:18:39,864 - Main - INFO - Tracker started
+2021-10-02 15:19:03,220 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:19:10,636 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:19:12,806 - Main - INFO - Tracker starting...
+2021-10-02 15:19:12,807 - Main.Move - INFO - Process starting
+2021-10-02 15:19:12,807 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:19:13,496 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:19:13,496 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:19:13,497 - Main.ONVIF - INFO - Process started
+2021-10-02 15:19:13,500 - Main.Move - INFO - Process started
+2021-10-02 15:19:13,568 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:19:14,054 - Main.VideoStream - INFO - Process started
+2021-10-02 15:19:14,054 - Main.Tensor - INFO - Process starting
+2021-10-02 15:19:14,054 - Main.Tensor - INFO - Process started
+2021-10-02 15:19:14,054 - Main - INFO - Tracker started
+2021-10-02 15:20:29,871 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:20:37,453 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:21:03,484 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:21:10,990 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:21:38,991 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:21:46,665 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:23:05,674 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:23:28,104 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:23:35,675 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:23:38,628 - Main - INFO - Tracker starting...
+2021-10-02 15:23:38,628 - Main.Move - INFO - Process starting
+2021-10-02 15:23:38,628 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:23:39,347 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:23:39,348 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:23:39,348 - Main.ONVIF - INFO - Process started
+2021-10-02 15:23:39,351 - Main.Move - INFO - Process started
+2021-10-02 15:23:39,437 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:23:39,803 - Main.VideoStream - INFO - Process started
+2021-10-02 15:23:39,803 - Main.Tensor - INFO - Process starting
+2021-10-02 15:23:39,804 - Main.Tensor - INFO - Process started
+2021-10-02 15:23:39,804 - Main - INFO - Tracker started
+2021-10-02 15:25:24,842 - Main.Tensor - INFO - Model loading starting
+2021-10-02 15:25:32,323 - Main.Tensor - INFO - Model loading completed
+2021-10-02 15:25:34,543 - Main - INFO - Tracker starting...
+2021-10-02 15:25:34,543 - Main.Move - INFO - Process starting
+2021-10-02 15:25:34,543 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-02 15:25:35,270 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-02 15:25:35,270 - Main.ONVIF - INFO - Process starting
+2021-10-02 15:25:35,271 - Main.ONVIF - INFO - Process started
+2021-10-02 15:25:35,274 - Main.Move - INFO - Process started
+2021-10-02 15:25:35,419 - Main.VideoStream - INFO - Process starting
+2021-10-02 15:25:35,855 - Main.VideoStream - INFO - Process started
+2021-10-02 15:25:35,855 - Main.Tensor - INFO - Process starting
+2021-10-02 15:25:35,855 - Main.Tensor - INFO - Process started
+2021-10-02 15:25:35,855 - Main - INFO - Tracker started

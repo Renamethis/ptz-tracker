@@ -9,7 +9,7 @@ class VideoStream:
     # Initialization
     def __init__(self, GStreamer=True, device="CPU", name="VideoStream"):
         self.name = name
-        self.logger = logging.getLogger("Main.%s" % (self.name))
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frame = None
         if(GStreamer):
             if(device == "Jetson"):
@@ -28,22 +28,22 @@ class VideoStream:
 
     # Start thread
     def start(self, rtsp_url):
-        self.logger.info("Process starting")
+        self.__logger.info("Process starting")
         self.running = True
         self.rtsp_url = self.rtsp_url.format(rtsp_url=rtsp_url)
-        self.stream = cv2.VideoCapture(self.rtsp_url, self.cap_flag)
-        self.t = Thread(target=self.update, name=self.name, args=())
-        self.t.daemon = True
-        self.t.start()
+        self.__stream = cv2.VideoCapture(self.rtsp_url, self.cap_flag)
+        self.__thread = Thread(target=self.__update, name=self.name, args=())
+        self.__thread.daemon = True
+        self.__thread.start()
         return self
 
     # Main loop of receiving frames from rtsp-stream
-    def update(self):
-        self.logger.info("Process started")
-        while self.running and self.stream.isOpened():
-            (self.grabbed, self.frame) = self.stream.read()
+    def __update(self):
+        self.__logger.info("Process started")
+        while self.running and self.__stream.isOpened():
+            (self.grabbed, self.frame) = self.__stream.read()
         self.running = False
-        self.logger.info("Process stopped")
+        self.__logger.info("Process stopped")
 
     # Get frame
     def read(self):

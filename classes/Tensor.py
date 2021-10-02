@@ -12,8 +12,8 @@ class Tensor:
     def __init__(self, model_name="ssd_mobilenet", name="Tensor"):
         self.name = name
         self.flag = False
-        self.logger = logging.getLogger("Main.%s" % (self.name))
-        self.logger.info("Model loading starting")
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
+        self.__logger.info("Model loading starting")
         self.new_image = None
         self.old_image = None
         try:
@@ -27,22 +27,22 @@ class Tensor:
             self.classes = None
             self.num_detections = None
         except OSError:
-            self.logger.critical("Model not exists")
+            self.__logger.critical("Model not exists")
             self.running = False
             sys.exit(1)
-        self.logger.info("Model loading completed")
+        self.__logger.info("Model loading completed")
 
     # Start thread
     def start(self):
         self.running = True
-        self.logger.info("Process starting")
-        self.t = Thread(target=self.update, name=self.name, args=())
-        self.t.daemon = True
-        self.t.start()
+        self.__logger.info("Process starting")
+        self.__thread = Thread(target=self.__update, name=self.name, args=())
+        self.__thread.daemon = True
+        self.__thread.start()
 
     # Main loop for tensorflow detection
-    def update(self):
-        self.logger.info("Process started")
+    def __update(self):
+        self.__logger.info("Process started")
         while self.running:
             image = self.new_image
             if not np.array_equal(image, self.old_image) and image is not None:
@@ -59,7 +59,7 @@ class Tensor:
             else:
                 self.flag = False
                 sleep(0.05)
-        self.logger.info("Process stopped")
+        self.__logger.info("Process stopped")
 
     # Set image for tensorflow processing
     def set_image(self, image):

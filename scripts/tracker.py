@@ -11,8 +11,11 @@ from classes.VideoStream import VideoStream
 from classes.Tensor import Tensor
 from classes.Move import Move
 from classes.MoveSet import MoveSet
+from classes.centroidTracker import CentroidTracker
 import configparser
 from enum import Enum, auto
+from datetime import datetime
+import time
 
 
 class Mode(Enum):
@@ -39,104 +42,115 @@ class Tracker:
         self.wsdl_path = pwd + '/wsdl'
         config_path = pwd + '/settings.ini'
         # Initializing loger
-        self.logger = logging.getLogger("Main")
-        self.logger.setLevel(logging.INFO)
+        self.__logger = logging.getLogger("Main")
+        self.__logger.setLevel(logging.INFO)
         fh = logging.FileHandler(pwd+"/main.log")
         formatter = logging.Formatter('%(asctime)s - %(name)s - ' +
                                       '%(levelname)s - %(message)s')
         fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
+        self.__logger.addHandler(fh)
         # Initializing configparser
         self.Config = configparser.ConfigParser()
         self.Config.read(config_path)
         # Get parameters from settings
         self.update_data()
-        self.tensor = Tensor()
+        self.__tensor = Tensor()
 
     def __get_setting(self, section, setting):
         try:
             return self.Config.get(section, setting)
         except configparser.NoOptionError:
-            self.logger.critical("Option " + setting + " not found in section "
+            self.__logger.critical("Option " + setting + " not found in section "
                                  + section)
             sys.exit(1)
         except configparser.NoSectionError:
-            self.logger.critical("Section " + section + " not found")
+            self.__logger.critical("Section " + section + " not found")
             sys.exit(2)
 
     # Main loop function
-    def update(self):
-        self.logger.info("Tracker started")
+    def __update(self):
+        self.__logger.info("Tracker started")
         while self.running:
-            img = self.stream.read()
+            img = self.__stream.read()
             if img is not None:
                 img = cv2.resize(img, (self.width, self.height))
-                self.tensor.set_image(img)
-                if self.tensor.flag:
-                    scores = self.tensor.read_scores()
-                    boxes = self.tensor.read_boxes()
+                self.__tensor.set_image(img)
+                if self.__tensor.flag:
+                    scores = self.__tensor.read_scores()
+                    boxes = self.__tensor.read_boxes()
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores == np.max(scores))
-                        if (scores[score][0] > 0.5):
-                            box = boxes[score][0]
+                        score = np.where(scores > 0.5)
+                        if (len(scores[score]) != 0):
+                            box = boxes[score]
                             box = (self.l_h*box)
-                            if(self.mode == Mode.Tracking):
-                                self.move.set_box(box)
-                                self.status = Status.Aimed if \
-                                    self.move.isAimed else Status.Moving
-                            elif(self.mode == Mode.AutoSet):
-                                self.status = Status.Moving
-                                self.moveset.set_box(box)
-                                self.moveset.set_con(self.__get_contours(img))
+                            objects = self.__centroidTracker.update(box)
+                            if(len(objects) != 0):
+                                k = 0
+                                for (id, cent) in objects.items():
+                                    if(id == 0):
+                                        break
+                                    k += 1
+                                box = box[k]
+                                if(self.mode == Mode.Tracking):
+                                    self.__move.set_box(box)
+                                    self.status = Status.Aimed if \
+                                        self.__move.isAimed else Status.Moving
+                                elif(self.mode == Mode.AutoSet):
+                                    self.status = Status.Moving
+                                    self.__moveset.set_box(box)
+                                    self.__moveset.set_con(self.__get_contours(img))
                         else:
                             self.status = Status.NoPerson
-                            self.move.set_box(None)
-                            self.moveset.set_box(None)
-            self.running = self.stream.running and self.tensor.running and \
-                ((self.mode == Mode.Tracking and self.move.running) or
-                    (self.mode == Mode.AutoSet and self.moveset.running))
-        self.logger.info("Tracker stopped")
+                            self.__move.set_box(None)
+                            self.__moveset.set_box(None)
+            self.running = self.__stream.running and self.__tensor.running and \
+                ((self.mode == Mode.Tracking and self.__move.running) or
+                    (self.mode == Mode.AutoSet and self.__moveset.running))
+        self.__logger.info("Tracker stopped")
 
     # Start tracker function
     def start_tracker(self):
         self.status = Status.Starting
-        self.logger.info("Tracker starting...")
-        if(not self.move.start()):
-            return self.move.running
+        self.__logger.info("Tracker starting...")
+        if(not self.__move.start()):
+            return self.__move.running
         self.running = True
-        self.stream.start(self.move.get_rtsp())
-        self.tensor.start()
+        self.__status_log_thread = Thread(target=self.__status_log_thread,
+                                          name="status_log")
+        self.__status_log_thread.start()
+        self.__stream.start(self.__move.get_rtsp())
+        self.__tensor.start()
         self.mode = Mode.Tracking
-        self.main = Thread(target=self.update, name=self.name)
+        self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
-        return self.running and self.move.running and \
-            self.stream.running and self.tensor.running
+        return self.running and self.__move.running and \
+            self.__stream.running and self.__tensor.running
 
     # Start autoset function
     def start_autoset(self):
         self.status = Status.Starting
-        self.logger.info("Tracker starting...")
-        if(not self.moveset.start()):
-            return self.moveset.running
+        self.__logger.info("Tracker starting...")
+        if(not self.__moveset.start()):
+            return self.__moveset.running
         self.running = True
-        self.stream.start(self.moveset.get_rtsp())
-        self.tensor.start()
+        self.__stream.start(self.__moveset.get_rtsp())
+        self.__tensor.start()
         self.mode = Mode.AutoSet
-        self.main = Thread(target=self.update, name=self.name)
+        self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
-        return self.running and self.moveset.running and \
-            self.stream.running and self.tensor.running
+        return self.running and self.__moveset.running and \
+            self.__stream.running and self.__tensor.running
 
     # Stop function
     def stop(self):
-        self.stream.stop()
-        self.tensor.stop()
+        self.__stream.stop()
+        self.__tensor.stop()
         if(self.mode == Mode.Tracking):
-            self.move.stop()
+            self.__move.stop()
         elif(self.mode == Mode.AutoSet):
-            self.moveset.stop()
+            self.__moveset.stop()
         self.status = Status.Stopped
 
     # Pixels coordinates checking function
@@ -161,6 +175,7 @@ class Tracker:
                                                   cv2.CHAIN_APPROX_SIMPLE)
         return contours
 
+    # Updating parameters from config
     def update_data(self):
         # ONVIF settings
         ip = self.__get_setting("Onvif", "ip")
@@ -193,16 +208,36 @@ class Tracker:
         # Hardware settings
         device = self.__get_setting("Hardware", "device")
         try:
-            del self.move
-            del self.moveset
-            del self.stream
-            self.logger.info("Data updated")
+            del self.__move
+            del self.__moveset
+            del self.__stream
+            self.__logger.info("Data updated")
         except AttributeError:
             pass
-        self.move = Move(self.width, self.height, speed, ip, port,
-                         login, password, self.wsdl_path, tweaking, bounds,
-                         tracking_box, isAbsolute)
-        self.moveset = MoveSet(speed, ip, port, login, password, self.wsdl_path,
-                               [self.height, self.width],
-                               self.scope, tracking_box)
-        self.stream = VideoStream(device=device)
+        self.__centroidTracker = CentroidTracker()
+        self.__move = Move(self.width, self.height, speed, ip, port,
+                           login, password, self.wsdl_path, tweaking, bounds,
+                           tracking_box, isAbsolute)
+        self.__moveset = MoveSet(speed, ip, port, login, password,
+                                 self.wsdl_path, [self.height, self.width],
+                                 self.scope, tracking_box)
+        self.__stream = VideoStream(device=device)
+
+    # Return status log
+    def get_status_log(self):
+        return self.__status_log
+
+    # Status logging thread
+    def __status_log_thread(self):
+        old_status = None
+        self.__status_log = {}
+        while self.running:
+            now = datetime.now()
+            if(old_status != self.status):
+                date = now.strftime('%Y-%m-%d %H:%M:%S')
+                self.__status_log[date] = str(self.status).split('.')[1]
+                old_status = self.status
+            if(now.minute % 15 == 0):
+                self.__status_log = {}
+                old_status = None
+            time.sleep(10)
