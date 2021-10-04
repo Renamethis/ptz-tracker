@@ -36,7 +36,6 @@ class Move:
         self.spaceLimits = bounds
         self.isAimed = False
         self.running = False
-        print(self.tbox)
 
     # Start threads
     def start(self):

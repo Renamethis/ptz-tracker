@@ -104,6 +104,7 @@ class Camera:
             self.requests['AbsoluteMove'].Position = self.status.Position
             self.requests['ContinuousMove'].Velocity = self.status.Position
             self.goHome()
+            print('wtf')
             self.__logger.info('Successfully connected to the camera')
         except onvif.exceptions.ONVIFError:
             self.__logger.critical('Error with camera connection')

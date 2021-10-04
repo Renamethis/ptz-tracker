@@ -37,8 +37,11 @@ class CentroidTracker():
         else:
             ids = list(self.objects.keys())
             centroids = list(self.objects.values())
-            distance = dist.cdist(np.array(centroids).reshape(1, -1),
-                                  np.array(input).reshape(1, -1))
+            #print(input)
+            #print(np.array(centroids).reshape(1, -1))
+            distance = dist.cdist(np.array(centroids),
+                                  input, 'euclidean')
+            #print(distance)
             rows = distance.min(axis=1).argsort()
             cols = distance.argmin(axis=1)[rows]
             uRows = set()
@@ -61,5 +64,5 @@ class CentroidTracker():
                         self.deregister(id)
             else:
                 for col in unCols:
-                    self.register(input[cols])
+                    self.register(input[col])
         return self.objects

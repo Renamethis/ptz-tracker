@@ -70,6 +70,7 @@ class Tracker:
     # Main loop function
     def __update(self):
         self.__logger.info("Tracker started")
+        time.sleep(10)
         while self.running:
             img = self.__stream.read()
             if img is not None:
@@ -81,18 +82,26 @@ class Tracker:
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.5)
+                        score = np.where(scores > 0.55)
+                        #print(scores)
                         if (len(scores[score]) != 0):
                             box = boxes[score]
                             box = (self.l_h*box)
+                            box = self.__to_int(box)
+                            #print(box)
                             objects = self.__centroidTracker.update(box)
                             if(len(objects) != 0):
                                 k = 0
+                                flag = False
                                 for (id, cent) in objects.items():
                                     if(id == 0):
+                                        flag = True
                                         break
                                     k += 1
-                                box = box[k]
+                                if(flag):
+                                    box = box[k]
+                                else:
+                                    box = None
                                 if(self.mode == Mode.Tracking):
                                     self.__move.set_box(box)
                                     self.status = Status.Aimed if \
@@ -223,6 +232,14 @@ class Tracker:
                                  self.scope, tracking_box)
         self.__stream = VideoStream(device=device)
 
+    def __to_int(self, boxes):
+        res = []
+        for box in boxes:
+            buf = []
+            for point in box:
+                buf.append(int(point))
+            res.append(buf)
+        return res
     # Return status log
     def get_status_log(self):
         return self.__status_log
