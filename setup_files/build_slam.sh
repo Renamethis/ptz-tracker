@@ -22,7 +22,7 @@ sudo make install
 #sudo ln -s /usr/include/eigen3/Eigen /usr/local/include/Eigen
 cd ..
 cd ..
-### ORB_SLAM
+# ORB_SLAM
 git clone https://github.com/raulmur/ORB_SLAM2.git
 mv orb_module ORB_SLAM2/orb_module
 . .setup_files/build_osmap.sh # BUILD OSMAP MODULE

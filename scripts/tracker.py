@@ -45,8 +45,8 @@ class Tracker:
         self.__logger = logging.getLogger("Main")
         self.__logger.setLevel(logging.INFO)
         fh = logging.FileHandler(pwd+"/main.log")
-        formatter = logging.Formatter('%(asctime)s - %(name)s - ' +
-                                      '%(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - '
+                                      + '%(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         self.__logger.addHandler(fh)
         # Initializing configparser
@@ -61,7 +61,7 @@ class Tracker:
             return self.Config.get(section, setting)
         except configparser.NoOptionError:
             self.__logger.critical("Option " + setting + " not found in section "
-                                 + section)
+                                   + section)
             sys.exit(1)
         except configparser.NoSectionError:
             self.__logger.critical("Section " + section + " not found")
@@ -70,7 +70,7 @@ class Tracker:
     # Main loop function
     def __update(self):
         self.__logger.info("Tracker started")
-        time.sleep(10)
+        time.sleep(5)
         while self.running:
             img = self.__stream.read()
             if img is not None:
@@ -82,41 +82,37 @@ class Tracker:
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.55)
-                        #print(scores)
+                        score = np.where(scores > 0.5)
                         if (len(scores[score]) != 0):
                             box = boxes[score]
                             box = (self.l_h*box)
                             box = self.__to_int(box)
-                            #print(box)
                             objects = self.__centroidTracker.update(box)
+                            found_box = None
                             if(len(objects) != 0):
-                                k = 0
-                                flag = False
-                                for (id, cent) in objects.items():
-                                    if(id == 0):
-                                        flag = True
+                                centroid = objects[min(objects.keys())]
+                                for b in box:
+                                    cX = int((b[0] + b[2]) / 2.0)
+                                    cY = int((b[1] + b[3]) / 2.0)
+                                    if(cX == centroid[0] and cY == centroid[1]):
+                                        found_box = b
                                         break
-                                    k += 1
-                                if(flag):
-                                    box = box[k]
-                                else:
-                                    box = None
                                 if(self.mode == Mode.Tracking):
-                                    self.__move.set_box(box)
+                                    self.__move.set_box(found_box)
                                     self.status = Status.Aimed if \
                                         self.__move.isAimed else Status.Moving
                                 elif(self.mode == Mode.AutoSet):
                                     self.status = Status.Moving
-                                    self.__moveset.set_box(box)
-                                    self.__moveset.set_con(self.__get_contours(img))
+                                    self.__moveset.set_box(found_box)
+                                    self.__moveset.set_con(
+                                        self.__get_contours(img))
                         else:
                             self.status = Status.NoPerson
                             self.__move.set_box(None)
                             self.__moveset.set_box(None)
             self.running = self.__stream.running and self.__tensor.running and \
-                ((self.mode == Mode.Tracking and self.__move.running) or
-                    (self.mode == Mode.AutoSet and self.__moveset.running))
+                ((self.mode == Mode.Tracking and self.__move.running)
+                    or (self.mode == Mode.AutoSet and self.__moveset.running))
         self.__logger.info("Tracker stopped")
 
     # Start tracker function
@@ -241,20 +237,21 @@ class Tracker:
             res.append(buf)
         return res
     # Return status log
+
     def get_status_log(self):
-        return self.__status_log
+        log = self.__status_log
+        self.__status_log = {}
+        self.__old_status = None
+        return log
 
     # Status logging thread
     def __status_log_thread(self):
-        old_status = None
+        self.__old_status = None
         self.__status_log = {}
         while self.running:
             now = datetime.now()
-            if(old_status != self.status):
+            if(self.__old_status != self.status):
                 date = now.strftime('%Y-%m-%d %H:%M:%S')
                 self.__status_log[date] = str(self.status).split('.')[1]
-                old_status = self.status
-            if(now.minute % 15 == 0):
-                self.__status_log = {}
-                old_status = None
-            time.sleep(10)
+                self.__old_status = self.status
+            time.sleep(5)

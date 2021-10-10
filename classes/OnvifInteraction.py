@@ -54,10 +54,13 @@ class Camera:
     def __ptz_thread(self):
         self.__logger.info("Process started")
         while self.running:
+            if(self.paused):
+                continue
             try:
                 if(self.type is not None):
                     if(self.type == MoveType.Continuous):
-                        self.ptz.ContinuousMove(self.requests['ContinuousMove'])
+                        self.ptz.ContinuousMove(
+                            self.requests['ContinuousMove'])
                     elif(self.type == MoveType.Absolute and self.isAbsolute):
                         self.ptz.AbsoluteMove(self.requests['AbsoluteMove'])
                     elif(self.type == MoveType.Relative and self.isAbsolute):
@@ -66,7 +69,7 @@ class Camera:
                 elif(self.isAbsolute):
                     self.status = self.ptz.GetStatus({'ProfileToken':
                                                       self.profile.token})
-            except onvif.exceptions.ONVIFError:
+            except (onvif.exceptions.ONVIFError, ConnectionResetError) :
                 self.__logger.exception('Error sending request, reconnecting')
                 self.running = self.connect()
         self.__logger.info("Process stopped")
@@ -87,6 +90,7 @@ class Camera:
 
     # Connect camera
     def connect(self, substream=1):
+        self.paused = True
         self.__logger.info("Connecting to the camera")
         try:
             self.cam = onvif.ONVIFCamera(self.ip, self.port, self.login,
@@ -104,8 +108,8 @@ class Camera:
             self.requests['AbsoluteMove'].Position = self.status.Position
             self.requests['ContinuousMove'].Velocity = self.status.Position
             self.goHome()
-            print('wtf')
             self.__logger.info('Successfully connected to the camera')
+            self.paused = False
         except onvif.exceptions.ONVIFError:
             self.__logger.critical('Error with camera connection')
             return False

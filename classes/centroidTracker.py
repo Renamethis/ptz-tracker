@@ -4,7 +4,7 @@ import numpy as np
 
 
 class CentroidTracker():
-    def __init__(self, maxDisappeared=50):
+    def __init__(self, maxDisappeared=2000):
         self.__next_id = 0
         self.objects = OrderedDict()
         self.disappeared = OrderedDict()
@@ -37,11 +37,7 @@ class CentroidTracker():
         else:
             ids = list(self.objects.keys())
             centroids = list(self.objects.values())
-            #print(input)
-            #print(np.array(centroids).reshape(1, -1))
-            distance = dist.cdist(np.array(centroids),
-                                  input, 'euclidean')
-            #print(distance)
+            distance = dist.cdist(np.array(centroids), input)
             rows = distance.min(axis=1).argsort()
             cols = distance.argmin(axis=1)[rows]
             uRows = set()
