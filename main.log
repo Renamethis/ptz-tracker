@@ -3358,3 +3358,65 @@ onvif.exceptions.ONVIFError: Unknown error: ('Connection aborted.', ConnectionRe
 2021-10-09 14:54:06,785 - Main - INFO - Tracker stopped
 2021-10-09 16:42:50,188 - Main.Tensor - INFO - Model loading starting
 2021-10-09 16:42:59,385 - Main.Tensor - INFO - Model loading completed
+2021-10-13 15:56:48,584 - Main.Tensor - INFO - Model loading starting
+2021-10-13 15:56:56,298 - Main.Tensor - INFO - Model loading completed
+2021-10-13 15:57:16,474 - Main - INFO - Tracker starting...
+2021-10-13 15:57:16,475 - Main.Move - INFO - Process starting
+2021-10-13 15:57:16,475 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-13 15:57:17,929 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-13 15:57:17,929 - Main.ONVIF - INFO - Process starting
+2021-10-13 15:57:17,930 - Main.ONVIF - INFO - Process started
+2021-10-13 15:57:17,935 - Main.Move - INFO - Process started
+2021-10-13 15:57:18,266 - Main.VideoStream - INFO - Process starting
+2021-10-13 15:57:18,867 - Main.VideoStream - INFO - Process started
+2021-10-13 15:57:18,867 - Main.Tensor - INFO - Process starting
+2021-10-13 15:57:18,868 - Main.Tensor - INFO - Process started
+2021-10-13 15:57:18,868 - Main - INFO - Tracker started
+2021-10-13 16:01:35,556 - Main.Tensor - INFO - Model loading starting
+2021-10-13 16:01:43,326 - Main.Tensor - INFO - Model loading completed
+2021-10-13 16:01:47,681 - Main - INFO - Tracker starting...
+2021-10-13 16:01:47,681 - Main.Move - INFO - Process starting
+2021-10-13 16:01:47,682 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-13 16:01:48,196 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-13 16:01:48,196 - Main.ONVIF - INFO - Process starting
+2021-10-13 16:01:48,196 - Main.ONVIF - INFO - Process started
+2021-10-13 16:01:48,199 - Main.Move - INFO - Process started
+2021-10-13 16:01:48,250 - Main.VideoStream - INFO - Process starting
+2021-10-13 16:01:48,629 - Main.VideoStream - INFO - Process started
+2021-10-13 16:01:48,629 - Main.Tensor - INFO - Process starting
+2021-10-13 16:01:48,630 - Main.Tensor - INFO - Process started
+2021-10-13 16:01:48,630 - Main - INFO - Tracker started
+2021-10-13 16:15:25,461 - Main - INFO - Tracker stopped
+2021-10-13 16:15:25,472 - Main.VideoStream - INFO - Process stopped
+2021-10-13 16:15:25,513 - Main.Tensor - INFO - Process stopped
+2021-10-13 16:15:39,029 - Main.Tensor - INFO - Model loading starting
+2021-10-13 16:15:46,842 - Main.Tensor - INFO - Model loading completed
+2021-10-13 16:15:51,724 - Main - INFO - Tracker starting...
+2021-10-13 16:15:51,725 - Main.Move - INFO - Process starting
+2021-10-13 16:15:51,725 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-13 16:15:53,427 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-13 16:15:53,428 - Main.ONVIF - INFO - Process starting
+2021-10-13 16:15:53,428 - Main.ONVIF - INFO - Process started
+2021-10-13 16:15:53,438 - Main.Move - INFO - Process started
+2021-10-13 16:15:53,526 - Main.VideoStream - INFO - Process starting
+2021-10-13 16:15:54,242 - Main.VideoStream - INFO - Process started
+2021-10-13 16:15:54,243 - Main.Tensor - INFO - Process starting
+2021-10-13 16:15:54,243 - Main.Tensor - INFO - Process started
+2021-10-13 16:15:54,243 - Main - INFO - Tracker started
+2021-10-13 16:25:37,453 - Main - INFO - Tracker stopped
+2021-10-13 16:25:37,453 - Main.VideoStream - INFO - Process stopped
+2021-10-13 16:25:37,491 - Main.Tensor - INFO - Process stopped
+2021-10-13 16:25:49,535 - Main.Tensor - INFO - Model loading starting
+2021-10-13 16:25:57,305 - Main.Tensor - INFO - Model loading completed
+2021-10-13 16:26:01,238 - Main - INFO - Tracker starting...
+2021-10-13 16:26:01,238 - Main.Move - INFO - Process starting
+2021-10-13 16:26:01,239 - Main.ONVIF - INFO - Connecting to the camera
+2021-10-13 16:26:04,146 - Main.ONVIF - INFO - Successfully connected to the camera
+2021-10-13 16:26:04,147 - Main.ONVIF - INFO - Process starting
+2021-10-13 16:26:04,148 - Main.ONVIF - INFO - Process started
+2021-10-13 16:26:04,157 - Main.Move - INFO - Process started
+2021-10-13 16:26:04,265 - Main.VideoStream - INFO - Process starting
+2021-10-13 16:26:04,651 - Main.VideoStream - INFO - Process started
+2021-10-13 16:26:04,651 - Main.Tensor - INFO - Process starting
+2021-10-13 16:26:04,652 - Main.Tensor - INFO - Process started
+2021-10-13 16:26:04,652 - Main - INFO - Tracker started

@@ -38,6 +38,7 @@ class Tracker:
         self.name = "MAIN"
         self.running = False
         self.status = Status.Stopped
+        self.__amount_person = 0
         pwd = os.getcwd()
         self.wsdl_path = pwd + '/wsdl'
         config_path = pwd + '/settings.ini'
@@ -85,6 +86,7 @@ class Tracker:
                         score = np.where(scores > 0.5)
                         if (len(scores[score]) != 0):
                             box = boxes[score]
+                            self.__amount_person = len(box)
                             box = (self.l_h*box)
                             box = self.__to_int(box)
                             objects = self.__centroidTracker.update(box)
@@ -107,6 +109,7 @@ class Tracker:
                                     self.__moveset.set_con(
                                         self.__get_contours(img))
                         else:
+                            self.__amount_person = 0
                             self.status = Status.NoPerson
                             self.__move.set_box(None)
                             self.__moveset.set_box(None)
@@ -231,10 +234,7 @@ class Tracker:
     def __to_int(self, boxes):
         res = []
         for box in boxes:
-            buf = []
-            for point in box:
-                buf.append(int(point))
-            res.append(buf)
+            res.append([int(p) for p in box])
         return res
     # Return status log
 
@@ -252,6 +252,7 @@ class Tracker:
             now = datetime.now()
             if(self.__old_status != self.status):
                 date = now.strftime('%Y-%m-%d %H:%M:%S')
-                self.__status_log[date] = str(self.status).split('.')[1]
+                self.__status_log[date] = {'status': str(self.status).split('.')[1],
+                                           'amount': self.__amount_person}
                 self.__old_status = self.status
             time.sleep(5)
