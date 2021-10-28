@@ -9,13 +9,14 @@ import logging
 from threading import Thread
 from classes.VideoStream import VideoStream
 from classes.Tensor import Tensor
-from classes.Move import Move
+from classes.MoveBase import MoveBase
 from classes.MoveSet import MoveSet
 from classes.centroidTracker import CentroidTracker
+from classes.Ping import Ping
 import configparser
 from enum import Enum, auto
 from datetime import datetime
-import time
+from time import sleep
 
 
 class Mode(Enum):
@@ -71,8 +72,22 @@ class Tracker:
     # Main loop function
     def __update(self):
         self.__logger.info("Tracker started")
-        time.sleep(5)
         while self.running:
+            if(self.__ping.read() != 0):
+                self.__logger.error("Camera connection is lost or unstable")
+                if(self.mode == Mode.Tracking):
+                    mode = self.__move
+                elif(self.mode == Mode.AutoSet):
+                    mode = self.__moveset
+                mode.stop()
+                self.__stream.stop()
+                while(self.__ping.read() != 0):
+                    sleep(5)
+                mode.start()
+                self.__stream.start(mode.get_rtsp())
+                self.__logger.info("Camera connection restored")
+            else:
+                self.__move.pause = self.__moveset.pause = False
             img = self.__stream.read()
             if img is not None:
                 img = cv2.resize(img, (self.width, self.height))
@@ -105,17 +120,17 @@ class Tracker:
                                         self.__move.isAimed else Status.Moving
                                 elif(self.mode == Mode.AutoSet):
                                     self.status = Status.Moving
-                                    self.__moveset.set_box(found_box)
-                                    self.__moveset.set_con(
-                                        self.__get_contours(img))
+                                    self.__moveset.set_box(found_box,
+                                                           self.__get_contours(img))
                         else:
                             self.__amount_person = 0
                             self.status = Status.NoPerson
                             self.__move.set_box(None)
-                            self.__moveset.set_box(None)
+                            self.__moveset.set_box(None, None)
             self.running = self.__stream.running and self.__tensor.running and \
                 ((self.mode == Mode.Tracking and self.__move.running)
                     or (self.mode == Mode.AutoSet and self.__moveset.running))
+
         self.__logger.info("Tracker stopped")
 
     # Start tracker function
@@ -130,6 +145,7 @@ class Tracker:
         self.__status_log_thread.start()
         self.__stream.start(self.__move.get_rtsp())
         self.__tensor.start()
+        self.__ping.start()
         self.mode = Mode.Tracking
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
@@ -145,6 +161,7 @@ class Tracker:
         self.running = True
         self.__stream.start(self.__moveset.get_rtsp())
         self.__tensor.start()
+        self.__ping.start()
         self.mode = Mode.AutoSet
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
@@ -195,7 +212,7 @@ class Tracker:
         isAbsolute = bool(self.__get_setting("Onvif", "Absolute"))
         # Image processing settings
         bounds = [float(i) for i in self.__get_setting("Processing", "bounds")
-                                        .replace(" ", "").split(",")]
+                  .replace(" ", "").split(",")]
         self.width = int(self.__get_setting("Processing", "width"))
         self.height = int(self.__get_setting("Processing", "height"))
         self.l_h = [self.height, self.width, self.height, self.width]
@@ -219,25 +236,27 @@ class Tracker:
             del self.__move
             del self.__moveset
             del self.__stream
+            del self.__ping
             self.__logger.info("Data updated")
         except AttributeError:
             pass
         self.__centroidTracker = CentroidTracker()
-        self.__move = Move(self.width, self.height, speed, ip, port,
-                           login, password, self.wsdl_path, tweaking, bounds,
-                           tracking_box, isAbsolute)
-        self.__moveset = MoveSet(speed, ip, port, login, password,
-                                 self.wsdl_path, [self.height, self.width],
-                                 self.scope, tracking_box)
+        self.__move = MoveBase(ip, port, login, password, self.wsdl_path,
+                               [self.height, self.width], speed, tweaking,
+                               bounds, tracking_box, isAbsolute)
+        self.__moveset = MoveSet(ip, port, login, password, self.wsdl_path,
+                                 [self.height, self.width], speed, self.scope,
+                                 tracking_box)
         self.__stream = VideoStream(device=device)
+        self.__ping = Ping(ip)
 
     def __to_int(self, boxes):
         res = []
         for box in boxes:
             res.append([int(p) for p in box])
         return res
-    # Return status log
 
+    # Return status log
     def get_status_log(self):
         log = self.__status_log
         self.__status_log = {}
@@ -255,4 +274,4 @@ class Tracker:
                 self.__status_log[date] = {'status': str(self.status).split('.')[1],
                                            'amount': self.__amount_person}
                 self.__old_status = self.status
-            time.sleep(5)
+            sleep(5)

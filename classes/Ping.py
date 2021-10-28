@@ -6,15 +6,16 @@ from threading import Thread
 
 
 class Ping:
-    def __init__(self, mycam_ip, name="Ping"):
+    def __init__(self, ip, name="Ping"):
         self.name = name
-        self.mycam_ip = mycam_ip
-        self.stopped = False
-        self.r = os.system("timeout 0.4 ping -c 1    " + self.mycam_ip + " > /dev/null 2>&1")
+        self.mycam_ip = ip
+        self.__logger = logging.getLogger("Main.%s" % (self.name))
+        self.__rec = None
 
+    # Start thread of checking camera connection
     def start(self):
-        self.__logger = logging.getLogger("Main.Ping.start")
         self.__logger.info("Process starting")
+        self.running = True
         t = Thread(target=self.__update, name=self.name, args=())
         t.daemon = True
         t.start()
@@ -23,16 +24,15 @@ class Ping:
     # Loop of receiving frames from a stream
     def __update(self):
         self.__logger.info("Process started")
-        while not self.stopped:
-            if self.stopped:
-                return
-            self.r = os.system("timeout 0.4 ping -c 1    " + self.mycam_ip + " > /dev/null 2>&1")
+        while self.running:
+            self.__rec = os.system("timeout 0.1 ping -c 1    "
+                                   + self.mycam_ip + " > /dev/null 2>&1")
             sleep(5)
 
-    # Get frame
+    # Return connection check var
     def read(self):
-        return self.r
+        return self.__rec
 
-    # Stop frame
+    # Stop thread
     def stop(self):
-        self.stopped = True
+        self.running = True

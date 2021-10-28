@@ -69,9 +69,9 @@ class Camera:
                 elif(self.isAbsolute):
                     self.status = self.ptz.GetStatus({'ProfileToken':
                                                       self.profile.token})
-            except (onvif.exceptions.ONVIFError, ConnectionResetError) :
+            except (onvif.exceptions.ONVIFError, ConnectionResetError):
                 self.__logger.exception('Error sending request, reconnecting')
-                self.running = self.connect()
+                break
         self.__logger.info("Process stopped")
 
     # Move camera by vertical and horizontal speed
@@ -129,7 +129,6 @@ class Camera:
             self.ptz.GotoHomePosition(self.requests['GotoHomePosition'])
         except onvif.exceptions.ONVIFError:
             self.__logger.exception('Error sending request')
-            self.running = self.connect()
 
     # Return absolute coordinates from status
     def getAbsolute(self):
@@ -142,7 +141,6 @@ class Camera:
             self.ptz.Stop({'ProfileToken': self.profile.token})
         except onvif.exceptions.ONVIFError:
             self.__logger.exception('Error sending request')
-            self.running = self.connect()
 
     # Stop ptz thread
     def stop_thread(self):

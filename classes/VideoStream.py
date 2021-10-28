@@ -11,6 +11,7 @@ class VideoStream:
         self.name = name
         self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frame = None
+        self.running = False
         if(GStreamer):
             if(device == "Jetson"):
                 self.rtsp_url = 'rtspsrc location="{rtsp_url}" ! queue' + \
@@ -52,3 +53,4 @@ class VideoStream:
     # Stop thread
     def stop(self):
         self.running = False
+        self.__stream.release()

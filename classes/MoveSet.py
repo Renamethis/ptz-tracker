@@ -1,13 +1,13 @@
 # Camera control class for autoset
+from threading import Thread
 import numpy as np
 from enum import Flag, auto
-from classes.OnvifInteraction import Camera
-from threading import Thread
-import logging
+from classes.Move import Move
 import time
 
-
 # Enum class for object positions on greenscreen
+
+
 class Position(Flag):
     NO = 0
     RIGHT = auto()
@@ -18,62 +18,48 @@ class Position(Flag):
 TOTALFRAMES = 100
 
 
-class MoveSet:
-    contours = None
-    box = None
+class MoveSet(Move):
 
     # Initialization
-    def __init__(self, speed, ip, port, login, password, wsdl, Shape,
-                 Bounds, tracking_box):
-        self.name = "MoveSet"
-        self.ip = ip
-        self.port = port
-        self.login = login
-        self.password = password
-        self.wsdl = wsdl
+    def __init__(self, ip, port, login, password, wsdl, Shape, speed,
+                 Bounds, tracking_box, name="Move"):
+        super().__init__(ip, port, login, password, wsdl, Shape, speed)
         self.LEFT = Bounds[0]
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]
         self.UP = Bounds[3]
-        self.WIDTH = Shape[1]
-        self.HEIGHT = Shape[0]
-        self.tbox = tracking_box
-        self.speed_coef = speed
-        self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frames = 0
 
-    # Start threads
+    # Starting thread
     def start(self):
-        self.__logger.info("Process starting")
-        self.cam = Camera(self.ip, self.port, self.login, self.password,
-                          self.wsdl, True)
-        if(not self.cam.connect()):
-            return False
-        self.cam.start()
-        self.running = True
-        self.__thread = Thread(target=self.__update, name=self.name, args=())
+        self.running = super().start()
+        self.__thread = Thread(target=self.__update, name=self._name, args=())
         self.__thread.daemon = True
         self.__thread.start()
-        return True
+        self.running = super().start()
+        return self.running
 
     # Main loop
     def __update(self):
-        self.__logger.info("Process started")
+        self._logger.info("Process started")
         time.sleep(5)
         while self.running:
-            if(self.box is not None and self.contours is not None):
-                box = self.box
+            if(self.pause):
+                self.cam.pause = True
+                continue
+            if(self._box is not None and self.contours is not None):
+                box = self._box
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
                 to_y = int(box[0])
                 if (to_x < self.tbox[0] or to_x > self.tbox[2]):
                     if to_x < self.tbox[0]:
-                        vec_x = float(to_x - self.tbox[0])/(self.WIDTH)
+                        vec_x = float(to_x - self.tbox[0])/(self._width)
                     else:
-                        vec_x = float(to_x - self.tbox[2])/(self.WIDTH)
+                        vec_x = float(to_x - self.tbox[2])/(self._width)
                 else:
                     vec_x = 0
                 if (to_y > self.tbox[1] + 40 or to_y < self.tbox[1] - 40):
-                    vec_y = float(self.tbox[1] - to_y)/(self.HEIGHT)
+                    vec_y = float(self.tbox[1] - to_y)/(self._height)
                 else:
                     vec_y = 0
                 vec_x = vec_x*self.speed_coef
@@ -83,6 +69,7 @@ class MoveSet:
                 if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     vec_x = 0
                     vec_y = 0
+                    self._isAimed = True
                     self.cam.stop()
                 if(vec_x == 0 and vec_y == 0 and self.frames != TOTALFRAMES):
                     self.frames += 1
@@ -95,14 +82,14 @@ class MoveSet:
                         medy = int(np.median(pointsy))
                         if(medy > self.UP):
                             pos = pos | Position.NO
-                        elif(medx > 2*self.WIDTH/3 + 50):
+                        elif(medx > 2*self._width/3 + 50):
                             pos = pos | Position.RIGHT
-                        elif(medx < self.WIDTH/3 - 50):
+                        elif(medx < self._width/3 - 50):
                             pos = pos | Position.LEFT
                         elif(medy < self.BOT):
                             pos = pos | Position.TOP
-                    if(pos == Position.LEFT | Position.RIGHT or
-                       pos == Position.LEFT | Position.RIGHT | Position.TOP):
+                    if(pos == Position.LEFT | Position.RIGHT
+                       or pos == Position.LEFT | Position.RIGHT | Position.TOP):
                         self.cam.ContinuousMove(0, 0, self.speed_coef*0.1)
                     elif(pos == Position.RIGHT):
                         self.cam.ContinuousMove(-self.speed_coef * 0.2, 0)
@@ -115,28 +102,16 @@ class MoveSet:
                         self.cam.stop()
                         self.running = False
                     if(pos != Position.NO):
-                        self.__logger.info("Object found on" + str(pos))
+                        self._logger.info("Object found on" + str(pos))
                 else:
                     self.frames = 0
+                    self._isAimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
                 self.cam.stop()
-        self.__logger.info("Process stopped")
+        self._logger.info("Process stopped")
 
-    # Set greenscreen contours
-    def set_con(self, contours):
-        self.contours = contours
-
-    # Set person box
-    def set_box(self, box):
-        self.box = box
-
-    # Stop threads
-    def stop(self):
-        self.cam.stop_thread()
-        self.running = False
-
-    # Return rtsp_url from Camera object
-    def get_rtsp(self):
-        return "rtsp://" + self.login + ":" + self.password + "@" + \
-                   self.cam.getStreamUri().split('//')[1]
+    # Set person box, greenscreen contours
+    def set_box(self, box, con):
+        self._box = box
+        self.contours = con
