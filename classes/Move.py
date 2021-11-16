@@ -6,7 +6,8 @@ from classes.OnvifInteraction import Camera
 class Move:
     # Initializing variables
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 name="Move"):
+                 tracking_box, name="Move"):
+        self._tbox = tracking_box
         self._name = name
         self._ip = ip
         self._port = port
