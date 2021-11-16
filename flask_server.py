@@ -4,7 +4,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 import configparser
-from scripts.tracker import Tracker
+from classes.tracker import Tracker
 
 
 pwd = os.getcwd()
