@@ -71,12 +71,12 @@ class MoveBase(Move):
                        or (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
                 if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
-                    self.isAimed = True
+                    self._isAimed = True
                     self.cam.stop()
                 else:
                     # self.logger.info('X: ' + str(vec_x)
                     #                 + ' Y: ' + str(vec_y))
-                    self.isAimed = False
+                    self._isAimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
                 self.count_frame = 0

@@ -25,7 +25,7 @@ class Ping:
     def __update(self):
         self.__logger.info("Process started")
         while self.running:
-            self.__rec = os.system("timeout 0.1 ping -c 1    "
+            self.__rec = os.system("timeout 5 ping -c 1    "
                                    + self.mycam_ip + " > /dev/null 2>&1")
             sleep(5)
 
