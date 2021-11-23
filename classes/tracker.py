@@ -57,6 +57,7 @@ class Tracker:
         # Get parameters from settings
         self.update_data()
         self.__tensor = Tensor()
+        self.__status_log = None
 
     def __get_setting(self, section, setting):
         try:
@@ -140,9 +141,9 @@ class Tracker:
             return self.__move.running
         self.running = True
         if(self.isLogging):
-            self.__status_log_thread = Thread(target=self.__status_log_thread,
-                                              name="status_log")
-        self.__status_log_thread.start()
+            self.__status_thread = Thread(target=self.__status_log_thread,
+                                          name="status_log")
+            self.__status_thread.start()
         self.__stream.start(self.__move.get_rtsp())
         self.__tensor.start()
         self.__ping.start()
@@ -174,8 +175,6 @@ class Tracker:
         self.__tensor.stop()
         if(self.mode == Mode.Tracking):
             self.__move.stop()
-            if(self.isLogging):
-                self.__status_log_thread.stop()
         elif(self.mode == Mode.AutoSet):
             self.__moveset.stop()
         self.status = Status.Stopped
@@ -211,7 +210,7 @@ class Tracker:
         password = self.__get_setting("Onvif", "password")
         speed = float(self.__get_setting("Onvif", "speed"))
         tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
-        isAbsolute = bool(self.__get_setting("Onvif", "absolute"))
+        isAbsolute = self.__get_setting("Onvif", "absolute") == "True"
         # Streaming settings
         isGstreamer = self.__get_setting("Streaming", "source") == "GStreamer"
         # Image processing settings
@@ -235,7 +234,7 @@ class Tracker:
                                replace(" ",
                                        "").split(",")]) * self.l_h).astype(int)
         # AutoRecord settings
-        self.isLogging = bool(self.__get_setting("AutoRecord", "logging"))
+        self.isLogging = self.__get_setting("AutoRecord", "logging") == "True"
         self.log_frequency = int(self.__get_setting("AutoRecord", "frequency"))
         # Hardware settings
         device = self.__get_setting("Hardware", "device")
