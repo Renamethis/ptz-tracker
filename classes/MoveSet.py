@@ -70,7 +70,7 @@ class MoveSet(Move):
                 if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     vec_x = 0
                     vec_y = 0
-                    self._isAimed = True
+                    self._Aimed = True
                     self.cam.stop()
                 if(vec_x == 0 and vec_y == 0 and self.frames != TOTALFRAMES):
                     self.frames += 1
@@ -106,7 +106,7 @@ class MoveSet(Move):
                         self._logger.info("Object found on" + str(pos))
                 else:
                     self.frames = 0
-                    self._isAimed = False
+                    self._Aimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
                 self.cam.stop()

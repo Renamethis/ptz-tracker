@@ -25,7 +25,7 @@ class Move:
         self._width = Shape[1]
         self._height = Shape[0]
         self._logger = logging.getLogger("Main.%s" % (self._name))
-        self._isAimed = False
+        self._Aimed = False
         self.running = False
 
     # Starting threads
@@ -51,3 +51,7 @@ class Move:
     def get_rtsp(self):
         return "rtsp://" + self._login + ":" + self._password + "@" + \
                    self.cam.getStreamUri().split('//')[1]
+
+    # Return aimed-state bool
+    def isAimed(self):
+        return self._Aimed

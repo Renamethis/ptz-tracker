@@ -1,9 +1,0 @@
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/rebuild_cache.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/edit_cache.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/mono_euroc.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/rgbd_tum.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/mono_kitti.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/stereo_kitti.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/stereo_euroc.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/ORB_SLAM2.dir
-/home/jetson/ptz-tracker/ORB_SLAM2/orb_module/CMakeFiles/mono_tum.dir

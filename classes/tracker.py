@@ -73,7 +73,7 @@ class Tracker:
     def __update(self):
         self.__logger.info("Tracker started")
         while self.running:
-            if(self.__ping.read() != 0):
+            if(self.__ping.read() != 0 and self.__ping.read() is not None):
                 self.__logger.error("Camera connection is lost or unstable")
                 if(self.mode == Mode.Tracking):
                     mode = self.__move
@@ -117,7 +117,7 @@ class Tracker:
                                 if(self.mode == Mode.Tracking):
                                     self.__move.set_box(found_box)
                                     self.status = Status.Aimed if \
-                                        self.__move.isAimed else Status.Moving
+                                        self.__move.isAimed() else Status.Moving
                                 elif(self.mode == Mode.AutoSet):
                                     self.status = Status.Moving
                                     self.__moveset.set_box(found_box,
@@ -130,7 +130,6 @@ class Tracker:
             self.running = self.__stream.running and self.__tensor.running and \
                 ((self.mode == Mode.Tracking and self.__move.running)
                     or (self.mode == Mode.AutoSet and self.__moveset.running))
-
         self.__logger.info("Tracker stopped")
 
     # Start tracker function
@@ -140,8 +139,9 @@ class Tracker:
         if(not self.__move.start()):
             return self.__move.running
         self.running = True
-        self.__status_log_thread = Thread(target=self.__status_log_thread,
-                                          name="status_log")
+        if(self.isLogging):
+            self.__status_log_thread = Thread(target=self.__status_log_thread,
+                                              name="status_log")
         self.__status_log_thread.start()
         self.__stream.start(self.__move.get_rtsp())
         self.__tensor.start()
@@ -174,6 +174,8 @@ class Tracker:
         self.__tensor.stop()
         if(self.mode == Mode.Tracking):
             self.__move.stop()
+            if(self.isLogging):
+                self.__status_log_thread.stop()
         elif(self.mode == Mode.AutoSet):
             self.__moveset.stop()
         self.status = Status.Stopped
@@ -209,7 +211,9 @@ class Tracker:
         password = self.__get_setting("Onvif", "password")
         speed = float(self.__get_setting("Onvif", "speed"))
         tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
-        isAbsolute = bool(self.__get_setting("Onvif", "Absolute"))
+        isAbsolute = bool(self.__get_setting("Onvif", "absolute"))
+        # Streaming settings
+        isGstreamer = self.__get_setting("Streaming", "source") == "GStreamer"
         # Image processing settings
         bounds = [float(i) for i in self.__get_setting("Processing", "bounds")
                   .replace(" ", "").split(",")]
@@ -230,6 +234,9 @@ class Tracker:
                                self.__get_setting("AutoSet", "scope").
                                replace(" ",
                                        "").split(",")]) * self.l_h).astype(int)
+        # AutoRecord settings
+        self.isLogging = bool(self.__get_setting("AutoRecord", "logging"))
+        self.log_frequency = int(self.__get_setting("AutoRecord", "frequency"))
         # Hardware settings
         device = self.__get_setting("Hardware", "device")
         try:
@@ -247,7 +254,7 @@ class Tracker:
         self.__moveset = MoveSet(ip, port, login, password, self.wsdl_path,
                                  [self.height, self.width], speed, self.scope,
                                  tracking_box)
-        self.__stream = VideoStream(device=device)
+        self.__stream = VideoStream(GStreamer=isGstreamer, device=device)
         self.__ping = Ping(ip)
 
     def __to_int(self, boxes):
@@ -267,6 +274,7 @@ class Tracker:
     def __status_log_thread(self):
         self.__old_status = None
         self.__status_log = {}
+        delay = self.log_frequency
         while self.running:
             now = datetime.now()
             if(self.__old_status != self.status):
@@ -274,4 +282,4 @@ class Tracker:
                 self.__status_log[date] = {'status': str(self.status).split('.')[1],
                                            'amount': self.__amount_person}
                 self.__old_status = self.status
-            sleep(5)
+            sleep(delay)

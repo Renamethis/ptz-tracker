@@ -20,8 +20,9 @@ class MoveBase(Move):
     # Starting thread
     def start(self):
         self.running = super().start()
-        self.mt = message_grabber("tcp://*:5555")
-        self.mt.start()
+        # Message thread using for ORB_SLAM2
+        #self.mt = message_grabber("tcp://*:5555")
+        #self.mt.start()
         self.__thread = Thread(target=self.__update, name=self._name, args=())
         self.__thread.daemon = True
         self.__thread.start()
@@ -30,12 +31,13 @@ class MoveBase(Move):
     # Main loop for move processing
     def __update(self):
         self._logger.info("Process started")
+        message = rotation = None
         while self.running:
             if(self.pause):
                 self.cam.pause = True
                 continue
-            message = self.mt.get_message()
-            rotation = self.mt.get_rotation() if message is not None else None
+            #message = self.mt.get_message()
+            #rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:
                 self.cam.stop()
                 sleep(self._ddelay)
@@ -71,12 +73,12 @@ class MoveBase(Move):
                        or (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
                 if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
-                    self._isAimed = True
+                    self._Aimed = True
                     self.cam.stop()
                 else:
                     # self.logger.info('X: ' + str(vec_x)
                     #                 + ' Y: ' + str(vec_y))
-                    self._isAimed = False
+                    self._Aimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
                 self.count_frame = 0
@@ -94,9 +96,10 @@ class MoveBase(Move):
                 sleep(self.tweaking)
                 self.count_frame = self.count_frame + 1
             self.old_box = old_box
+            sleep(self._ddelay)
         self._logger.info("Process stopped")
 
     # Stop threads
     def stop(self):
         super().stop()
-        self.mt.stop_thread()
+        #self.mt.stop_thread()
