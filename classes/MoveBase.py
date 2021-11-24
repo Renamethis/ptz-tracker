@@ -11,10 +11,9 @@ class MoveBase(Move):
     def __init__(self, ip, port, login, password, wsdl, Shape, speed, tweaking,
                  bounds, tracking_box, isAbsolute, name="Move"):
         super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box)
+                         tracking_box, isAbsolute)
         self.tweaking = tweaking
         self.bounds = bounds
-        self.isAbsolute = isAbsolute
         self.spaceLimits = bounds
 
     # Starting thread
@@ -63,9 +62,9 @@ class MoveBase(Move):
                 vec_y = vec_y*self.speed_coef
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
-                if(self.isAbsolute or message is not None):
+                if(self._isAbsolute or message is not None):
                     point = self.cam.getAbsolute() if \
-                            self.isAbsolute else rotation
+                            self._isAbsolute else rotation
                     if((point[0] < self.spaceLimits[0] and vec_x < 0)
                        or (point[0] > self.spaceLimits[2] and vec_x > 0)):
                         vec_x = 0

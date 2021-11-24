@@ -6,7 +6,7 @@ from classes.OnvifInteraction import Camera
 class Move:
     # Initializing variables
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 tracking_box, name="Move"):
+                 tracking_box, isAbsolute, name="Move"):
         self._tbox = tracking_box
         self._name = name
         self._ip = ip
@@ -27,12 +27,13 @@ class Move:
         self._logger = logging.getLogger("Main.%s" % (self._name))
         self._Aimed = False
         self.running = False
+        self._isAbsolute = isAbsolute
 
     # Starting threads
     def start(self):
         self._logger.info("Process starting")
         self.cam = Camera(self._ip, self._port, self._login, self._password,
-                          self._wsdl, self.isAbsolute)
+                          self._wsdl, self._isAbsolute)
         if(not self.cam.connect()):
             return False
         self.cam.start()
@@ -45,6 +46,7 @@ class Move:
     # Stopping threads
     def stop(self):
         self.cam.stop_thread()
+        del self.cam
         self.running = False
 
     # Return rtsp-thread from Camera

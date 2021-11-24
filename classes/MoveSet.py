@@ -24,7 +24,7 @@ class MoveSet(Move):
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
                  Bounds, tracking_box, name="Move"):
         super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box)
+                         tracking_box, False)
         self.LEFT = Bounds[0]
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]
@@ -37,13 +37,11 @@ class MoveSet(Move):
         self.__thread = Thread(target=self.__update, name=self._name, args=())
         self.__thread.daemon = True
         self.__thread.start()
-        self.running = super().start()
         return self.running
 
     # Main loop
     def __update(self):
         self._logger.info("Process started")
-        time.sleep(5)
         while self.running:
             if(self.pause):
                 self.cam.pause = True

@@ -156,7 +156,7 @@ class Tracker:
     # Start autoset function
     def start_autoset(self):
         self.status = Status.Starting
-        self.__logger.info("Tracker starting...")
+        self.__logger.info("Autoset starting...")
         if(not self.__moveset.start()):
             return self.__moveset.running
         self.running = True
