@@ -18,3 +18,4 @@ classes/__pycache__
 wsdl/*
 detection_models/
 main.log
+settings.ini
