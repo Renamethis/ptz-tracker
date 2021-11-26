@@ -45,9 +45,9 @@ class Move:
 
     # Stopping threads
     def stop(self):
+        self.running = False
         self.cam.stop_thread()
         del self.cam
-        self.running = False
 
     # Return rtsp-thread from Camera
     def get_rtsp(self):

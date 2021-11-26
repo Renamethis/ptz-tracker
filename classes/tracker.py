@@ -197,8 +197,8 @@ class Tracker:
         pixels = pixels[np.array(list(map(self.__check, pixels)))]
         for pixel in pixels:
             img[pixel[0]][pixel[1]] = 255
-        _, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,
-                                                  cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,
+                                               cv2.CHAIN_APPROX_SIMPLE)
         return contours
 
     # Updating parameters from config

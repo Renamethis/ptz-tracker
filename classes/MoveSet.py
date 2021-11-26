@@ -50,15 +50,15 @@ class MoveSet(Move):
                 box = self._box
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
                 to_y = int(box[0])
-                if (to_x < self.tbox[0] or to_x > self.tbox[2]):
-                    if to_x < self.tbox[0]:
-                        vec_x = float(to_x - self.tbox[0])/(self._width)
+                if (to_x < self._tbox[0] or to_x > self._tbox[2]):
+                    if to_x < self._tbox[0]:
+                        vec_x = float(to_x - self._tbox[0])/(self._width)
                     else:
-                        vec_x = float(to_x - self.tbox[2])/(self._width)
+                        vec_x = float(to_x - self._tbox[2])/(self._width)
                 else:
                     vec_x = 0
-                if (to_y > self.tbox[1] + 40 or to_y < self.tbox[1] - 40):
-                    vec_y = float(self.tbox[1] - to_y)/(self._height)
+                if (to_y > self._tbox[1] + 40 or to_y < self._tbox[1] - 40):
+                    vec_y = float(self._tbox[1] - to_y)/(self._height)
                 else:
                     vec_y = 0
                 vec_x = vec_x*self.speed_coef
