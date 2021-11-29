@@ -2,16 +2,16 @@
 from threading import Thread
 from time import sleep
 import numpy as np
-from classes.zmqgrabber import message_grabber
+# from classes.zmqgrabber import message_grabber
 from classes.Move import Move
 
 
 class MoveBase(Move):
     # Initialization
     def __init__(self, ip, port, login, password, wsdl, Shape, speed, tweaking,
-                 bounds, tracking_box, isAbsolute, name="Move"):
+                 bounds, tracking_box, isAbsolute, preset, name="Move"):
         super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box, isAbsolute)
+                         tracking_box, preset, isAbsolute)
         self.tweaking = tweaking
         self.bounds = bounds
         self.spaceLimits = bounds

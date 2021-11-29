@@ -211,6 +211,7 @@ class Tracker:
         speed = float(self.__get_setting("Onvif", "speed"))
         tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
         isAbsolute = self.__get_setting("Onvif", "absolute") == "True"
+        preset = self.__get_setting("Onvif", "preset")
         # Streaming settings
         isGstreamer = self.__get_setting("Streaming", "source") == "GStreamer"
         # Image processing settings
@@ -249,10 +250,10 @@ class Tracker:
         self.__centroidTracker = CentroidTracker()
         self.__move = MoveBase(ip, port, login, password, self.wsdl_path,
                                [self.height, self.width], speed, tweaking,
-                               bounds, tracking_box, isAbsolute)
+                               bounds, tracking_box, isAbsolute, preset)
         self.__moveset = MoveSet(ip, port, login, password, self.wsdl_path,
                                  [self.height, self.width], speed, self.scope,
-                                 tracking_box)
+                                 tracking_box, preset)
         self.__stream = VideoStream(GStreamer=isGstreamer, device=device)
         self.__ping = Ping(ip)
 

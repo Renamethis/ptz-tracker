@@ -25,8 +25,8 @@ def tracker_listener():
         if data['command'] == 'start':
             if(not tracker.running):
                 if(not tracker.start_tracker()):
-                    return error('Error with tracker staring,' +
-                                 'check logs to get more information')
+                    return error('Error with tracker starting, '
+                                 + 'check logs to get more information')
             else:
                 return error('Tracker already running')
             ''' ORB_SLAM2 IN DEVELOPING
@@ -56,16 +56,16 @@ def tracker_listener():
         elif data['command'] == 'autoset':
             if(not tracker.running):
                 if(not tracker.start_autoset()):
-                    return error('Error with autoset staring, ' +
-                                 'check logs to get more information')
+                    return error('Error with autoset starting, '
+                                 + 'check logs to get more information')
             else:
                 return error('Tracker already running')
             return answer('OK', data={'information':
                                       'Autoset sucessfully started'})
         elif data['command'] == 'set':
             if(tracker.running):
-                return error('You cant change parameters' +
-                             'while tracker is running')
+                return error('You cant change parameters'
+                             + 'while tracker is running')
             Config = configparser.ConfigParser()
             Config.read(config_path)
             keys = list(data.keys())
@@ -111,4 +111,4 @@ def answer(type, data=None):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='127.0.0.1')

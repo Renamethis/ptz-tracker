@@ -22,9 +22,9 @@ class MoveSet(Move):
 
     # Initialization
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 Bounds, tracking_box, name="Move"):
+                 Bounds, tracking_box, preset, name="Move"):
         super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box, False)
+                         tracking_box, False, preset)
         self.LEFT = Bounds[0]
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]

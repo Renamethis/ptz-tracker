@@ -6,7 +6,7 @@ from classes.OnvifInteraction import Camera
 class Move:
     # Initializing variables
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 tracking_box, isAbsolute, name="Move"):
+                 tracking_box, isAbsolute, preset, name="Move"):
         self._tbox = tracking_box
         self._name = name
         self._ip = ip
@@ -14,10 +14,9 @@ class Move:
         self._login = login
         self._password = password
         self._wsdl = wsdl
+        self._preset = preset
         self._box = None
         self.old_box = None
-        self.old_vec_x = 0
-        self.old_vec_y = 0
         self.count_frame = 0
         self.speed_coef = speed
         self.pause = False
@@ -33,7 +32,7 @@ class Move:
     def start(self):
         self._logger.info("Process starting")
         self.cam = Camera(self._ip, self._port, self._login, self._password,
-                          self._wsdl, self._isAbsolute)
+                          self._wsdl, self._preset, self._isAbsolute)
         if(not self.cam.connect()):
             return False
         self.cam.start()

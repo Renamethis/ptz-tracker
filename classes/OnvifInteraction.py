@@ -22,12 +22,13 @@ class Camera:
                     'RelativeMove',
                     'Stop',
                     'GotoHomePosition',
+                    'GotoPreset',
+                    'GetPresets',
                     'GetStatus']
     requests = None
-    ATTEMPTS = 10
 
     # Initialization
-    def __init__(self, ip, port, login, password, wsdl_path,
+    def __init__(self, ip, port, login, password, wsdl_path, preset,
                  isAbsolute=False, name='ONVIF'):
         self.name = name
         self.__type = None
@@ -36,8 +37,9 @@ class Camera:
         self.__login = login
         self.__password = password
         self.__wpath = wsdl_path
+        self.__preset = preset
         self.__logger = logging.getLogger("Main.%s" % (self.name))
-        self.isAbsolute = isAbsolute
+        self.__isAbsolute = isAbsolute
 
     # Return url of rtsp-stream
     def getStreamUri(self):
@@ -62,17 +64,20 @@ class Camera:
                     if(new_type == ptzType.Continuous):
                         self.ptz.ContinuousMove(
                             self.requests['ContinuousMove'])
-                    elif(new_type == ptzType.Absolute and self.isAbsolute):
+                    elif(new_type == ptzType.Absolute and self.__isAbsolute):
                         self.ptz.AbsoluteMove(self.requests['AbsoluteMove'])
-                    elif(new_type == ptzType.Relative and self.isAbsolute):
+                    elif(new_type == ptzType.Relative and self.__isAbsolute):
                         self.ptz.RelativeMove(self.requests['RelativeMove'])
                     elif(new_type == ptzType.Stop):
                         self.ptz.Stop(self.requests['Stop'])
                     elif(new_type == ptzType.GoHome):
-                        self.ptz.GotoHomePosition(
-                            self.requests['GotoHomePosition'])
+                        if(self.__preset == 'Home'):
+                            self.ptz.GotoHomePosition(
+                                self.requests['GotoHomePosition'])
+                        else:
+                            self.__ptz.GotoPreset(self.requests['GotoPreset'])
                     self.__type = None
-                elif(self.isAbsolute):
+                elif(self.__isAbsolute):
                     self.status = self.ptz.GetStatus(
                         self.requests['GetStatus'])
             except (onvif.exceptions.ONVIFError, ConnectionResetError):
@@ -110,6 +115,18 @@ class Camera:
                                               self.profile.token})
             for request in self.requests:
                 self.requests[request].ProfileToken = self.profile.token
+            preset_token = None
+            for preset in self.ptz.GetPresets(self.requests['GetPresets']):
+                if(preset['Name'] == self.__preset):
+                    preset_token = preset['token']
+                    break
+            if(preset_token is None):
+                self.__preset = 'Home'
+            self.status.Position.Zoom.x = 0.0
+            self.status.Position.PanTilt.x = 0.0
+            self.status.Position.PanTilt.y = 0.0
+            self.requests['GotoPreset'].PresetToken = preset_token
+            self.requests['GotoPreset'].Speed = self.status.Position
             self.requests['AbsoluteMove'].Position = self.status.Position
             self.requests['RelativeMove'].Position = self.status.Position
             self.requests['ContinuousMove'].Velocity = self.status.Position
