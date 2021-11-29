@@ -138,7 +138,7 @@ class Tracker:
         self.status = Status.Starting
         self.__logger.info("Tracker starting...")
         if(not self.__move.start()):
-            return self.__move.running
+            return False
         self.running = True
         if(self.isLogging):
             self.__status_thread = Thread(target=self.__status_log_thread,
@@ -150,7 +150,7 @@ class Tracker:
         self.mode = Mode.Tracking
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
-        return self.running and self.__move.running and \
+        return self.running and not self.__move.running.is_set() and \
             self.__stream.running and self.__tensor.running
 
     # Start autoset function
@@ -158,7 +158,7 @@ class Tracker:
         self.status = Status.Starting
         self.__logger.info("Autoset starting...")
         if(not self.__moveset.start()):
-            return self.__moveset.running
+            return not self.__moveset.running.is_set()
         self.running = True
         self.__stream.start(self.__moveset.get_rtsp())
         self.__tensor.start()
@@ -166,7 +166,7 @@ class Tracker:
         self.mode = Mode.AutoSet
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
-        return self.running and self.__moveset.running and \
+        return self.running and not self.__moveset.running.is_set() and \
             self.__stream.running and self.__tensor.running
 
     # Stop function
@@ -211,6 +211,7 @@ class Tracker:
         speed = float(self.__get_setting("Onvif", "speed"))
         tweaking = float(self.__get_setting("Onvif", "tweaking")) / 100.0
         isAbsolute = self.__get_setting("Onvif", "absolute") == "True"
+        preset = self.__get_setting("Onvif", "preset")
         # Streaming settings
         isGstreamer = self.__get_setting("Streaming", "source") == "GStreamer"
         # Image processing settings
@@ -249,10 +250,10 @@ class Tracker:
         self.__centroidTracker = CentroidTracker()
         self.__move = MoveBase(ip, port, login, password, self.wsdl_path,
                                [self.height, self.width], speed, tweaking,
-                               bounds, tracking_box, isAbsolute)
+                               bounds, tracking_box, isAbsolute, preset)
         self.__moveset = MoveSet(ip, port, login, password, self.wsdl_path,
                                  [self.height, self.width], speed, self.scope,
-                                 tracking_box)
+                                 tracking_box, preset)
         self.__stream = VideoStream(GStreamer=isGstreamer, device=device)
         self.__ping = Ping(ip)
 

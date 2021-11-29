@@ -1,37 +1,33 @@
 # Camera controll class for tracker
-from threading import Thread
 from time import sleep
 import numpy as np
-from classes.zmqgrabber import message_grabber
+# from classes.zmqgrabber import message_grabber
 from classes.Move import Move
 
 
 class MoveBase(Move):
     # Initialization
     def __init__(self, ip, port, login, password, wsdl, Shape, speed, tweaking,
-                 bounds, tracking_box, isAbsolute, name="Move"):
-        super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box, isAbsolute)
+                 bounds, tracking_box, isAbsolute, preset, name="Move"):
+        Move.__init__(self, ip, port, login, password, wsdl, Shape, speed,
+                      tracking_box, isAbsolute, preset)
         self.tweaking = tweaking
         self.bounds = bounds
         self.spaceLimits = bounds
 
     # Starting thread
     def start(self):
-        self.running = super().start()
         # Message thread using for ORB_SLAM2
         #self.mt = message_grabber("tcp://*:5555")
         #self.mt.start()
-        self.__thread = Thread(target=self.__update, name=self._name, args=())
-        self.__thread.daemon = True
-        self.__thread.start()
-        return self.running
+        return super().start()
 
     # Main loop for move processing
-    def __update(self):
+    def run(self):
         self._logger.info("Process started")
         message = rotation = None
-        while self.running:
+        tweaking_frames = 0
+        while not self.running.is_set():
             if(self.pause):
                 self.cam.pause = True
                 continue
@@ -40,10 +36,9 @@ class MoveBase(Move):
             if self.pause:
                 self.cam.stop()
                 sleep(self._ddelay)
-            box = self._box
-            old_box = self.old_box
-            if np.array_equal(box, old_box):
-                sleep(self._ddelay)
+            box, old_box = self._queue.get()
+            if(np.array_equal(box, old_box) and box is not None):
+                continue
             elif box is not None:
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
                 to_y = int(box[0])
@@ -54,7 +49,7 @@ class MoveBase(Move):
                         vec_x = float(to_x - self._tbox[2])/(self._width)
                 else:
                     vec_x = 0
-                if (to_y > self._tbox[1] + 40 or to_y < self._tbox[1] - 40):
+                if (to_y > self._tbox[1] + 20 or to_y < self._tbox[1] - 20):
                     vec_y = float(self._tbox[1] - to_y)/(self._height)
                 else:
                     vec_y = 0
@@ -71,31 +66,26 @@ class MoveBase(Move):
                     if(point[1] < self.spaceLimits[1] and vec_y > 0
                        or (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
-                if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
+                if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     self._Aimed = True
                     self.cam.stop()
                 else:
-                    # self.logger.info('X: ' + str(vec_x)
-                    #                 + ' Y: ' + str(vec_y))
+                    #self._logger.info('X: ' + str(vec_x) + ' Y: ' + str(vec_y))
                     self._Aimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
-                old_box = box
-                self.count_frame = 0
+                tweaking_frames = 0
             elif box is None and old_box is not None:
-                if (self.count_frame < 20):
+                if (tweaking_frames < 20):
                     self.cam.ContinuousMove(vec_x, vec_y)
-                elif (self.count_frame == 20):
+                elif (tweaking_frames == 20):
                     self.cam.stop()
                     sleep(self._ddelay)
-                elif (self.count_frame == 60):
-                    self.count_frame = 0
+                elif (tweaking_frames == 60):
+                    tweaking_frames = 0
                     self.cam.goHome()
-                    old_box = box
                     sleep(self._ddelay)
                 sleep(self.tweaking)
-                self.count_frame = self.count_frame + 1
-            self.old_box = old_box
-            sleep(self._ddelay)
+                tweaking_frames += 1
         self._logger.info("Process stopped")
 
     # Stop threads

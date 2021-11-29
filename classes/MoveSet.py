@@ -1,5 +1,5 @@
 # Camera control class for autoset
-from threading import Thread
+from multiprocessing import Process
 import numpy as np
 from enum import Flag, auto
 from classes.Move import Move
@@ -22,32 +22,23 @@ class MoveSet(Move):
 
     # Initialization
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 Bounds, tracking_box, name="Move"):
-        super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box, False)
+                 Bounds, tracking_box, preset, name="Move"):
+        Move.__init__(self, ip, port, login, password, wsdl, Shape, speed,
+                      tracking_box, False, preset)
         self.LEFT = Bounds[0]
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]
         self.UP = Bounds[3]
-        self.frames = 0
-
-    # Starting thread
-    def start(self):
-        self.running = super().start()
-        self.__thread = Thread(target=self.__update, name=self._name, args=())
-        self.__thread.daemon = True
-        self.__thread.start()
-        return self.running
 
     # Main loop
-    def __update(self):
+    def run(self):
         self._logger.info("Process started")
         while self.running:
             if(self.pause):
                 self.cam.pause = True
                 continue
-            if(self._box is not None and self.contours is not None):
-                box = self._box
+            box, old_box, contours = self._queue.get()
+            if(box is not None and contours is not None):
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
                 to_y = int(box[0])
                 if (to_x < self._tbox[0] or to_x > self._tbox[2]):
@@ -69,12 +60,9 @@ class MoveSet(Move):
                     vec_x = 0
                     vec_y = 0
                     self._Aimed = True
-                    self.cam.stop()
-                if(vec_x == 0 and vec_y == 0 and self.frames != TOTALFRAMES):
-                    self.frames += 1
-                elif(vec_x == 0 and vec_y == 0):
+                if(vec_x == 0 and vec_y == 0):
                     pos = Position.NO
-                    for con in self.contours:
+                    for con in contours:
                         pointsx = con[:, 0, 1]
                         pointsy = con[:, 0, 0]
                         medx = int(np.median(pointsx))
@@ -87,6 +75,7 @@ class MoveSet(Move):
                             pos = pos | Position.LEFT
                         elif(medy < self.BOT):
                             pos = pos | Position.TOP
+                    '''
                     if(pos == Position.LEFT | Position.RIGHT
                        or pos == Position.LEFT | Position.RIGHT | Position.TOP):
                         self.cam.ContinuousMove(0, 0, self.speed_coef*0.1)
@@ -97,13 +86,13 @@ class MoveSet(Move):
                     elif(pos == Position.TOP):
                         self.cam.ContinuousMove(0, -self.speed_coef * 0.2)
                     else:
-                        self.cam.ContinuousMove(0, 0)
-                        self.cam.stop()
-                        self.running = False
+                    '''
+                    #self.cam.ContinuousMove(0, 0)
+                    self.cam.stop()
+                    self.running = False
                     if(pos != Position.NO):
                         self._logger.info("Object found on" + str(pos))
                 else:
-                    self.frames = 0
                     self._Aimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)
             else:
@@ -112,5 +101,6 @@ class MoveSet(Move):
 
     # Set person box, greenscreen contours
     def set_box(self, box, con):
-        self._box = box
-        self.contours = con
+        if(not np.array_equal(box, self.old_box)):
+            self._queue.put((box, self.old_box, con))
+            self.old_box = box

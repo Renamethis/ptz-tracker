@@ -1,12 +1,15 @@
 # Camera control parent class
 import logging
 from classes.OnvifInteraction import Camera
+from multiprocessing import Event, Process, Queue
+import numpy as np
 
 
-class Move:
+class Move(Process):
     # Initializing variables
     def __init__(self, ip, port, login, password, wsdl, Shape, speed,
-                 tracking_box, isAbsolute, name="Move"):
+                 tracking_box, isAbsolute, preset, name="Move"):
+        Process.__init__(self)
         self._tbox = tracking_box
         self._name = name
         self._ip = ip
@@ -14,6 +17,7 @@ class Move:
         self._login = login
         self._password = password
         self._wsdl = wsdl
+        self._preset = preset
         self._box = None
         self.old_box = None
         self.old_vec_x = 0
@@ -26,28 +30,35 @@ class Move:
         self._height = Shape[0]
         self._logger = logging.getLogger("Main.%s" % (self._name))
         self._Aimed = False
-        self.running = False
         self._isAbsolute = isAbsolute
+        self._thread = None
+        self.running = Event()
+        self._queue = Queue()
 
-    # Starting threads
+    # Connect to camera and start thread
     def start(self):
         self._logger.info("Process starting")
         self.cam = Camera(self._ip, self._port, self._login, self._password,
-                          self._wsdl, self._isAbsolute)
+                          self._wsdl, self._preset, self._isAbsolute)
         if(not self.cam.connect()):
             return False
         self.cam.start()
+        Process.start(self)
         return True
-
     # Setting box
+
     def set_box(self, box):
-        self._box = box
+        if(not np.array_equal(box, self.old_box)):
+            self._queue.put((box, self.old_box))
+            self.old_box = box
 
     # Stopping threads
     def stop(self):
-        self.running = False
         self.cam.stop_thread()
         del self.cam
+        self.running.set()
+        Process.join(self)
+        Process.kill(self)
 
     # Return rtsp-thread from Camera
     def get_rtsp(self):
