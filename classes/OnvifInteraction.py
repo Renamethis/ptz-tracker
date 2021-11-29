@@ -50,11 +50,11 @@ class Camera(Process):
     # Return url of rtsp-stream
     def getStreamUri(self):
         try:
-            request = self.media.create_type('GetStreamUri')
+            request = self.__media.create_type('GetStreamUri')
             request.StreamSetup = {'Stream': 'RTP-Unicast',
                                    'Transport': {'Protocol': 'RTSP'}}
             request.ProfileToken = self.profile.token
-            ans = self.media.GetStreamUri(request)
+            ans = self.__media.GetStreamUri(request)
         except onvif.exceptions.ONVIFError:
             self.__logger.exception('Error getting rtsp-url')
             return None
@@ -85,20 +85,20 @@ class Camera(Process):
                 new_type, request = self.__queue.get()
                 if(new_type is not None):
                     if(new_type == ptzType.Continuous):
-                        self.ptz.ContinuousMove(request)
+                        self.__ptz.ContinuousMove(request)
                     elif(new_type == ptzType.Absolute and self.isAbsolute):
-                        self.ptz.AbsoluteMove(request)
+                        self.__ptz.AbsoluteMove(request)
                     elif(new_type == ptzType.Relative and self.isAbsolute):
-                        self.ptz.RelativeMove(request)
+                        self.__ptz.RelativeMove(request)
                     elif(new_type == ptzType.Stop):
-                        self.ptz.Stop(request)
+                        self.__ptz.Stop(request)
                     elif(new_type == ptzType.GoPreset):
-                        self.ptz.GotoPreset(request)
+                        self.__ptz.GotoPreset(request)
                     elif(new_type == ptzType.GoHome):
-                        self.ptz.GotoHomePosition(request)
+                        self.__ptz.GotoHomePosition(request)
                 elif(self.__isAbsolute):
-                    self.status = self.ptz.GetStatus(
-                        self.requests['GetStatus'])
+                    self.__status = self.__ptz.GetStatus(
+                        self.__requests['GetStatus'])
             except (onvif.exceptions.ONVIFError, ConnectionResetError):
                 self.__logger.exception('Error sending request, reconnecting')
                 self.stop_thread()
@@ -106,17 +106,18 @@ class Camera(Process):
 
     # Move camera by vertical and horizontal speed
     def ContinuousMove(self, x, y, zoom=0.0):
-        self.requests['ContinuousMove'].Velocity.PanTilt.x = x
-        self.requests['ContinuousMove'].Velocity.PanTilt.y = y
-        self.requests['ContinuousMove'].Velocity.Zoom.x = zoom
-        self.__queue.put((ptzType.Continuous, self.requests['ContinuousMove']))
+        self.__requests['ContinuousMove'].Velocity.PanTilt.x = x
+        self.__requests['ContinuousMove'].Velocity.PanTilt.y = y
+        self.__requests['ContinuousMove'].Velocity.Zoom.x = zoom
+        self.__queue.put(
+            (ptzType.Continuous, self.__requests['ContinuousMove']))
 
     # Move camera by absolute coordinates
     def AbsoluteMove(self, x, y, zoom=0.0):
-        self.requests['AbsoluteMove'].Position.PanTilt.x = x
-        self.requests['AbsoluteMove'].Position.PanTilt.y = y
-        self.requests['AbsoluteMove'].Position.Zoom.x = zoom
-        self.__queue.put((ptzType.Absolute, self.requests['AbsoluteMove']))
+        self.__requests['AbsoluteMove'].Position.PanTilt.x = x
+        self.__requests['AbsoluteMove'].Position.PanTilt.y = y
+        self.__requests['AbsoluteMove'].Position.Zoom.x = zoom
+        self.__queue.put((ptzType.Absolute, self.__requests['AbsoluteMove']))
 
     # Connect camera
     def connect(self, substream=1):
@@ -124,31 +125,31 @@ class Camera(Process):
         try:
             self.cam = onvif.ONVIFCamera(self.__ip, self.__port, self.__login,
                                          self.__password, self.__wpath)
-            self.media = self.cam.create_media_service()
+            self.__media = self.cam.create_media_service()
             k = 1 if substream else 0
-            self.profile = self.media.GetProfiles()[k]
-            self.ptz = self.cam.create_ptz_service()
-            self.requests = {k: self.ptz.create_type(k)
-                             for k in self.__ptz_labels}
-            self.status = self.ptz.GetStatus({'ProfileToken':
-                                              self.profile.token})
-            for request in self.requests:
-                self.requests[request].ProfileToken = self.profile.token
+            self.profile = self.__media.GetProfiles()[k]
+            self.__ptz = self.cam.create_ptz_service()
+            self.__requests = {k: self.__ptz.create_type(k)
+                               for k in self.__ptz_labels}
+            self.__status = self.__ptz.GetStatus({'ProfileToken':
+                                                  self.profile.token})
+            for request in self.__requests:
+                self.__requests[request].ProfileToken = self.profile.token
             preset_token = None
-            for preset in self.ptz.GetPresets(self.requests['GetPresets']):
+            for preset in self.__ptz.GetPresets(self.__requests['GetPresets']):
                 if(preset['Name'] == self.__preset):
                     preset_token = preset['token']
                     break
             if(preset_token is None):
                 self.__preset = 'Home'
-            self.status.Position.Zoom.x = 0.0
-            self.status.Position.PanTilt.x = 0.0
-            self.status.Position.PanTilt.y = 0.0
-            self.requests['GotoPreset'].PresetToken = self.__preset
-            self.requests['GotoPreset'].Speed = self.status.Position
-            self.requests['AbsoluteMove'].Position = self.status.Position
-            self.requests['RelativeMove'].Translation = self.status.Position
-            self.requests['ContinuousMove'].Velocity = self.status.Position
+            self.__status.Position.Zoom.x = 0.0
+            self.__status.Position.PanTilt.x = 0.0
+            self.__status.Position.PanTilt.y = 0.0
+            self.__requests['GotoPreset'].PresetToken = preset_token
+            self.__requests['GotoPreset'].Speed = self.__status.Position
+            self.__requests['AbsoluteMove'].Position = self.__status.Position
+            self.__requests['RelativeMove'].Translation = self.__status.Position
+            self.__requests['ContinuousMove'].Velocity = self.__status.Position
             self.__logger.info('Successfully connected to the camera')
         except onvif.exceptions.ONVIFError:
             self.__logger.critical('Error with camera connection')
@@ -165,18 +166,18 @@ class Camera(Process):
     def goHome(self):
         if(self.__preset == 'Home'):
             self.__queue.put(
-                (ptzType.GoHome, self.requests['GotoHomePosition']))
+                (ptzType.GoHome, self.__requests['GotoHomePosition']))
         else:
-            self.__queue.put((ptzType.GoPreset, self.requests['GotoPreset']))
+            self.__queue.put((ptzType.GoPreset, self.__requests['GotoPreset']))
     # Return absolute coordinates from status
 
     def getAbsolute(self):
-        points = self.status['Position']['PanTilt']
+        points = self.__status['Position']['PanTilt']
         return [points['x'], points['y']]
 
     # Stop camera
     def stop(self):
-        self.__queue.put((ptzType.Stop, self.requests['Stop']))
+        self.__queue.put((ptzType.Stop, self.__requests['Stop']))
 
     # Stop ptz thread
     def stop_thread(self):

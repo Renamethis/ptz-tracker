@@ -54,8 +54,7 @@ class Tracker:
         # Initializing configparser
         self.Config = configparser.ConfigParser()
         self.Config.read(config_path)
-        # Get parameters from settings
-        self.update_data()
+        # Initialize tensor class
         self.__tensor = Tensor()
         self.__status_log = None
 
@@ -76,19 +75,15 @@ class Tracker:
         while self.running:
             if(self.__ping.read() != 0 and self.__ping.read() is not None):
                 self.__logger.error("Camera connection is lost or unstable")
-                if(self.mode == Mode.Tracking):
-                    mode = self.__move
-                elif(self.mode == Mode.AutoSet):
-                    mode = self.__moveset
-                mode.stop()
-                self.__stream.stop()
+                self.stop()
                 while(self.__ping.read() != 0):
                     sleep(5)
-                mode.start()
-                self.__stream.start(mode.get_rtsp())
+                self.update_data()
+                if(self.__mode_type == Mode.Tracking):
+                    self.start_tracker()
+                else:
+                    self.start_autoset()
                 self.__logger.info("Camera connection restored")
-            else:
-                self.__move.pause = self.__moveset.pause = False
             img = self.__stream.read()
             if img is not None:
                 img = cv2.resize(img, (self.width, self.height))
@@ -115,22 +110,21 @@ class Tracker:
                                     if(cX == centroid[0] and cY == centroid[1]):
                                         found_box = b
                                         break
-                                if(self.mode == Mode.Tracking):
-                                    self.__move.set_box(found_box)
+                                if(self.__mode_type == Mode.Tracking):
+                                    self.__move_mode.set_box(found_box)
                                     self.status = Status.Aimed if \
-                                        self.__move.isAimed() else Status.Moving
-                                elif(self.mode == Mode.AutoSet):
-                                    self.status = Status.Moving
-                                    self.__moveset.set_box(found_box,
-                                                           self.__get_contours(img))
+                                        self.__move_mode.isAimed() else Status.Moving
+                                elif(self.__mode_type == Mode.AutoSet):
+                                    self.__move_mode = Status.Moving
+                                    self.__move_mode.set_box(found_box,
+                                                             self.__get_contours(img))
                         else:
                             self.__amount_person = 0
                             self.status = Status.NoPerson
-                            self.__move.set_box(None)
-                            self.__moveset.set_box(None, None)
-            self.running = self.__stream.running and self.__tensor.running and \
-                ((self.mode == Mode.Tracking and self.__move.running)
-                    or (self.mode == Mode.AutoSet and self.__moveset.running))
+                            self.__move_mode.set_box(None) if self.__mode_type == Mode.Tracking \
+                                else self.__move_mode.set_box(None, None)
+            self.running = self.__stream.running and \
+                self.__tensor.running and not self.__move_mode.running.is_set()
         self.__logger.info("Tracker stopped")
 
     # Start tracker function
@@ -139,6 +133,7 @@ class Tracker:
         self.__logger.info("Tracker starting...")
         if(not self.__move.start()):
             return False
+        self.__move_mode = self.__move
         self.running = True
         if(self.isLogging):
             self.__status_thread = Thread(target=self.__status_log_thread,
@@ -147,7 +142,7 @@ class Tracker:
         self.__stream.start(self.__move.get_rtsp())
         self.__tensor.start()
         self.__ping.start()
-        self.mode = Mode.Tracking
+        self.__mode_type = Mode.Tracking
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
         return self.running and not self.__move.running.is_set() and \
@@ -159,11 +154,12 @@ class Tracker:
         self.__logger.info("Autoset starting...")
         if(not self.__moveset.start()):
             return not self.__moveset.running.is_set()
+        self.__move_mode = self.__moveset
         self.running = True
         self.__stream.start(self.__moveset.get_rtsp())
         self.__tensor.start()
         self.__ping.start()
-        self.mode = Mode.AutoSet
+        self.__mode_type = Mode.AutoSet
         self.main = Thread(target=self.__update, name=self.name)
         self.main.start()
         return self.running and not self.__moveset.running.is_set() and \
@@ -173,10 +169,7 @@ class Tracker:
     def stop(self):
         self.__stream.stop()
         self.__tensor.stop()
-        if(self.mode == Mode.Tracking):
-            self.__move.stop()
-        elif(self.mode == Mode.AutoSet):
-            self.__moveset.stop()
+        self.__move_mode.stop()
         self.status = Status.Stopped
 
     # Pixels coordinates checking function
@@ -244,9 +237,9 @@ class Tracker:
             del self.__moveset
             del self.__stream
             del self.__ping
-            self.__logger.info("Data updated")
+            self.__logger.info("Configuration updated")
         except AttributeError:
-            pass
+            self.__logger.info("Configuration loaded")
         self.__centroidTracker = CentroidTracker()
         self.__move = MoveBase(ip, port, login, password, self.wsdl_path,
                                [self.height, self.width], speed, tweaking,

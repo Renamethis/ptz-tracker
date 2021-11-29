@@ -14,8 +14,8 @@ class VideoStream:
         self.running = False
         if(GStreamer):
             if(device == "Jetson"):
-                self.rtsp_url = 'rtspsrc location="{rtsp_url}" ! queue' + \
-                    '! rtph264depay ! queue ! h264parse ! omxh264dec !' + \
+                self.rtsp_url = 'rtspsrc location="{rtsp_url}" latency=0 !' + \
+                    'queue ! rtph264depay ! queue ! h264parse ! omxh264dec !' + \
                     ' nvvidconv ! video/x-raw,format=BGRx !' + \
                     ' videoconvert! video/x-raw,format=BGR ! appsink'
             else:

@@ -11,9 +11,8 @@ class MoveBase(Move):
                  bounds, tracking_box, isAbsolute, preset, name="Move"):
         Move.__init__(self, ip, port, login, password, wsdl, Shape, speed,
                       tracking_box, isAbsolute, preset)
-        self.tweaking = tweaking
-        self.bounds = bounds
-        self.spaceLimits = bounds
+        self.__tweaking = tweaking
+        self.__spaceLimits = bounds
 
     # Starting thread
     def start(self):
@@ -60,11 +59,11 @@ class MoveBase(Move):
                 if(self._isAbsolute or message is not None):
                     point = self.cam.getAbsolute() if \
                             self._isAbsolute else rotation
-                    if((point[0] < self.spaceLimits[0] and vec_x < 0)
-                       or (point[0] > self.spaceLimits[2] and vec_x > 0)):
+                    if((point[0] < self.__spaceLimits[0] and vec_x < 0)
+                       or (point[0] > self.__spaceLimits[2] and vec_x > 0)):
                         vec_x = 0
-                    if(point[1] < self.spaceLimits[1] and vec_y > 0
-                       or (point[1] > self.spaceLimits[3] and vec_y < 0)):
+                    if(point[1] < self.__spaceLimits[1] and vec_y > 0
+                       or (point[1] > self.__spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
                 if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     self._Aimed = True
@@ -84,7 +83,7 @@ class MoveBase(Move):
                     tweaking_frames = 0
                     self.cam.goHome()
                     sleep(self._ddelay)
-                sleep(self.tweaking)
+                sleep(self.__tweaking)
                 tweaking_frames += 1
         self._logger.info("Process stopped")
 

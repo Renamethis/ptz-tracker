@@ -57,8 +57,9 @@ class Move(Process):
         self.cam.stop_thread()
         del self.cam
         self.running.set()
+        self._queue.put((None, None))
         Process.join(self)
-        Process.kill(self)
+        Process.terminate(self)
 
     # Return rtsp-thread from Camera
     def get_rtsp(self):
