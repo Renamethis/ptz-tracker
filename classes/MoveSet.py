@@ -3,7 +3,7 @@ from multiprocessing import Process
 import numpy as np
 from enum import Flag, auto
 from classes.Move import Move
-import time
+from time import sleep
 
 # Enum class for object positions on greenscreen
 
@@ -13,9 +13,6 @@ class Position(Flag):
     RIGHT = auto()
     LEFT = auto()
     TOP = auto()
-
-
-TOTALFRAMES = 100
 
 
 class MoveSet(Move):
@@ -29,6 +26,7 @@ class MoveSet(Move):
         self.BOT = Bounds[1]
         self.RIGHT = Bounds[2]
         self.UP = Bounds[3]
+        self.__moveset_delay = 5
 
     # Main loop
     def run(self):
@@ -56,11 +54,13 @@ class MoveSet(Move):
                 vec_y = vec_y*self.speed_coef
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
-                if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
+                if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03 and not self._Aimed):
                     vec_x = 0
                     vec_y = 0
                     self._Aimed = True
-                if(vec_x == 0 and vec_y == 0):
+                    self.cam.stop()
+                    sleep(self.__moveset_delay)
+                elif(abs(vec_x) < 0.03 and abs(vec_y) < 0.03):
                     pos = Position.NO
                     for con in contours:
                         pointsx = con[:, 0, 1]
@@ -89,7 +89,6 @@ class MoveSet(Move):
                     '''
                     #self.cam.ContinuousMove(0, 0)
                     self.cam.stop()
-                    self.cam.stop_thread()
                     self.running.set()
                     if(pos != Position.NO):
                         self._logger.info("Object found on" + str(pos))
