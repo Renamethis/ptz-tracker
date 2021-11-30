@@ -115,9 +115,9 @@ class Tracker:
                                     self.status = Status.Aimed if \
                                         self.__move_mode.isAimed() else Status.Moving
                                 elif(self.__mode_type == Mode.AutoSet):
-                                    self.__move_mode = Status.Moving
                                     self.__move_mode.set_box(found_box,
                                                              self.__get_contours(img))
+                                    self.status = Status.Moving
                         else:
                             self.__amount_person = 0
                             self.status = Status.NoPerson
