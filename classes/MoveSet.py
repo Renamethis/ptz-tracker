@@ -33,7 +33,7 @@ class MoveSet(Move):
     # Main loop
     def run(self):
         self._logger.info("Process started")
-        while self.running:
+        while not self.running.is_set():
             if(self.pause):
                 self.cam.pause = True
                 continue
@@ -89,7 +89,7 @@ class MoveSet(Move):
                     '''
                     #self.cam.ContinuousMove(0, 0)
                     self.cam.stop()
-                    self.running = False
+                    self.stop()
                     if(pos != Position.NO):
                         self._logger.info("Object found on" + str(pos))
                 else:
