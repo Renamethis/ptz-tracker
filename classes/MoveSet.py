@@ -89,7 +89,8 @@ class MoveSet(Move):
                     '''
                     #self.cam.ContinuousMove(0, 0)
                     self.cam.stop()
-                    self.stop()
+                    self.cam.stop_thread()
+                    self.running.set()
                     if(pos != Position.NO):
                         self._logger.info("Object found on" + str(pos))
                 else:
