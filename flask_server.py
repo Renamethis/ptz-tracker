@@ -4,7 +4,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 import configparser
-from classes.tracker import Tracker
+from classes.Tracker import Tracker
 
 
 pwd = os.getcwd()
@@ -41,6 +41,12 @@ def tracker_listener():
             '''
             return answer('OK', data={'information':
                                       'Tracker successfully started'})
+        elif data['command'] == 'assistant':
+            if(not tracker.running):
+                tracker.update_data()
+                if(not tracker.start_assistant()):
+                    return error('Error with assistant starting, '
+                                 + 'check logs to get more information')
         elif data['command'] == 'autoset':
             if(not tracker.running):
                 tracker.update_data()
@@ -59,6 +65,13 @@ def tracker_listener():
             else:
                 return error('Tracker is not running')
             return answer('Tracker stopped')
+        elif data['command'] == 'track':
+            if(tracker.running and tracker.is_assistant()):
+                tracker.set_track(data["id"])
+                return answer('OK', data={'information':
+                                          'Track id set successfully'})
+            else:
+                return error('Assistant is not running')
         elif data['command'] == 'log':
             if(tracker.running):
                 return answer('OK', data={'log': tracker.get_status_log()})

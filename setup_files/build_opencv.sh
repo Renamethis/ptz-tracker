@@ -16,8 +16,9 @@ cmake -D CMAKE_INSTALL_PREFIX=../venv \
  -D BUILD_opencv_python2=OFF \
  -D PYTHON_PACKAGES_PATH=../venv/lib64/python3.6/site-packages \
  -D PYTHON_NUMPY_INCLUDE_DIRS=../venv/lib/python3.6/site-packages/numpy/core/include \
+ -D WITH_GTK=ON \
  ../opencv
 
-make -j4
+make -j8
 sudo make install
 cd ..
