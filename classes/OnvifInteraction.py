@@ -122,38 +122,38 @@ class Camera(Process):
     # Connect camera
     def connect(self, substream=1):
         self.__logger.info("Connecting to the camera")
-        try:
-            self.cam = onvif.ONVIFCamera(self.__ip, self.__port, self.__login,
-                                         self.__password, self.__wpath)
-            self.__media = self.cam.create_media_service()
-            k = 1 if substream else 0
-            self.profile = self.__media.GetProfiles()[k]
-            self.__ptz = self.cam.create_ptz_service()
-            self.__requests = {k: self.__ptz.create_type(k)
-                               for k in self.__ptz_labels}
-            self.__status = self.__ptz.GetStatus({'ProfileToken':
-                                                  self.profile.token})
-            for request in self.__requests:
-                self.__requests[request].ProfileToken = self.profile.token
-            preset_token = None
-            for preset in self.__ptz.GetPresets(self.__requests['GetPresets']):
-                if(preset['Name'] == self.__preset):
-                    preset_token = preset['token']
-                    break
-            if(preset_token is None):
-                self.__preset = 'Home'
-            self.__status.Position.Zoom.x = 0.0
-            self.__status.Position.PanTilt.x = 0.0
-            self.__status.Position.PanTilt.y = 0.0
-            self.__requests['GotoPreset'].PresetToken = preset_token
-            self.__requests['GotoPreset'].Speed = self.__status.Position
-            self.__requests['AbsoluteMove'].Position = self.__status.Position
-            self.__requests['RelativeMove'].Translation = self.__status.Position
-            self.__requests['ContinuousMove'].Velocity = self.__status.Position
-            self.__logger.info('Successfully connected to the camera')
-        except onvif.exceptions.ONVIFError:
-            self.__logger.critical('Error with camera connection')
-            return False
+        #try:
+        self.cam = onvif.ONVIFCamera(self.__ip, self.__port, self.__login,
+                                     self.__password, self.__wpath)
+        self.__media = self.cam.create_media_service()
+        k = 1 if substream else 0
+        self.profile = self.__media.GetProfiles()[k]
+        self.__ptz = self.cam.create_ptz_service()
+        self.__requests = {k: self.__ptz.create_type(k)
+                           for k in self.__ptz_labels}
+        self.__status = self.__ptz.GetStatus({'ProfileToken':
+                                              self.profile.token})
+        for request in self.__requests:
+            self.__requests[request].ProfileToken = self.profile.token
+        preset_token = None
+        for preset in self.__ptz.GetPresets(self.__requests['GetPresets']):
+            if(preset['Name'] == self.__preset):
+                preset_token = preset['token']
+                break
+        if(preset_token is None):
+            self.__preset = 'Home'
+        self.__status.Position.Zoom.x = 0.0
+        self.__status.Position.PanTilt.x = 0.0
+        self.__status.Position.PanTilt.y = 0.0
+        self.__requests['GotoPreset'].PresetToken = preset_token
+        self.__requests['GotoPreset'].Speed = self.__status.Position
+        self.__requests['AbsoluteMove'].Position = self.__status.Position
+        self.__requests['RelativeMove'].Translation = self.__status.Position
+        self.__requests['ContinuousMove'].Velocity = self.__status.Position
+        self.__logger.info('Successfully connected to the camera')
+        #except onvif.exceptions.ONVIFError:
+        #    self.__logger.critical('Error with camera connection')
+        #    return False
         return True
 
     # Start threads

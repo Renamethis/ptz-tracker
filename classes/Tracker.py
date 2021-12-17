@@ -94,11 +94,11 @@ class Tracker:
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.5)
+                        score = np.where(scores > 0.0)
                         # Convert boxes and pass it to CentroidTracker
                         if (len(scores[score]) != 0):
                             boxes = boxes[score]
-                            self.__amount_person = len()
+                            self.__amount_person = len(boxes)
                             box = (self.l_h*boxes)
                             boxes = self.__to_int(box)
                             objects = self.__centroidTracker.update(box)
@@ -110,7 +110,7 @@ class Tracker:
                                 for key in objects.keys():
                                     centroid = objects[key]
                                     if(centroid[0] == cX and centroid[1] == cY):
-                                        boxes_dict[key: b]
+                                        boxes_dict[key] = b
                                         break
                             if(self.__mode_type == Mode.Tracking
                                or self.__mode_type == Mode.AutoSet):
@@ -157,6 +157,7 @@ class Tracker:
                                                  self.__mqtt_user,
                                                  self.__mqtt_password,
                                                  self.__mqtt_port)
+        self.__mqtt_client.loop_start()
         self.__mode_type = Mode.Assistant
         return self.__start_general()
 
@@ -229,7 +230,7 @@ class Tracker:
         # Assistant settings
         self.__mqtt_adress = self.__get_setting("Assistant", "mqtt_adress")
         self.__mqtt_topic = self.__get_setting("Assistant", "mqtt_topic")
-        self.__mqtt_port = self.__get_setting("Assistant", "mqtt_port")
+        self.__mqtt_port = int(self.__get_setting("Assistant", "mqtt_port"))
         self.__mqtt_user = self.__get_setting("Assistant", "mqtt_user")
         self.__mqtt_password = self.__get_setting("Assistant", "mqtt_password")
         # AutoRecord settings
@@ -275,7 +276,7 @@ class Tracker:
     # Start general threads
     def __start_general(self):
         self.status = Status.Starting
-        self.__stream.start(self.__moveset.get_rtsp())
+        self.__stream.start(self.__move_mode.get_rtsp())
         self.__tensor.start()
         self.__ping.start()
         self.main = Thread(target=self.__update, name=self.name)
@@ -299,12 +300,13 @@ class Tracker:
         return contours
 
     # Connect to mqtt server
-    def __connect_mqtt(adress, user, password, port):
+    def __connect_mqtt(self, adress, user, password, port):
         def on_connect(client, userdata, flags, rc):
             if rc == 0:
-                print("Connected to MQTT Broker!")
+                self.__logger.info("Connected to MQTT Broker")
             else:
-                print("Failed to connect, return code %d\n", rc)
+                self.__logger.critical("Failed to connect to MQTT Broker - " + \
+                                       str(rc) + " Error")
         # Set Connecting Client ID
         client_id = f'python-mqtt-{randint(0, 1000)}'
         client = mqtt_client.Client(client_id)

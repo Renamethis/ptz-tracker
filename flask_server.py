@@ -47,6 +47,8 @@ def tracker_listener():
                 if(not tracker.start_assistant()):
                     return error('Error with assistant starting, '
                                  + 'check logs to get more information')
+                return answer('OK', data={'information':
+                                          'Assistant successfully started'})
         elif data['command'] == 'autoset':
             if(not tracker.running):
                 tracker.update_data()
