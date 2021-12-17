@@ -2,7 +2,7 @@
 import argparse
 from paho.mqtt import client as mqtt_client
 import random
-from json import loads
+import json
 import cv2
 from threading import Thread
 import numpy as np
@@ -57,9 +57,9 @@ def subscribe(client: mqtt_client):
         global new_boxes
         old_boxes = new_boxes
         try:
-            new_boxes = loads(msg.payload.decode())
-        except:
-            print('Broken')
+            new_boxes = json.loads(msg.payload.decode())
+        except json.decoder.JSONDecodeError:
+            print('Not JSON Message\nRaw message: ' + msg.payload.decode())
     client.subscribe(topic)
     client.on_message = on_message
 
@@ -71,8 +71,11 @@ def stream_thread(stream):
         ret, frame = stream.read()
         cv2.resize(frame, (720, 640))
         if(new_boxes is not None and np.array_equal(new_boxes, old_boxes)):
-            for box in new_boxes.values():
+            boxes = new_boxes
+            for key in boxes.keys():
+                box = boxes[key]
                 cv2.rectangle(frame, box, (255, 0, 0), 2)
+                cv2.putText(frame,"id:" + key, (box[0], box[3]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, 1)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         cv2.imshow('Preview', frame)
