@@ -94,7 +94,7 @@ class Tracker:
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.0)
+                        score = np.where(scores > 0.5)
                         # Convert boxes and pass it to CentroidTracker
                         if (len(scores[score]) != 0):
                             boxes = boxes[score]
