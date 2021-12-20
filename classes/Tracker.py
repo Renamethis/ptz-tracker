@@ -62,6 +62,7 @@ class Tracker:
         self.__tensor = Tensor()
         self.__status_log = None
         self.__person_id = None
+        self.__persons = {}
 
     # Main loop function
     def __update(self):
@@ -69,18 +70,14 @@ class Tracker:
         while self.running:
             # Check connection to camera, if it falls - reinitialize tracker
             # classes
-            if(self.__ping.read() != 0 and self.__ping.read() is not None):
+            if(self.__move_type != Mode.AutoSet and \
+               self.__ping.read() != 0 and self.__ping.read() is not None):
                 self.__logger.error("Camera connection is lost or unstable")
-                self.stop()
+                self.__stream.stop()
                 while(self.__ping.read() != 0):
                     sleep(5)
-                self.update_data()
-                if(self.__mode_type == Mode.Tracking):
-                    self.start_tracker()
-                elif(self.__mode_type == Mode.Assistant):
-                    self.start_assistant()
-                elif(self.__mode_type == Mode.AutoSet):
-                    self.start_autoset()
+                self.__move_mode.reconnect()
+                self.__stream.start(self.__move_mode.get_rtsp())
                 self.__logger.info("Camera connection restored")
             # Read images from stream
             img = self.__stream.read()
@@ -112,33 +109,37 @@ class Tracker:
                                     if(centroid[0] == cX and centroid[1] == cY):
                                         boxes_dict[key] = b
                                         break
-                            if(self.__mode_type == Mode.Tracking
-                               or self.__mode_type == Mode.AutoSet):
+                            self.__persons = boxes_dict
+                            if(self.__move_type == Mode.Tracking
+                               or self.__move_type == Mode.AutoSet):
                                 # If tracker started as default tracker or
                                 # autoset, then choose fist person
-                                if(self.__mode_type == Mode.Tracking):
+                                if(self.__move_type == Mode.Tracking):
                                     self.__move_mode.set_box(
                                         boxes_dict[min(boxes_dict.keys())])
-                                elif(self.__mode_type == Mode.AutoSet):
+                                elif(self.__move_type == Mode.AutoSet):
                                     self.__move_mode.set_box(
                                         boxes_dict[min(boxes_dict.keys())],
                                         self.__get_contours(img))
                                     self.status = Status.Moving
-                            elif(self.__mode_type == Mode.Assistant):
+                            elif(self.__move_type == Mode.Assistant):
                                 # If tracker started as assistent, then
                                 # waiting for the choice of a person or track
                                 # the chosen one
                                 self.__mqtt_client.publish(self.__mqtt_topic,
                                                            dumps(boxes_dict))
                                 if(self.__person_id is not None
-                                   and self.__person_id in object.keys()):
+                                   and self.__person_id in self.__persons.keys()):
                                     self.__move_mode.set_box(
-                                         boxes_dict[self.__person_id])
+                                         self.__persons[self.__person_id])
+                                else:
+                                    self.__move_mode.set_box(None)
                         else:
                             self.__amount_person = 0
                             self.status = Status.NoPerson
                             self.__move_mode.set_box(None) if \
-                                self.__mode_type == Mode.Tracking \
+                                self.__move_type == Mode.Tracking \
+                                or self.__move_type == Mode.Assistant \
                                 else self.__move_mode.set_box(None, None)
             self.running = self.__stream.running and \
                 self.__tensor.running and not self.__move_mode.running.is_set()
@@ -158,7 +159,7 @@ class Tracker:
                                                  self.__mqtt_password,
                                                  self.__mqtt_port)
         self.__mqtt_client.loop_start()
-        self.__mode_type = Mode.Assistant
+        self.__move_type = Mode.Assistant
         return self.__start_general()
 
         # Start tracker function
@@ -173,7 +174,7 @@ class Tracker:
             self.__status_thread = Thread(target=self.__status_log_thread,
                                           name="status_log")
             self.__status_thread.start()
-        self.__mode_type = Mode.Tracking
+        self.__move_type = Mode.Tracking
         return self.__start_general()
 
     # Start autoset function
@@ -184,7 +185,7 @@ class Tracker:
             return not self.__moveset.running.is_set()
         self.__move_mode = self.__moveset
         self.running = True
-        self.__mode_type = Mode.AutoSet
+        self.__move_type = Mode.AutoSet
         return self.__start_general()
 
     # Stop function
@@ -258,13 +259,16 @@ class Tracker:
 
         self.__ping = Ping(ip)
 
-    # Return is tracker running as assistant
+    # Is tracker running as assistant
     def is_assistant(self):
-        return self.__mode_type == Mode.Assistant
+        return self.__move_type == Mode.Assistant
 
     # Setting person id variable
     def set_track(self, id):
-        self.__person_id = id
+        if(int(id) in self.__persons.keys()):
+            self.__person_id = int(id)
+            return True
+        return False
 
     # Pixels coordinates checking function
     def __check(self, pixel):
@@ -315,7 +319,6 @@ class Tracker:
         client.connect(adress, port)
         return client
     # Get setting from config file
-
     def __get_setting(self, section, setting):
         try:
             return self.Config.get(section, setting)
@@ -327,6 +330,7 @@ class Tracker:
             self.__logger.critical("Section " + section + " not found")
             sys.exit(2)
 
+    # Convert float values in box to int values
     def __to_int(self, boxes):
         res = []
         for box in boxes:

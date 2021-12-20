@@ -41,9 +41,10 @@ then
 	pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/$1 tensorflow
 	pip3 install imutils astor
 	sed -i '$ d' settings.ini
+	sed -i '$ d' requirements.txt
 	echo 'device = Jetson' >> settings.ini
 else
-	pip3 install -r requirements_cpu.txt
 	sed -i '$ d' settings.ini
 	echo 'device = CPU' >> settings.ini
 fi
+pip3 install -r requirements.txt

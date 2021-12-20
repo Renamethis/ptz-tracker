@@ -27,9 +27,6 @@ class MoveBase(Move):
         message = rotation = None
         tweaking_frames = 0
         while not self.running.is_set():
-            if(self.pause):
-                self.cam.pause = True
-                continue
             #message = self.mt.get_message()
             #rotation = self.mt.get_rotation() if message is not None else None
             if self.pause:

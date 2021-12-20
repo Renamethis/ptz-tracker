@@ -1,5 +1,5 @@
-import os
 import sys
+import os
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -69,9 +69,11 @@ def tracker_listener():
             return answer('Tracker stopped')
         elif data['command'] == 'track':
             if(tracker.running and tracker.is_assistant()):
-                tracker.set_track(data["id"])
-                return answer('OK', data={'information':
-                                          'Track id set successfully'})
+                if(tracker.set_track(data["id"])):
+                    return answer('OK', data={'information':
+                                          'Track id set up successfully'})
+                else:
+                    return error('Provided id is incorrect')
             else:
                 return error('Assistant is not running')
         elif data['command'] == 'log':
@@ -128,4 +130,4 @@ def answer(type, data=None):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='127.0.0.1')

@@ -7,7 +7,7 @@ import numpy as np
 
 class Move(Process):
     # Initializing variables
-    def __init__(self, ip, port, login, password, wsdl, Shape, speed,
+    def __init__(self, ip, port, login, password, wsdl, shape, speed,
                  tracking_box, isAbsolute, preset, name="Move"):
         Process.__init__(self)
         self._tbox = tracking_box
@@ -24,15 +24,15 @@ class Move(Process):
         self.old_vec_y = 0
         self.count_frame = 0
         self.speed_coef = speed
-        self.pause = False
         self._ddelay = 0.1
-        self._width = Shape[1]
-        self._height = Shape[0]
+        self._width = shape[1]
+        self._height = shape[0]
         self._logger = logging.getLogger("Main.%s" % (self._name))
         self._Aimed = False
         self._isAbsolute = isAbsolute
         self._thread = None
         self.running = Event()
+        self.pause = Event()
         self._queue = Queue()
 
     # Connect to camera and start thread
@@ -59,13 +59,12 @@ class Move(Process):
         self.running.set()
         self._queue.put((None, None))
         Process.join(self)
-        Process.terminate(self)
-
+    def reconnect(self):
+        self.cam.reconnect()
     # Return rtsp-thread from Camera
     def get_rtsp(self):
         return "rtsp://" + self._login + ":" + self._password + "@" + \
                    self.cam.getStreamUri().split('//')[1]
-
     # Return aimed-state bool
     def isAimed(self):
         return self._Aimed
