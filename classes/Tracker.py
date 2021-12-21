@@ -71,13 +71,18 @@ class Tracker:
             # Check connection to camera, if it falls - reinitialize tracker
             # classes
             if(self.__move_type != Mode.AutoSet and \
-               self.__ping.read() != 0 and self.__ping.read() is not None):
+               self.__ping.read() and self.__ping.read() is not None):
                 self.__logger.error("Camera connection is lost or unstable")
                 self.__stream.stop()
+                self.__move_mode.stop()
                 while(self.__ping.read() != 0):
-                    sleep(5)
-                self.__move_mode.reconnect()
+                    sleep(1)
+                self.__ping.stop()
+                self.update_data()
+                self.__move_mode = self.__move
+                self.__move_mode.start()
                 self.__stream.start(self.__move_mode.get_rtsp())
+                self.__ping.start()
                 self.__logger.info("Camera connection restored")
             # Read images from stream
             img = self.__stream.read()
@@ -193,6 +198,7 @@ class Tracker:
         self.__stream.stop()
         self.__tensor.stop()
         self.__move_mode.stop()
+        self.__ping.stop()
         self.status = Status.Stopped
 
     # Updating parameters from config
@@ -280,6 +286,7 @@ class Tracker:
     # Start general threads
     def __start_general(self):
         self.status = Status.Starting
+        print(self.__move_mode.get_rtsp())
         self.__stream.start(self.__move_mode.get_rtsp())
         self.__tensor.start()
         self.__ping.start()

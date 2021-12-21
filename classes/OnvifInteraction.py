@@ -5,8 +5,8 @@ import logging
 from enum import Enum, auto
 from multiprocessing import Process, Event, Queue
 from zeep.transports import Transport
-
-
+from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
+from requests.exceptions import ConnectTimeout
 class ptzType(Enum):
     Absolute = auto()
     Continuous = auto()
@@ -80,27 +80,26 @@ class Camera(Process):
         '''
         self.__logger.info("Process started")
         while not self.__running.is_set():
-            try:
                 new_type, request = self.__queue.get()
-                if(new_type is not None):
-                    if(new_type == ptzType.Continuous):
-                        self.__ptz.ContinuousMove(request)
-                    elif(new_type == ptzType.Absolute and self.isAbsolute):
-                        self.__ptz.AbsoluteMove(request)
-                    elif(new_type == ptzType.Relative and self.isAbsolute):
-                        self.__ptz.RelativeMove(request)
-                    elif(new_type == ptzType.Stop):
-                        self.__ptz.Stop(request)
-                    elif(new_type == ptzType.GoPreset):
-                        self.__ptz.GotoPreset(request)
-                    elif(new_type == ptzType.GoHome):
-                        self.__ptz.GotoHomePosition(request)
-                elif(self.__isAbsolute):
-                    self.__status = self.__ptz.GetStatus(
-                        self.__requests['GetStatus'])
-            except onvif.exceptions.ONVIFError:
-                self.__logger.exception('Error sending request, reconnecting')
-                self.stop_thread()
+                try:
+                    if(new_type is not None):
+                        if(new_type == ptzType.Continuous):
+                            self.__ptz.ContinuousMove(request)
+                        elif(new_type == ptzType.Absolute and self.isAbsolute):
+                            self.__ptz.AbsoluteMove(request)
+                        elif(new_type == ptzType.Relative and self.isAbsolute):
+                            self.__ptz.RelativeMove(request)
+                        elif(new_type == ptzType.Stop):
+                            self.__ptz.Stop(request)
+                        elif(new_type == ptzType.GoPreset):
+                            self.__ptz.GotoPreset(request)
+                        elif(new_type == ptzType.GoHome):
+                            self.__ptz.GotoHomePosition(request)
+                    elif(self.__isAbsolute):
+                        self.__status = self.__ptz.GetStatus(
+                            self.__requests['GetStatus'])
+                except:
+                    continue
         self.__logger.info("Process stopped")
 
     # Move camera by vertical and horizontal speed
@@ -165,13 +164,11 @@ class Camera(Process):
 
     # Set camera to home position
     def goHome(self):
-        '''
         if(self.__preset == 'Home'):
             self.__queue.put(
                 (ptzType.GoHome, self.__requests['GotoHomePosition']))
         else:
             self.__queue.put((ptzType.GoPreset, self.__requests['GotoPreset']))
-        '''
         pass
     # Return absolute coordinates from status
 
@@ -183,11 +180,8 @@ class Camera(Process):
     def stop(self):
         self.__queue.put((ptzType.Stop, self.__requests['Stop']))
 
-    def reconnect(self):
-        return self.connect()
     # Stop ptz thread
     def stop_thread(self):
         self.__running.set()
         self.__queue.put((None, None))
         Process.join(self)
-        del self.cam

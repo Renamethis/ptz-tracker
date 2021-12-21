@@ -32,9 +32,6 @@ class MoveSet(Move):
     def run(self):
         self._logger.info("Process started")
         while not self.running.is_set():
-            if(self.pause):
-                self.cam.pause = True
-                continue
             box, old_box, contours = self._queue.get()
             if(box is not None and contours is not None):
                 to_x = int(abs(box[1] - box[3])/2.0 + box[1])
@@ -58,7 +55,7 @@ class MoveSet(Move):
                     vec_x = 0
                     vec_y = 0
                     self._Aimed = True
-                    self.cam.stop()
+                    self._cam.stop()
                     sleep(self.__moveset_delay)
                 elif(abs(vec_x) < 0.03 and abs(vec_y) < 0.03):
                     pos = Position.NO
@@ -78,25 +75,25 @@ class MoveSet(Move):
                     '''
                     if(pos == Position.LEFT | Position.RIGHT
                        or pos == Position.LEFT | Position.RIGHT | Position.TOP):
-                        self.cam.ContinuousMove(0, 0, self.speed_coef*0.1)
+                        self._cam.ContinuousMove(0, 0, self.speed_coef*0.1)
                     elif(pos == Position.RIGHT):
-                        self.cam.ContinuousMove(-self.speed_coef * 0.2, 0)
+                        self._cam.ContinuousMove(-self.speed_coef * 0.2, 0)
                     elif(pos == Position.LEFT):
-                        self.cam.ContinuousMove(-self.speed_coef * 0.2, 0)
+                        self._cam.ContinuousMove(-self.speed_coef * 0.2, 0)
                     elif(pos == Position.TOP):
-                        self.cam.ContinuousMove(0, -self.speed_coef * 0.2)
+                        self._cam.ContinuousMove(0, -self.speed_coef * 0.2)
                     else:
                     '''
                     #self.cam.ContinuousMove(0, 0)
-                    self.cam.stop()
+                    self._cam.stop()
                     self.running.set()
                     if(pos != Position.NO):
                         self._logger.info("Object found on" + str(pos))
                 else:
                     self._Aimed = False
-                    self.cam.ContinuousMove(vec_x, vec_y)
+                    self._cam.ContinuousMove(vec_x, vec_y)
             else:
-                self.cam.stop()
+                self._cam.stop()
         self._logger.info("Process stopped")
 
     # Set person box, greenscreen contours

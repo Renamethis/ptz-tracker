@@ -29,9 +29,6 @@ class MoveBase(Move):
         while not self.running.is_set():
             #message = self.mt.get_message()
             #rotation = self.mt.get_rotation() if message is not None else None
-            if self.pause:
-                self.cam.stop()
-                sleep(self._ddelay)
             box, old_box = self._queue.get()
             if(np.array_equal(box, old_box) and box is not None):
                 continue
@@ -54,7 +51,7 @@ class MoveBase(Move):
                 vec_x = 1 if vec_x > 1 else vec_x
                 vec_y = 1 if vec_x > 1 else vec_y
                 if(self._isAbsolute or message is not None):
-                    point = self.cam.getAbsolute() if \
+                    point = self._cam.getAbsolute() if \
                             self._isAbsolute else rotation
                     if((point[0] < self.__spaceLimits[0] and vec_x < 0)
                        or (point[0] > self.__spaceLimits[2] and vec_x > 0)):
@@ -64,21 +61,21 @@ class MoveBase(Move):
                         vec_y = 0
                 if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     self._Aimed = True
-                    self.cam.stop()
+                    self._cam.stop()
                 else:
                     #self._logger.info('X: ' + str(vec_x) + ' Y: ' + str(vec_y))
                     self._Aimed = False
-                    self.cam.ContinuousMove(vec_x, vec_y)
+                    self._cam.ContinuousMove(vec_x, vec_y)
                 tweaking_frames = 0
             elif box is None and old_box is not None:
                 if (tweaking_frames < 20):
-                    self.cam.ContinuousMove(vec_x, vec_y)
+                    self._cam.ContinuousMove(vec_x, vec_y)
                 elif (tweaking_frames == 20):
-                    self.cam.stop()
+                    self._cam.stop()
                     sleep(self._ddelay)
                 elif (tweaking_frames == 60):
                     tweaking_frames = 0
-                    self.cam.goHome()
+                    self._cam.goHome()
                     sleep(self._ddelay)
                 sleep(self.__tweaking)
                 tweaking_frames += 1

@@ -32,17 +32,16 @@ class Move(Process):
         self._isAbsolute = isAbsolute
         self._thread = None
         self.running = Event()
-        self.pause = Event()
         self._queue = Queue()
 
     # Connect to camera and start thread
     def start(self):
         self._logger.info("Process starting")
-        self.cam = Camera(self._ip, self._port, self._login, self._password,
+        self._cam = Camera(self._ip, self._port, self._login, self._password,
                           self._wsdl, self._preset, self._isAbsolute)
-        if(not self.cam.connect()):
+        if(not self._cam.connect()):
             return False
-        self.cam.start()
+        self._cam.start()
         Process.start(self)
         return True
     # Setting box
@@ -54,17 +53,17 @@ class Move(Process):
 
     # Stopping threads
     def stop(self):
-        self.cam.stop_thread()
-        del self.cam
+        self._cam.stop_thread()
         self.running.set()
         self._queue.put((None, None))
         Process.join(self)
+
     def reconnect(self):
-        self.cam.reconnect()
+        return self._cam.connect()
     # Return rtsp-thread from Camera
     def get_rtsp(self):
         return "rtsp://" + self._login + ":" + self._password + "@" + \
-                   self.cam.getStreamUri().split('//')[1]
+                   self._cam.getStreamUri().split('//')[1]
     # Return aimed-state bool
     def isAimed(self):
         return self._Aimed

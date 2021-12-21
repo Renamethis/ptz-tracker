@@ -19,8 +19,8 @@ class VideoStream:
                     ' nvvidconv ! video/x-raw,format=BGRx !' + \
                     ' videoconvert! video/x-raw,format=BGR ! appsink'
             else:
-                self.rtsp_url = 'rtspsrc location="{rtsp_url}" latency=0 !' + \
-                 'rtph264depay ! queue ! decodebin ! queue !' + \
+                self.rtsp_url = 'rtspsrc location="{rtsp_url}" !' + \
+                 'application/x-rtp ! rtph264depay ! decodebin !' + \
                  ' videoconvert ! appsink'
             self.cap_flag = cv2.CAP_GSTREAMER
         else:
@@ -53,4 +53,6 @@ class VideoStream:
     # Stop thread
     def stop(self):
         self.running = False
-        self.__stream.release()
+        if(self.__stream.isOpened()):
+            self.__stream.release()
+        del self.__stream
