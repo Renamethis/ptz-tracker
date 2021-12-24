@@ -105,7 +105,6 @@ class MoveSet(Move):
 
     # Set person box, greenscreen contours
     def set_box(self, box, con):
-        print(box, con)
         if(not np.array_equal(box, self.old_box)):
             self._queue.put((box, self.old_box, con))
             self.old_box = box
