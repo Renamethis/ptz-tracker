@@ -35,15 +35,11 @@
 
 **Запуск**
 
-- Control Server:
+Активируйте виртуальное окружение:
 
 `. ./venv/bin/activate`
 
-`python3 control_server.py`
-
-- Tracker Server:
-
-`. ./venv/bin/activate`
+Запустите сервер:
 
 `python3 flask_server.py`
 
