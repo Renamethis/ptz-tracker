@@ -44,26 +44,25 @@ class Move(Process):
         self._cam.start()
         Process.start(self)
         return True
-    # Setting box
 
+    # Set box
     def set_box(self, box):
         if(not np.array_equal(box, self.old_box)):
             self._queue.put((box, self.old_box))
             self.old_box = box
 
-    # Stopping threads
+    # Stop threads
     def stop(self):
         self._cam.stop_thread()
         self.running.set()
         self._queue.put((None, None))
         Process.join(self)
 
-    def reconnect(self):
-        return self._cam.connect()
     # Return rtsp-thread from Camera
     def get_rtsp(self):
         return "rtsp://" + self._login + ":" + self._password + "@" + \
                    self._cam.getStreamUri().split('//')[1]
+
     # Return aimed-state bool
     def isAimed(self):
         return self._Aimed
