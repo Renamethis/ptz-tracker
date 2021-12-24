@@ -13,7 +13,7 @@
 
 1. Загрузите репозиторий
 
-`git clone git.miem.hse.ru/592/ptz-tracker.git`
+`git clone git.miem.hse.ru/592/ptz-tracker.git -b multiprocessing`
 
 2. Перейдите в папку трекера
 
