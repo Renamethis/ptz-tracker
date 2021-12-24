@@ -12,6 +12,7 @@ class VideoStream:
         self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frame = None
         self.running = False
+        self.__stream = None
         if(GStreamer):
             if(device == "Jetson"):
                 self.rtsp_url = 'rtspsrc location="{rtsp_url}" latency=0 !' + \
@@ -55,4 +56,4 @@ class VideoStream:
         self.running = False
         if(self.__stream.isOpened()):
             self.__stream.release()
-        del self.__stream
+            del self.__stream

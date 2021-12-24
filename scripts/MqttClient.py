@@ -45,9 +45,10 @@ def mouse_click(event, x, y, flags, param):
         for key in new_boxes.keys():
             box = new_boxes[key]
             if(x > box[1] and x < box[3] and y > box[0] and y < box[2]):
-                response = requests.post("http://127.0.0.1:5000/track", data=json.dumps({
+                response = requests.post("http://ptz.miem.vmnet.top/", data=json.dumps({
                     "command": "track",
-                    "id": key
+                    "id": key,
+                    "room_name": "Studio"
                 }))
                 print(response.content)
 # Connection to mqtt broker
