@@ -1,10 +1,10 @@
-import os
 import sys
+import os
 from flask import Flask
 from flask import request
 from flask import jsonify
 import configparser
-from classes.tracker import Tracker
+from classes.Tracker import Tracker
 
 
 pwd = os.getcwd()
@@ -24,6 +24,7 @@ def tracker_listener():
         data = request.get_json(force=True)
         if data['command'] == 'start':
             if(not tracker.running):
+                tracker.update_data()
                 if(not tracker.start_tracker()):
                     return error('Error with tracker starting, '
                                  + 'check logs to get more information')
@@ -40,6 +41,24 @@ def tracker_listener():
             '''
             return answer('OK', data={'information':
                                       'Tracker successfully started'})
+        elif data['command'] == 'assistant':
+            if(not tracker.running):
+                tracker.update_data()
+                if(not tracker.start_assistant()):
+                    return error('Error with assistant starting, '
+                                 + 'check logs to get more information')
+                return answer('OK', data={'information':
+                                          'Assistant successfully started'})
+        elif data['command'] == 'autoset':
+            if(not tracker.running):
+                tracker.update_data()
+                if(not tracker.start_autoset()):
+                    return error('Error with autoset starting, '
+                                 + 'check logs to get more information')
+            else:
+                return error('Tracker already running')
+            return answer('OK', data={'information':
+                                      'Autoset sucessfully started'})
         elif data['command'] == 'stop':
             if(tracker.running):
                 tracker.stop()
@@ -48,20 +67,20 @@ def tracker_listener():
             else:
                 return error('Tracker is not running')
             return answer('Tracker stopped')
+        elif data['command'] == 'track':
+            if(tracker.running and tracker.is_assistant()):
+                if(tracker.set_track(data["id"])):
+                    return answer('OK', data={'information':
+                                          'Track id set up successfully'})
+                else:
+                    return error('Provided id is incorrect')
+            else:
+                return error('Assistant is not running')
         elif data['command'] == 'log':
             if(tracker.running):
                 return answer('OK', data={'log': tracker.get_status_log()})
             else:
                 return error('Tracker is not running')
-        elif data['command'] == 'autoset':
-            if(not tracker.running):
-                if(not tracker.start_autoset()):
-                    return error('Error with autoset starting, '
-                                 + 'check logs to get more information')
-            else:
-                return error('Tracker already running')
-            return answer('OK', data={'information':
-                                      'Autoset sucessfully started'})
         elif data['command'] == 'set':
             if(tracker.running):
                 return error('You cant change parameters'

@@ -12,15 +12,16 @@ class VideoStream:
         self.__logger = logging.getLogger("Main.%s" % (self.name))
         self.frame = None
         self.running = False
+        self.__stream = None
         if(GStreamer):
             if(device == "Jetson"):
-                self.rtsp_url = 'rtspsrc location="{rtsp_url}" ! queue' + \
-                    '! rtph264depay ! queue ! h264parse ! omxh264dec !' + \
+                self.rtsp_url = 'rtspsrc location="{rtsp_url}" latency=0 !' + \
+                    'queue ! rtph264depay ! queue ! h264parse ! omxh264dec !' + \
                     ' nvvidconv ! video/x-raw,format=BGRx !' + \
                     ' videoconvert! video/x-raw,format=BGR ! appsink'
             else:
-                self.rtsp_url = 'rtspsrc location="{rtsp_url}" latency=0 !' + \
-                 'rtph264depay ! queue ! decodebin ! queue !' + \
+                self.rtsp_url = 'rtspsrc location="{rtsp_url}" !' + \
+                 'application/x-rtp ! rtph264depay ! decodebin !' + \
                  ' videoconvert ! appsink'
             self.cap_flag = cv2.CAP_GSTREAMER
         else:
@@ -53,4 +54,6 @@ class VideoStream:
     # Stop thread
     def stop(self):
         self.running = False
-        self.__stream.release()
+        if(self.__stream.isOpened()):
+            self.__stream.release()
+            del self.__stream

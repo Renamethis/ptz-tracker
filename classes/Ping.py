@@ -27,7 +27,8 @@ class Ping:
         while self.running:
             self.__rec = os.system("timeout 5 ping -c 1    "
                                    + self.mycam_ip + " > /dev/null 2>&1")
-            sleep(5)
+            sleep(1)
+        self.__logger.info("Process stopped")
 
     # Return connection check var
     def read(self):
@@ -35,4 +36,4 @@ class Ping:
 
     # Stop thread
     def stop(self):
-        self.running = True
+        self.running = False

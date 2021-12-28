@@ -39,6 +39,6 @@ cd python-onvif-zeep
 python3 setup.py install
 cd ..
 python3 -m pip install --upgrade onvif_zeep
-python3 -m pip install -r requirements_server.txt
+python3 -m pip install -r requirements_cpu.txt
 ### ORB_SLAM ###
 . ./build_slam.sh

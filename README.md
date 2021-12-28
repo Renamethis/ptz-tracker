@@ -1,4 +1,4 @@
-# PTZ Tracker
+# PTZ Tracker - версия с модулем multiprocessing
 ПО, предназначенное для наведения onvif-камеры на человека
 
 **Требования для запуска**
@@ -33,17 +33,29 @@
 
 `. ./setup.sh {JetPack version}`
 
-**Запуск**
+5. Запустите установочный файл GStreamer в директории setup_files
 
-- Control Server:
+`. ./gstreamer_install.sh`
+
+6. Запустите установочный файл OpenCV в директории setup_files
+
+`. ./build_opencv.sh`
+
+> В процессе установки система может запросить подтверждение пароля или пакетный менеджер может запросить подтверждение установки пакетов.
+
+4. Запустите установочный файл
+
+- CPU:
+
+`. ./setup.sh `
+
+- Jetson:
+
+Активируйте виртуальное окружение:
 
 `. ./venv/bin/activate`
 
-`python3 control_server.py`
-
-- Tracker Server:
-
-`. ./venv/bin/activate`
+Запустите сервер:
 
 `python3 flask_server.py`
 
