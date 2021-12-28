@@ -20,8 +20,6 @@ class Move(Process):
         self._preset = preset
         self._box = None
         self.old_box = None
-        self.old_vec_x = 0
-        self.old_vec_y = 0
         self.count_frame = 0
         self.speed_coef = speed
         self._ddelay = 0.1
