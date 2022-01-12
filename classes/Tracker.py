@@ -119,7 +119,7 @@ class Tracker:
                                or self.__move_type == Mode.AutoSet):
                                 # If tracker started as default tracker or
                                 # autoset, then choose fist person
-                                if(self.__move_type == Mode.Tracking):
+                                if(self.__move_type == Mode.Tracking and bool(boxes_dict)):
                                     self.__move_mode.set_box(
                                         boxes_dict[min(boxes_dict.keys())])
                                 elif(self.__move_type == Mode.AutoSet):
