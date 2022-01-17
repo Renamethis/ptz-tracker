@@ -54,7 +54,7 @@ class MoveBase(Move):
                         vec_x = float(to_x - self._tbox[2])/(self._width)
                 else:
                     vec_x = 0
-                if (to_y > self._tbox[1] + 40 or to_y < self._tbox[1] - 40):
+                if (to_y > self._tbox[1] + 20 or to_y < self._tbox[1] - 20):
                     vec_y = float(self._tbox[1] - to_y)/(self._height)
                 else:
                     vec_y = 0
@@ -71,7 +71,7 @@ class MoveBase(Move):
                     if(point[1] < self.spaceLimits[1] and vec_y > 0
                        or (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
-                if(abs(vec_y) < 0.05 and abs(vec_x) < 0.05):
+                if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
                     self._Aimed = True
                     self.cam.stop()
                 else:

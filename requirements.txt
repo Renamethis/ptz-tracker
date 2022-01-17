@@ -1,0 +1,7 @@
+numpy
+requests
+scipy
+flask
+paho-mqtt
+onvif-zeep
+zmq

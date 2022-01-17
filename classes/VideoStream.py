@@ -43,6 +43,8 @@ class VideoStream:
         self.__logger.info("Process started")
         while self.running and self.__stream.isOpened():
             (self.grabbed, self.frame) = self.__stream.read()
+        print(self.running)
+        print(self.__stream.isOpened())
         self.running = False
         self.__logger.info("Process stopped")
 
