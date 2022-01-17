@@ -96,7 +96,7 @@ class Tracker:
                     if (scores is not None and boxes is not None):
                         scores = scores.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.5)
+                        score = np.where(scores > 0.4)
                         # Convert boxes and pass it to CentroidTracker
                         if (len(scores[score]) != 0):
                             boxes = boxes[score]
@@ -111,8 +111,9 @@ class Tracker:
                                 for key in objects.keys():
                                     centroid = objects[key]
                                     if(centroid[0] == cX and centroid[1] == cY):
-                                        boxes_dict[key] = boxes[b]
+                                        boxes_dict[key] = boxes[b].tolist()
                                         break
+                            #self.__logger.info(str(boxes_dict))
                             self.__persons = boxes_dict
                             if(self.__move_type == Mode.Tracking
                                or self.__move_type == Mode.AutoSet):
@@ -120,10 +121,10 @@ class Tracker:
                                 # autoset, then choose fist person
                                 if(self.__move_type == Mode.Tracking and bool(boxes_dict)):
                                     self.__move_mode.set_box(
-                                        boxes_dict[self.l_h*min(boxes_dict.keys())])
+                                        self.l_h*np.array(boxes_dict[min(boxes_dict.keys())]))
                                 elif(self.__move_type == Mode.AutoSet):
                                     self.__move_mode.set_box(
-                                        boxes_dict[self.l_h*min(boxes_dict.keys())],
+                                        self.l_h*np.array(boxes_dict[min(boxes_dict.keys())]),
                                         self.__get_contours(img))
                                     self.status = Status.Moving
                             elif(self.__move_type == Mode.Assistant):
@@ -135,7 +136,7 @@ class Tracker:
                                 if(self.__person_id is not None
                                    and self.__person_id in self.__persons.keys()):
                                     self.__move_mode.set_box(
-                                        self.l_h*self.__persons[self.__person_id])
+                                        self.l_h*np.array(self.__persons[self.__person_id]))
                                 else:
                                     self.__move_mode.set_box(None)
                         else:

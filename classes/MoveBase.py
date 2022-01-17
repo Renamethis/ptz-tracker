@@ -11,7 +11,7 @@ class MoveBase(Move):
     def __init__(self, ip, port, login, password, wsdl, Shape, speed, tweaking,
                  bounds, tracking_box, isAbsolute, preset, name="Move"):
         super().__init__(ip, port, login, password, wsdl, Shape, speed,
-                         tracking_box, preset, isAbsolute)
+                         tracking_box, isAbsolute, preset)
         self.tweaking = tweaking
         self.bounds = bounds
         self.spaceLimits = bounds
@@ -32,14 +32,8 @@ class MoveBase(Move):
         self._logger.info("Process started")
         message = rotation = None
         while self.running:
-            if(self.pause):
-                self.cam.pause = True
-                continue
             #message = self.mt.get_message()
             #rotation = self.mt.get_rotation() if message is not None else None
-            if self.pause:
-                self.cam.stop()
-                sleep(self._ddelay)
             box = self._box
             old_box = self.old_box
             if np.array_equal(box, old_box):
@@ -75,7 +69,7 @@ class MoveBase(Move):
                     self._Aimed = True
                     self.cam.stop()
                 else:
-                    # self.logger.info('X: ' + str(vec_x)
+                    #self._logger.info('X: ' + str(vec_x)
                     #                 + ' Y: ' + str(vec_y))
                     self._Aimed = False
                     self.cam.ContinuousMove(vec_x, vec_y)

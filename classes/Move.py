@@ -19,7 +19,6 @@ class Move:
         self.old_box = None
         self.count_frame = 0
         self.speed_coef = speed
-        self.pause = False
         self._ddelay = 0.1
         self._width = Shape[1]
         self._height = Shape[0]
