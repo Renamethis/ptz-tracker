@@ -155,7 +155,7 @@ class Tracker:
     def start_assistant(self):
         self.status = Status.Starting
         self.__logger.info("Assistant starting...")
-        if(not self.__move.start()):
+        if(not self.__move.start(isAssistant=True)):
             return False
         self.__move_mode = self.__move
         self.running = True

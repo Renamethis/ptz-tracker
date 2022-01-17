@@ -15,9 +15,11 @@ class MoveBase(Move):
         self.tweaking = tweaking
         self.bounds = bounds
         self.spaceLimits = bounds
+        self.__isAssistant = False
 
     # Starting thread
-    def start(self):
+    def start(self, isAssistant=False):
+        self.__isAssistant = isAssistant
         self.running = super().start()
         # Message thread using for ORB_SLAM2
         #self.mt = message_grabber("tcp://*:5555")
@@ -75,7 +77,7 @@ class MoveBase(Move):
                     self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
                 self.count_frame = 0
-            elif box is None and old_box is not None:
+            elif box is None and old_box is not None and not self.__isAssistant:
                 if (self.count_frame < 20):
                     self.cam.ContinuousMove(vec_x, vec_y)
                 elif (self.count_frame == 20):
