@@ -19,6 +19,6 @@ cmake -D CMAKE_INSTALL_PREFIX=../venv \
  -D WITH_GTK=ON \
  ../opencv
 
-make -j8
+make -j2
 sudo make install
 cd ..

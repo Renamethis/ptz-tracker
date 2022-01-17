@@ -101,18 +101,17 @@ class Tracker:
                         if (len(scores[score]) != 0):
                             boxes = boxes[score]
                             self.__amount_person = len(boxes)
-                            box = (self.l_h*boxes)
-                            boxes = self.__to_int(box)
-                            objects = self.__centroidTracker.update(box)
+                            lbox = self.__to_int(self.l_h*boxes)
+                            objects = self.__centroidTracker.update(lbox)
                             # Creating id: box dict
                             boxes_dict = {}
-                            for b in boxes:
-                                cX = int((b[0] + b[2]) / 2.0)
-                                cY = int((b[1] + b[3]) / 2.0)
+                            for b in range(0, len(boxes)):
+                                cX = int((lbox[b][0] + lbox[b][2]) / 2.0)
+                                cY = int((lbox[b][1] + lbox[b][3]) / 2.0)
                                 for key in objects.keys():
                                     centroid = objects[key]
                                     if(centroid[0] == cX and centroid[1] == cY):
-                                        boxes_dict[key] = b
+                                        boxes_dict[key] = boxes[b]
                                         break
                             self.__persons = boxes_dict
                             if(self.__move_type == Mode.Tracking
@@ -155,7 +154,7 @@ class Tracker:
     def start_assistant(self):
         self.status = Status.Starting
         self.__logger.info("Assistant starting...")
-        if(not self.__move.start()):
+        if(not self.__move.start(isAssistant=True)):
             return False
         self.__move_mode = self.__move
         self.running = True
