@@ -66,7 +66,6 @@ class Tracker:
 
     # Main loop function
     def __update(self):
-        sleep(20)
         self.__logger.info("Tracker started")
         while self.running:
             # Check connection to camera, if it falls - reinitialize tracker
