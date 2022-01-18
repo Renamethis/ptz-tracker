@@ -104,8 +104,7 @@ def tracker_listener():
             Config.write(cfile)
             cfile.close()
             tracker.update_data()
-            return answer('OK', data={'information':
-                                      'Data successfully set up'})
+            return answer('OK', data='Data successfully set up')
         elif data['command'] == 'get':
             Config = configparser.ConfigParser()
             Config.read(config_path)
@@ -113,7 +112,7 @@ def tracker_listener():
             for sec in sections:
                 items = Config.items(sec)
                 settings[sec] = {item[0]: item[1] for item in items}
-            return answer('OK', data={'information': settings})
+            return answer('OK', data=settings)
         elif data['command'] == 'status':
             status = str(tracker.status).split('.')[1]
             return answer('OK', data={'status': status})
