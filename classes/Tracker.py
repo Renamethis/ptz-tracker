@@ -148,6 +148,7 @@ class Tracker:
                                 else self.__move_mode.set_box(None, None)
             self.running = self.__stream.running and \
                 self.__tensor.running and self.__move_mode.running
+        self.status = status.Stopped
         self.stop()
         self.__logger.info("Tracker stopped")
 
