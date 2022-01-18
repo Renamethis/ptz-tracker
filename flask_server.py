@@ -106,7 +106,7 @@ def tracker_listener():
             tracker.update_data()
             return answer('OK', data={'information':
                                       'Data successfully set up'})
-         elif data['command'] == 'get':
+        elif data['command'] == 'get':
             Config = configparser.ConfigParser()
             Config.read(config_path)
             settings = {}
