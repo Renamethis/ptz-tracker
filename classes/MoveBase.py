@@ -77,19 +77,22 @@ class MoveBase(Move):
                     self.cam.ContinuousMove(vec_x, vec_y)
                 old_box = box
                 self.count_frame = 0
-            elif box is None and old_box is not None and not self.__isAssistant:
-                if (self.count_frame < 20):
-                    self.cam.ContinuousMove(vec_x, vec_y)
-                elif (self.count_frame == 20):
+            elif box is None and old_box is not None:
+                if(self.__isAssistant):
                     self.cam.stop()
-                    sleep(self._ddelay)
-                elif (self.count_frame == 60):
-                    self.count_frame = 0
-                    self.cam.goHome()
-                    old_box = box
-                    sleep(self._ddelay)
-                sleep(self.tweaking)
-                self.count_frame = self.count_frame + 1
+                else:
+                    if (self.count_frame < 20):
+                        self.cam.ContinuousMove(vec_x, vec_y)
+                    elif (self.count_frame == 20):
+                        self.cam.stop()
+                        sleep(self._ddelay)
+                    elif (self.count_frame == 60):
+                        self.count_frame = 0
+                        self.cam.goHome()
+                        old_box = box
+                        sleep(self._ddelay)
+                    sleep(self.tweaking)
+                    self.count_frame = self.count_frame + 1
             self.old_box = old_box
             sleep(self._ddelay)
         self._logger.info("Process stopped")
