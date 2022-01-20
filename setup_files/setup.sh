@@ -9,9 +9,8 @@ fi
 sudo apt-get upgrade
 sudo apt-get update
 sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
-sudo apt-get install python3
-sudo apt-get install virtualenv
-sudo apt-get install curl
+sudo apt-get install python3 python3-dev
+sudo apt-get install curl cmake g++ authbind
 virtualenv -p python3 venv
 sudo chmod -R 770 venv
 output=$(ls)
