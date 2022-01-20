@@ -56,9 +56,6 @@ class Tracker:
                                       + '%(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         self.__logger.addHandler(fh)
-        # Initializing configparser
-        self.Config = configparser.ConfigParser()
-        self.Config.read(config_path)
         # Initialize tensor class
         self.__tensor = Tensor()
         self.__status_log = None
@@ -206,6 +203,9 @@ class Tracker:
 
     # Updating parameters from config
     def update_data(self):
+        # Update/Init configparser
+        self.Config = configparser.ConfigParser()
+        self.Config.read(config_path)
         # ONVIF settings
         ip = self.__get_setting("Onvif", "ip")
         port = self.__get_setting("Onvif", "port")
