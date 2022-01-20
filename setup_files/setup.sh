@@ -11,6 +11,8 @@ sudo apt-get update
 sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
 sudo apt-get install python3 python3-dev
 sudo apt-get install curl cmake g++ authbind
+sudo touch /etc/authbind/byport/80
+sudo chmod 777 /etc/authbind/byport/80
 python3 -m venv venv
 sudo chmod -R 770 venv
 output=$(ls)
