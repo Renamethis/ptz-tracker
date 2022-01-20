@@ -38,6 +38,7 @@ then
 	echo 'device = Jetson' >> settings.ini
 else
 	sed -i '$ d' settings.ini
+	echo 'device = CPU' >> settings.ini
 	echo 'tensorflow' >> requirements.txt
 fi
 pip3 install -r requirements.txt
