@@ -47,7 +47,7 @@ class Tracker:
         self.__amount_person = 0
         pwd = os.getcwd()
         self.wsdl_path = pwd + '/wsdl'
-        config_path = pwd + '/settings.ini'
+        self.config_path = pwd + '/settings.ini'
         # Initializing logger
         self.__logger = logging.getLogger("Main")
         self.__logger.setLevel(logging.INFO)
@@ -205,7 +205,7 @@ class Tracker:
     def update_data(self):
         # Update/Init configparser
         self.Config = configparser.ConfigParser()
-        self.Config.read(config_path)
+        self.Config.read(self.config_path)
         # ONVIF settings
         ip = self.__get_setting("Onvif", "ip")
         port = self.__get_setting("Onvif", "port")
