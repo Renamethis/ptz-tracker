@@ -30,6 +30,7 @@ class Mode(Enum):
 
 class Status(Enum):
     Starting = auto()
+    Waiting() = auto()
     Moving = auto()
     NoPerson = auto()
     Aimed = auto()
@@ -125,7 +126,7 @@ class Tracker:
                                     self.__move_mode.set_box(
                                         boxes_dict[min(boxes_dict.keys())],
                                         self.__get_contours(img))
-                                    self.status = Status.Moving
+                                self.status = Status.Aimed if self.__move_mode.isAimed() else Status.Moving
                             elif(self.__move_type == Mode.Assistant):
                                 # If tracker started as assistent, then
                                 # waiting for the choice of a person or track
@@ -134,9 +135,11 @@ class Tracker:
                                                            dumps(boxes_dict))
                                 if(self.__person_id is not None
                                    and self.__person_id in self.__persons.keys()):
+                                    self.status = Status.Aimed if self.__move_mode.isAimed() else Status.Moving
                                     self.__move_mode.set_box(
                                          self.__persons[self.__person_id])
                                 else:
+                                    self.status = Status.Waiting
                                     self.__move_mode.set_box(None)
                         else:
                             self.__amount_person = 0
