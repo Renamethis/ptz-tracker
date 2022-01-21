@@ -58,8 +58,8 @@ class Camera:
     def __ptz_thread(self):
         self.__logger.info("Process started")
         while self.running:
+            new_type = self.__type
             try:
-                new_type = self.__type
                 if(new_type is not None):
                     if(new_type == ptzType.Continuous):
                         self.ptz.ContinuousMove(
@@ -80,9 +80,8 @@ class Camera:
                 elif(self.__isAbsolute):
                     self.status = self.ptz.GetStatus(
                         self.requests['GetStatus'])
-            except (onvif.exceptions.ONVIFError, ConnectionResetError):
-                self.__logger.exception('Error sending request, reconnecting')
-                self.running = False
+            except:
+                continue
         self.__logger.info("Process stopped")
 
     # Move camera by vertical and horizontal speed
