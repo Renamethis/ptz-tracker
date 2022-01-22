@@ -36,6 +36,7 @@ output=$(cat /etc/nv_tegra_release)
 if echo $output | grep aarch64
 then
 	pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/$1 tensorflow
+	echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc
 	sed -i '$ d' settings.ini
 	echo 'device = Jetson' >> settings.ini
 else
