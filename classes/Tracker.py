@@ -30,7 +30,7 @@ class Mode(Enum):
 
 class Status(Enum):
     Starting = auto()
-    Waiting() = auto()
+    Waiting = auto()
     Moving = auto()
     NoPerson = auto()
     Aimed = auto()
