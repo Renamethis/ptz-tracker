@@ -12,7 +12,7 @@ orb_pid = None
 sys.path.append(pwd+'/classes')
 config_path = pwd + '/settings.ini'
 orb_path = 'ORB_SLAM2/orb_module/build/orb_module'
-sections = ['Onvif', 'Processing', 'AutoSet', 'Hardware']
+sections = ['Onvif', 'Processing', 'AutoSet', 'Assistant', 'AutoRecord', 'Hardware']
 tracker = Tracker()
 
 app = Flask(__name__)
