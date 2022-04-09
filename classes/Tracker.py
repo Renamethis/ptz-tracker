@@ -159,7 +159,7 @@ class Tracker:
             return False
         self.__move_mode = self.__move
         self.running = True
-        self.__mqtt_client = self.__connect_mqtt(self.__mqtt_adress,
+        self.__mqtt_client = self.__connect_mqtt(self.__mqtt_address,
                                                  self.__mqtt_user,
                                                  self.__mqtt_password,
                                                  self.__mqtt_port)
@@ -238,7 +238,7 @@ class Tracker:
                                replace(" ",
                                        "").split(",")]) * self.l_h).astype(int)
         # Assistant settings
-        self.__mqtt_adress = self.__get_setting("Assistant", "mqtt_adress")
+        self.__mqtt_address = self.__get_setting("Assistant", "mqtt_address")
         self.__mqtt_topic = self.__get_setting("Assistant", "mqtt_topic")
         self.__mqtt_port = int(self.__get_setting("Assistant", "mqtt_port"))
         self.__mqtt_user = self.__get_setting("Assistant", "mqtt_user")
