@@ -30,7 +30,7 @@ def tracker_listener():
                                  + 'check logs to get more information')
             else:
                 return error('Tracker already running')
-            ''' ORB_SLAM2 IN DEVELOPING
+            ''' ORB_SLAM2 IN DEVELOPMENT
             if(os.path.isfile(orb_path)):
                 voc_path = 'ORB_SLAM2/Vocabulary/ORBvoc.txt'
                 orb_path = './' + orb_path
@@ -137,4 +137,4 @@ def answer(type, data=None):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0')

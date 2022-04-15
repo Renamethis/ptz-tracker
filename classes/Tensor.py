@@ -20,7 +20,6 @@ class Tensor:
             self.model_name = model_name
             PATH_TO_MODEL = "models/" + model_name
             # PATH_TO_LABELS = "models/label_map.pbtxt"
-
             self.detector = tf.saved_model.load(PATH_TO_MODEL)
             self.boxes = None
             self.scores = None

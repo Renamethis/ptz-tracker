@@ -24,12 +24,14 @@ parser.add_argument('-n','--username', type=str, help='MQTT Username')
 parser.add_argument('-w','--password', type=str, help='MQTT Password')
 parser.add_argument('-t','--topic', type=str, help='MQTT Topic')
 args = parser.parse_args()
-broker = args.brokker if (args.broker is not None) else 'broker.emqx.io'
-port = args.port if (args.port is not None) else 1883
-topic = args.topic if (args.topic is not None) else "/python/mqtt"
+broker = args.brokker if (args.broker is not None) else '172.18.130.50'
+port = args.port if (args.port is not None) else 5120
+topic = args.topic if (args.topic is not None) else "/tracker/assistant"
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
-username = args.username if (args.username is not None) else 'emqx'
-password = args.password if (args.password is not None) else 'public'
+username = args.username if (args.username is not None) else 'admin'
+password = args.password if (args.password is not None) else 'Supervisor'
+WIDTH = 720
+HEIGHT = 640
 if(args.rtsp_url is None):
     print("RTSP-Url is not provided")
     sys.exit(0)
@@ -48,7 +50,7 @@ def mouse_click(event, x, y, flags, param):
                 response = requests.post("http://ptz.miem.vmnet.top/", data=json.dumps({
                     "command": "track",
                     "id": key,
-                    "room_name": "Studio"
+                    "room_name": "305"
                 }))
                 print(response.content)
 # Connection to mqtt broker
@@ -71,7 +73,7 @@ def subscribe(client: mqtt_client):
         global new_boxes
         old_boxes = new_boxes
         try:
-            new_boxes = json.loads(msg.payload.decode())
+            new_boxes = json.loads(msg.payload.decode())['boxes']
         except json.decoder.JSONDecodeError:
             print('Not JSON Message\nRaw message: ' + msg.payload.decode())
     client.subscribe(topic)
@@ -81,15 +83,16 @@ def subscribe(client: mqtt_client):
 running = False
 def stream_thread(stream):
     global running
+    l_h = np.array([WIDTH, HEIGHT, WIDTH, HEIGHT])
     cv2.namedWindow('Preview')
     cv2.setMouseCallback('Preview', mouse_click)
     while stream.isOpened() or running:
-        ret, frame = stream.read()
-        frame = cv2.resize(frame, (720, 640))
-        if(new_boxes is not None and np.array_equal(new_boxes, old_boxes)):
+        _, frame = stream.read()
+        frame = cv2.resize(frame, (WIDTH, HEIGHT))
+        if(new_boxes is not None):
             boxes = new_boxes
             for key in boxes.keys():
-                box = boxes[key]
+                box = [int(p) for p in boxes[key]*l_h]
                 cv2.rectangle(frame, (box[1], box[0]), (box[3], box[2]), (255, 0, 0), 2)
                 cv2.putText(frame,"id:" + key, (box[1], box[2]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 1, 1)
         if cv2.waitKey(1) & 0xFF == ord('q'):

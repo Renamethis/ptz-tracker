@@ -21,6 +21,9 @@ from random import randint
 from paho.mqtt import client as mqtt_client
 from json import dumps
 
+MAX_FRAMES_FACE = 400
+MAX_FRAMES_STOPS = 300
+GO_HOME_DELAY = 4
 
 class Mode(Enum):
     Tracking = auto()
@@ -30,6 +33,7 @@ class Mode(Enum):
 
 class Status(Enum):
     Starting = auto()
+    Waiting = auto()
     Moving = auto()
     NoPerson = auto()
     Aimed = auto()
@@ -56,6 +60,7 @@ class Tracker:
         fh.setFormatter(formatter)
         self.__logger.addHandler(fh)
         # Initialize tensor class
+        self.__tracking_id = None
         self.__tensor = Tensor()
         self.__status_log = None
         self.__person_id = None
@@ -64,6 +69,8 @@ class Tracker:
     # Main loop function
     def __update(self):
         self.__logger.info("Tracker started")
+        #frame_counter = 0
+        #face_counter = 0
         while self.running:
             # Check connection to camera, if it falls - reinitialize tracker
             # classes
@@ -78,7 +85,7 @@ class Tracker:
                 self.update_data()
                 self.__move_mode = self.__move
                 self.__move_mode.start()
-                self.__stream.start(self.__move_mode.get_rtsp())
+                self.__stream.start(self.__rtsp_url)
                 self.__ping.start()
                 self.__logger.info("Camera connection restored")
             # Read images from stream
@@ -90,56 +97,109 @@ class Tracker:
                 if self.__tensor.flag:
                     scores = self.__tensor.read_scores()
                     boxes = self.__tensor.read_boxes()
-                    if (scores is not None and boxes is not None):
+                    classes = self.__tensor.read_classes()
+                    if (scores is not None and boxes is not None and
+                        classes is not None):
                         scores = scores.numpy()
+                        classes = classes.numpy()
                         boxes = boxes.numpy()
-                        score = np.where(scores > 0.4)
+                        score = np.where((scores > 0.4) & (classes == 1))
                         # Convert boxes and pass it to CentroidTracker
                         if (len(scores[score]) != 0):
-                            boxes = boxes[score]
-                            self.__amount_person = len(boxes)
-                            lbox = self.__to_int(self.l_h*boxes)
+                            body = boxes[score]
+                            #faces = boxes[np.where((classes == 2) & 
+                            #                       (scores > 0.05))]
+                            self.__amount_person = len(body)
+                            lbox = self.__to_int(self.l_h*body)
                             objects = self.__centroidTracker.update(lbox)
                             # Creating id: box dict
                             boxes_dict = {}
-                            for b in range(0, len(boxes)):
+                            for b in range(0, len(body)):
                                 cX = int((lbox[b][0] + lbox[b][2]) / 2.0)
                                 cY = int((lbox[b][1] + lbox[b][3]) / 2.0)
                                 for key in objects.keys():
                                     centroid = objects[key]
                                     if(centroid[0] == cX and centroid[1] == cY):
-                                        boxes_dict[key] = boxes[b].tolist()
+                                        boxes_dict[key] = body[b].tolist()
                                         break
+                            boxes_dict = {
+                                'rtsp': self.__rtsp_url,
+                                'boxes': boxes_dict
+                            }
+                            '''
+                            if(self.__tracking_id is not None and 
+                                self.__tracking_id not in objects.keys() and
+                                frame_counter < MAX_FRAMES_STOPS):
+                                frame_counter += 1
+                                print('a?')
+                                self.__move_mode.set_box(None)
+                                sleep(0.01)
+                                continue
+                            frame_counter = 0
+                            '''
                             #self.__logger.info(str(boxes_dict))
                             self.__persons = boxes_dict
                             if(self.__move_type == Mode.Tracking
                                or self.__move_type == Mode.AutoSet):
+                                self.__tracking_id = min(boxes_dict.keys())
+                                box = boxes_dict[self.__tracking_id]
+                                '''
+                                # Finding face in box 
+                                faceInBody = None
+                                for face in faces:
+                                    centroidX = (face[0] + face[2])/2
+                                    centroidY = (face[1] + face[3])/2
+                                    if(centroidX > box[0] and centroidX < box[2] and
+                                    centroidY > box[1] and centroidY < box[3]):
+                                    faceInBody = face
+                                if(self.__move_type != Mode.Assistant and 
+                                self.status == Status.Aimed and 
+                                faceInBody is None and 
+                                face_counter < MAX_FRAMES_FACE):
+                                    face_counter += 1
+                                    sleep(0.01)
+                                    continue
+                                elif(face_counter == MAX_FRAMES_FACE):
+                                    self.__move_mode.cam.goHome()
+                                    sleep(GO_HOME_DELAY)
+                                    face_counter = 0
+                                    self.status = Status.NoPerson
+                                    continue
+                                face_counter = 0
+                                '''
                                 # If tracker started as default tracker or
                                 # autoset, then choose fist person
-                                if(self.__move_type == Mode.Tracking and bool(boxes_dict)):
+                                if(self.__move_type == Mode.Tracking 
+                                   and bool(boxes_dict)):
                                     self.__move_mode.set_box(
-                                        self.l_h*np.array(boxes_dict[min(boxes_dict.keys())]))
+                                        self.l_h*np.array(box))
                                 elif(self.__move_type == Mode.AutoSet):
                                     self.__move_mode.set_box(
-                                        self.l_h*np.array(boxes_dict[min(boxes_dict.keys())]),
+                                        self.l_h*np.array(box),
                                         self.__get_contours(img))
-                                self.status = Status.Aimed if self.__move_mode.isAimed() else Status.Moving
+                                self.status = Status.Aimed if \
+                                    self.__move_mode.isAimed() else \
+                                    Status.Moving
                             elif(self.__move_type == Mode.Assistant):
                                 # If tracker started as assistent, then
                                 # waiting for the choice of a person or track
                                 # the chosen one
                                 self.__mqtt_client.publish(self.__mqtt_topic,
                                                            dumps(boxes_dict))
-                                if(self.__person_id is not None
-                                   and self.__person_id in self.__persons.keys()):
-                                    self.status = Status.Aimed if self.__move_mode.isAimed() else Status.Moving
+                                if(self.__person_id is not None and 
+                                   self.__person_id in self.__persons.keys()):
+                                    self.status = Status.Aimed if \
+                                        self.__move_mode.isAimed() else \
+                                        Status.Moving
                                     self.__move_mode.set_box(
-                                        self.l_h*np.array(self.__persons[self.__person_id]))
+                                        self.l_h*np.array(
+                                            self.__persons[self.__person_id]))
                                 else:
                                     self.status = Status.Waiting
                                     self.__move_mode.set_box(None)
                         else:
                             self.__amount_person = 0
+                            self.__tracking_id = None
                             self.status = Status.NoPerson
                             self.__move_mode.set_box(None) if \
                                 self.__move_type == Mode.Tracking \
@@ -274,7 +334,10 @@ class Tracker:
 
     # Setting person id variable
     def set_track(self, id):
-        if(int(id) in self.__persons.keys()):
+        if(id == "None"):
+            self.__person_id = None
+            return True
+        elif(int(id) in self.__persons.keys()):
             self.__person_id = int(id)
             return True
         return False
@@ -289,7 +352,8 @@ class Tracker:
     # Start general threads
     def __start_general(self):
         self.status = Status.Starting
-        self.__stream.start(self.__move_mode.get_rtsp())
+        self.__rtsp_url = self.__move_mode.get_rtsp()
+        self.__stream.start(self.__rtsp_url)
         self.__tensor.start()
         self.__ping.start()
         self.main = Thread(target=self.__update, name=self.name)
@@ -362,7 +426,9 @@ class Tracker:
             now = datetime.now()
             if(self.__old_status != self.status):
                 date = now.strftime('%Y-%m-%d %H:%M:%S')
-                self.__status_log[date] = {'status': str(self.status).split('.')[1],
-                                           'amount': self.__amount_person}
+                self.__status_log[date] = {
+                        'status': str(self.status).split('.')[1],
+                        'amount': self.__amount_person
+                    }
                 self.__old_status = self.status
             sleep(delay)

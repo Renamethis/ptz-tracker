@@ -3,7 +3,7 @@ eigen/
 Pangolin/
 opencv/
 opencv_contrib/
-python_onvif_zeep/
+python-onvif-zeep/
 ORB_SLAM2/
 cppzmq/
 libzmq/

@@ -3,7 +3,6 @@ from threading import Thread
 import numpy as np
 from enum import Flag, auto
 from classes.Move import Move
-import time
 
 # Enum class for object positions on greenscreen
 

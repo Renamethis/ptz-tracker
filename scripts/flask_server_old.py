@@ -40,7 +40,8 @@ def tracker_listener():
         data = request.get_json(force=True)
         if data['command'] == 'start':
             if len(pid_lines) != 0 and check_pid(int(pid_lines[0])):
-                return error('Tracking already running, stop this one before start new')
+                return error(
+                    'Tracking already running, stop this one before start new')
             tracking = subprocess.Popen([python_bin, tracking_file])
             pid = int(tracking.pid)
             with open(pid_path, 'w') as f:
@@ -63,7 +64,8 @@ def tracker_listener():
                 with open(pid_path, 'w') as pid_file:
                     pid_file.write('')
             except:
-                return error('Internal error. Try to restart server and check log to get more information')
+                return error('Internal error. Try to restart server and' + \
+                             ' check log to get more information')
             return answer('Tracker stopped')
         elif data['command'] == 'autoset':
             if len(pid_lines) != 0 and check_pid(int(pid_lines[0])):
