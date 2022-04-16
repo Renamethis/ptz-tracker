@@ -122,6 +122,7 @@ class Tracker:
                                     if(centroid[0] == cX and centroid[1] == cY):
                                         boxes_dict[key] = body[b].tolist()
                                         break
+                            self.__persons = boxes_dict
                             boxes_dict = {
                                 'rtsp': self.__rtsp_url,
                                 'boxes': boxes_dict
@@ -138,7 +139,6 @@ class Tracker:
                             frame_counter = 0
                             '''
                             #self.__logger.info(str(boxes_dict))
-                            self.__persons = boxes_dict
                             if(self.__move_type == Mode.Tracking
                                or self.__move_type == Mode.AutoSet):
                                 self.__tracking_id = min(boxes_dict.keys())
