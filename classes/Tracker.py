@@ -259,6 +259,7 @@ class Tracker:
         self.__tensor.stop()
         self.__move_mode.stop()
         self.__ping.stop()
+        self.running = False
         self.status = Status.Stopped
 
     # Updating parameters from config
