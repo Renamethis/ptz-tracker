@@ -67,7 +67,7 @@ class MoveBase(Move):
                     if(point[1] < self.spaceLimits[1] and vec_y > 0
                        or (point[1] > self.spaceLimits[3] and vec_y < 0)):
                         vec_y = 0
-                if(abs(vec_y) < 0.03 and abs(vec_x) < 0.03):
+                if(abs(vec_y) < 0.06 and abs(vec_x) < 0.06):
                     self._Aimed = True
                     self.cam.stop()
                 else:

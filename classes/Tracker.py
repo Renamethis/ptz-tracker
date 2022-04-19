@@ -69,8 +69,8 @@ class Tracker:
     # Main loop function
     def __update(self):
         self.__logger.info("Tracker started")
-        #frame_counter = 0
-        #face_counter = 0
+        frame_counter = 0
+        face_counter = 0
         while self.running:
             # Check connection to camera, if it falls - reinitialize tracker
             # classes
@@ -103,12 +103,12 @@ class Tracker:
                         scores = scores.numpy()
                         classes = classes.numpy()
                         boxes = boxes.numpy()
-                        score = np.where((scores > 0.4) & (classes == 1))
+                        score = np.where((scores > 0.6) & (classes == 1))
                         # Convert boxes and pass it to CentroidTracker
                         if (len(scores[score]) != 0):
                             body = boxes[score]
-                            #faces = boxes[np.where((classes == 2) & 
-                            #                       (scores > 0.05))]
+                            faces = boxes[np.where((classes == 2) & 
+                                                  (scores > 0.08))]
                             self.__amount_person = len(body)
                             lbox = self.__to_int(self.l_h*body)
                             objects = self.__centroidTracker.update(lbox)
@@ -125,48 +125,44 @@ class Tracker:
                             box = boxes_dict[min(boxes_dict.keys())]
                             boxes_dict = {
                                 'rtsp': self.__rtsp_url,
-                                'boxes': boxes_dict
+                                'boxes': boxes_dict,
+                                'faces': faces.tolist()
                             }
-                            self.__persons = boxes_dict
-                            '''
                             if(self.__tracking_id is not None and 
-                                self.__tracking_id not in objects.keys() and
-                                frame_counter < MAX_FRAMES_STOPS):
+                               self.__tracking_id not in list(objects.keys()) and
+                               frame_counter < MAX_FRAMES_STOPS):
+                                print('hello')
                                 frame_counter += 1
-                                print('a?')
                                 self.__move_mode.set_box(None)
                                 sleep(0.01)
                                 continue
                             frame_counter = 0
-                            '''
                             #self.__logger.info(str(boxes_dict))
+                            self.__persons = boxes_dict
                             if(self.__move_type == Mode.Tracking
                                or self.__move_type == Mode.AutoSet):
                                 self.__tracking_id = min(boxes_dict['boxes'].keys())
-                                '''
                                 # Finding face in box 
                                 faceInBody = None
                                 for face in faces:
                                     centroidX = (face[0] + face[2])/2
                                     centroidY = (face[1] + face[3])/2
                                     if(centroidX > box[0] and centroidX < box[2] and
-                                    centroidY > box[1] and centroidY < box[3]):
-                                    faceInBody = face
+                                       centroidY > box[1] and centroidY < box[3]):
+                                        faceInBody = face
+                                        
                                 if(self.__move_type != Mode.Assistant and 
-                                self.status == Status.Aimed and 
-                                faceInBody is None and 
-                                face_counter < MAX_FRAMES_FACE):
+                                   self.status == Status.Aimed and 
+                                   faceInBody is None and 
+                                   face_counter < MAX_FRAMES_FACE):
                                     face_counter += 1
                                     sleep(0.01)
-                                    continue
                                 elif(face_counter == MAX_FRAMES_FACE):
                                     self.__move_mode.cam.goHome()
                                     sleep(GO_HOME_DELAY)
-                                    face_counter = 0
                                     self.status = Status.NoPerson
+                                    face_counter = 0
                                     continue
-                                face_counter = 0
-                                '''
                                 # If tracker started as default tracker or
                                 # autoset, then choose fist person
                                 if(self.__move_type == Mode.Tracking 
@@ -259,7 +255,6 @@ class Tracker:
         self.__tensor.stop()
         self.__move_mode.stop()
         self.__ping.stop()
-        self.running = False
         self.status = Status.Stopped
 
     # Updating parameters from config

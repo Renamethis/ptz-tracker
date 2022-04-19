@@ -4,7 +4,7 @@ import numpy as np
 
 
 class CentroidTracker():
-    def __init__(self, maxDisappeared=100):
+    def __init__(self, maxDisappeared=10):
         self.__next_id = 0
         self.objects = OrderedDict()
         self.disappeared = OrderedDict()
