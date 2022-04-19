@@ -122,11 +122,12 @@ class Tracker:
                                     if(centroid[0] == cX and centroid[1] == cY):
                                         boxes_dict[key] = body[b].tolist()
                                         break
-                            self.__persons = boxes_dict
+                            box = boxes_dict[min(boxes_dict.keys())]
                             boxes_dict = {
                                 'rtsp': self.__rtsp_url,
                                 'boxes': boxes_dict
                             }
+                            self.__persons = boxes_dict
                             '''
                             if(self.__tracking_id is not None and 
                                 self.__tracking_id not in objects.keys() and
@@ -141,8 +142,7 @@ class Tracker:
                             #self.__logger.info(str(boxes_dict))
                             if(self.__move_type == Mode.Tracking
                                or self.__move_type == Mode.AutoSet):
-                                self.__tracking_id = min(boxes_dict.keys())
-                                box = boxes_dict[self.__tracking_id]
+                                self.__tracking_id = min(boxes_dict['boxes'].keys())
                                 '''
                                 # Finding face in box 
                                 faceInBody = None
